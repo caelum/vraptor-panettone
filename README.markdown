@@ -42,9 +42,6 @@ Keep watching for changes:
 java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar --watch br.com.caelum.vraptor.mymodelpackage 
 ```
 
-# Defaults
-It will look at the directories X, Y for classes and jars
-
 # ANT
 
 ```
@@ -85,7 +82,7 @@ ant ~compile-views
 
 # How to add Defaults
 
-Simply create a class called `DefaultTemplate` that has all the injects you need, put it into one of the auto import packages.
+Simply create a class called `DefaultTemplate` that has all the injects you need, and add a explicit import for it.
 
 ```
 package br.com.caelum.vraptor.panettone;
@@ -104,7 +101,14 @@ public class DefaultTemplate {
 }
 ```
 
-If the compiled template finds multiple classes called `DefaultTemplate` in the auto imported packages, it will extends one of them, you don't know which one.
+And compile:
+
+```
+java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar br.com.caelum.vraptor.mymodelpackage br.com.caelum.vraptor.mymodelpackage.DefaultTemplate 
+```
+
+If the compiled template finds multiple classes called `DefaultTemplate` in the auto imported packages, it will extends one of them, you don't know which one:
+
 
 # Invoking another template
 
@@ -161,6 +165,7 @@ Use this String as you wish.
 To build a jar SNAPSHOT run `mvn package`.
 
 # TODO
+- ensinar a colocar o diretorio onde geramos os arquivos .java no classpath do ant, do maven e do eclipse
 - bug watcher is only running once
 - vraptor4 support CompiledTemplate return (generate example at src/extras)
 - vraptor3 support CompiledTemplate return (generate example at src/extras)

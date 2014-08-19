@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.stream.Stream;
 
 import com.google.common.io.Files;
 
@@ -56,28 +55,12 @@ public class CompiledTemplate {
 			throw new CompilationIOException("Unable to compile", e);
 		}
 	}
+	
 	private String baseClassFor(List<String> imports) {
-		Stream<String> nonStatics = imports.stream().filter(p -> !p.startsWith("static"));
-		Stream<String> defaultsOrWholePackages = nonStatics
-						.filter(p -> p.endsWith(".DefaultTemplate") || p.endsWith(".*"));
-		Stream<String> defaultTemplates = defaultsOrWholePackages
-						.map(p -> p.endsWith(".*") ? p.replace(".*", ".DefaultTemplate") : p);
-		
-		Stream<String> existing = defaultTemplates
-						.filter(this::existsType);
-		Optional<String> found = existing
-						.map(p -> " extends " + p + " ")
-						.findFirst();
-		return found.orElse("");
+		Optional<String> existing = imports.stream().filter(p -> p.endsWith(".DefaultTemplate")).findFirst();
+		return "extends " + existing.orElse("Object");
 	}
-	private boolean existsType(String type) {
-		try {
-			Class.forName(type);
-			return true;
-		} catch (ClassNotFoundException e) {
-			return false;
-		}
-	}
+	
 	private String importStatementsFor(List<String> imports) {
 		if (imports.isEmpty())
 			return "";
