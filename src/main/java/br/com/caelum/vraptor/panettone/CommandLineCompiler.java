@@ -13,14 +13,14 @@ public class CommandLineCompiler {
 		
 		List<String> allArgs = asList(args);
 		boolean watch = allArgs.contains("--watch");
+		
 		VRaptorCompiler compiler = new VRaptorCompiler(importPackages(allArgs));
+		compiler.compileAll();
 		if(watch) {
 			compiler.start();
 			System.out.println("Compiler up and running, hit ENTER to stop...");
 			System.in.read();
 			compiler.stop();
-		} else {
-			compiler.compileAll();
 		}
 	}
 
