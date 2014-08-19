@@ -36,9 +36,14 @@ public class Compiler {
 	}
 
 	public List<Exception> compileAll() {
+		List<Exception> exceptions = new ArrayList<>();
+		List<CompiledTemplate> toCompile = precompile(exceptions);
+		return fullyCompile(exceptions, toCompile);
+	}
+
+	public List<CompiledTemplate> precompile(List<Exception> exceptions) {
 		List<File> files = tonesAt(from);
 		System.out.println("Compiling " + files.size() + " files: " + files);
-		List<Exception> exceptions = new ArrayList<>();
 		List<CompiledTemplate> toCompile = new ArrayList<>();
 		for(File f : files) {
 			try(FileReader reader = new FileReader(f)) {
@@ -50,6 +55,14 @@ public class Compiler {
 				exceptions.add(e);
 			}
 		}
+		if(exceptions.isEmpty()) {
+			System.out.println("Precompilation successful");
+		}
+		return toCompile;
+	}
+
+	private List<Exception> fullyCompile(List<Exception> exceptions,
+			List<CompiledTemplate> toCompile) {
 		SimpleJavaCompiler compiler = new SimpleJavaCompiler(to);
 		Stream<File> filesToCompile = toCompile.stream().map(CompiledTemplate::getFile);
 		try {

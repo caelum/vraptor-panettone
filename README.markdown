@@ -11,13 +11,13 @@ VRaptor Panettone is a type safe template language written in Java:
 
 # VRaptor-Panettone API - high level API
 
-Run in your command line:
+(STEP 1) Run in your command line:
 
 ```
 java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar --watch br.com.caelum.vraptor.mymodelpackage 
 ```
 
-Create your source panettone file at `src/main/templates`, such as `hello.tone`.
+(STEP 2) Create your source panettone file at `src/main/templates`, such as `hello.tone`.
 
 ```
 <%@ String message %>
@@ -26,7 +26,7 @@ Create your source panettone file at `src/main/templates`, such as `hello.tone`.
 </html>
 ```
 
-As soon as you save your file, there should be a new file at `target/view-classes`.
+(STEP 3) As soon as you save your file, there should be a new file at `target/view-classes`. Add this path to your classpath!
 
 # Keep watching x Compile once
 
@@ -165,7 +165,6 @@ Use this String as you wish.
 To build a jar SNAPSHOT run `mvn package`.
 
 # TODO
-- ensinar a colocar o diretorio onde geramos os arquivos .java no classpath do ant, do maven e do eclipse
 - bug watcher is only running once
 - vraptor4 support CompiledTemplate return (generate example at src/extras)
 - vraptor3 support CompiledTemplate return (generate example at src/extras)
@@ -176,6 +175,7 @@ To build a jar SNAPSHOT run `mvn package`.
 	- pq java? mensagens de erro iguais que as deles. todas as vantagens da linguagem
 	- pq <%%> ao inves de ${}? ao inves de @?
 - o compiler ser chamado em build via maven para packagear (maven plugin)
+- keep or remove our own compilation phase?
 - improve compilation because there is a Compiler <-> SimpleJavaCompiler <-> CompiledTemplate reference now
 - show code on compilation error
 - body com lambda
