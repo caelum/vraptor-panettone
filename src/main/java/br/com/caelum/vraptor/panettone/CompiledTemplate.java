@@ -1,7 +1,6 @@
 package br.com.caelum.vraptor.panettone;
 
 import static java.net.URLClassLoader.newInstance;
-import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 
@@ -9,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.Charset;
@@ -19,26 +17,21 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
-import javax.tools.Diagnostic;
-import javax.tools.DiagnosticCollector;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.ToolProvider;
-
 import com.google.common.io.Files;
 
 public class CompiledTemplate {
 
 	private final File file;
-	private final Class<?> type;
 	private final String packages;
+	private final String sourceCode;
+	private final File classpath;
 
 	public CompiledTemplate(File classpath, String name, String content) {
 		this(classpath, name, new ArrayList<String>(), content);
 	}
 	public CompiledTemplate(File classpath, String name, List<String> imports, String content) {
 		try {
+			this.classpath = classpath;
 			File templates = new File(classpath, "templates");
 			String javaName = name + ".java";
 			this.file = new File(templates, javaName);
@@ -50,32 +43,15 @@ public class CompiledTemplate {
 			String typeName = getTypeName();
 			String extension = baseClassFor(imports);
 			String importString = importStatementsFor(imports);
-			String main = "package templates" + packages + ";\n\n" + 
+			this.sourceCode = "package templates" + packages + ";\n\n" + 
 							importString +
 							"public class " + typeName + " " + extension + " {\n" +
 							"private final java.io.PrintWriter out;\n" +
 							"public " + typeName + "(java.io.PrintWriter out) { this.out = out; }\n" +
 							content +
 							"}\n";
-			Files.write(main, file, Charset.forName("UTF-8"));
+			Files.write(sourceCode, file, Charset.forName("UTF-8"));
 			
-			DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
-			
-	       JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-	       try(StandardJavaFileManager files = compiler.getStandardFileManager(null, null, null)) {
-		       StringWriter out = new StringWriter();
-		       compiler.getTask(out, files, diagnostics, null, null, unitsFor(files)	).call();
-	
-		       if(!diagnostics.getDiagnostics().isEmpty()) {
-			    	   StringBuilder builder = new StringBuilder();
-			    	   	for (Diagnostic diagnostic : diagnostics.getDiagnostics())
-			    	   		builder.append(String.format("Error on line %d in %s%n",
-			    				   diagnostic.getLineNumber(),
-			    				   diagnostic.getSource().toString()));
-			    	   	throw new CompilationIOException("Compilation error: "+ out.getBuffer().toString() + " ==> " + builder.toString() + " // " + main);
-		       }
-	       }
-	       this.type = loadType(classpath);
 		} catch (IOException e) {
 			throw new CompilationIOException("Unable to compile", e);
 		}
@@ -107,28 +83,31 @@ public class CompiledTemplate {
 			return "";
 		return imports.stream().map(s -> "import " + s + ";\n").collect(joining()) + "\n";
 	}
-	private Iterable<? extends JavaFileObject> unitsFor(
-			StandardJavaFileManager files) {
-		return files.getJavaFileObjectsFromFiles(asList(file));
-	}
 
 	private String getTypeName() {
 		return file.getName().substring(0, file.getName().lastIndexOf("."));
 	}
+	
+	public void compile() {
+		new SimpleJavaCompiler().compile(file);
+	}
 
 	public Class<?> getType() {
-		return this.type;
+		return loadType();
 	}
 
 	@SuppressWarnings("deprecation")
-	private Class<?> loadType(File classpath) {
+	private Class<?> loadType() {
+		String name = "templates" + packages + "." + getTypeName();
 		try {
 			ClassLoader parent = getClass().getClassLoader();
 			URL[] url = new URL[]{classpath.toURL()};
 			URLClassLoader loader = newInstance(url, parent);
-			return loader.loadClass("templates" + packages + "." + getTypeName());
-		} catch (IOException | ClassNotFoundException e) {
+			return loader.loadClass(name);
+		} catch (IOException e) {
 			throw new CompilationLoadException("Unable to compile", e);
+		} catch (ClassNotFoundException e) {
+			throw new CompilationLoadException("Unable to find class " + name + " at " + classpath, e);
 		}
 	}
 	public static String toString(Reader reader) {

@@ -43,6 +43,7 @@ public class Compiler {
 				Template template = new Template(reader);
 				String name = noExtension(nameFor(f));
 				CompiledTemplate compiled = new CompiledTemplate(to, name, imports, template.renderType());
+				compiled.compile();
 				types.put(compiled.getPackagedName(), compiled.getType());
 			} catch (IOException | CompilationLoadException | CompilationIOException e) {
 				exceptions.add(e);
@@ -50,7 +51,7 @@ public class Compiler {
 		}
 		return exceptions;
 	}
-
+	
 	private String nameFor(File f) {
 		String replaced = f.getAbsolutePath().replace(from.getAbsolutePath(), "");
 		if(replaced.startsWith("/")) return replaced.substring(1);
@@ -87,6 +88,11 @@ public class Compiler {
 
 	public void stop() {
 		watcher.stop();
+	}
+
+	public void compileAllOrError() {
+		List<Exception> exceptions = compileAll();
+		if(!exceptions.isEmpty()) throw new CompilationIOException(exceptions);
 	}
 
 }

@@ -60,7 +60,7 @@ public class CompilerTest {
 	public void testShouldCompileFile() {
 		Compiler compiler = new Compiler(sources, targets);
 		copy("oi.tone", "<html>Oi</html>");
-		compiler.compileAll();
+		compiler.compileAllOrError();
 		assertEquals("<html>Oi</html>", run(compiler.get("oi"),new Class[]{}));
 	}
 	
@@ -68,7 +68,7 @@ public class CompilerTest {
 	public void testShouldCompileFileInSubdirectory() {
 		Compiler compiler = new Compiler(sources, targets);
 		copy("tone/oi.tone", "<html>Oi</html>");
-		compiler.compileAll();
+		compiler.compileAllOrError();
 		assertEquals("<html>Oi</html>", run(compiler.get("tone.oi"),new Class[]{}));
 	}
 	
@@ -77,7 +77,7 @@ public class CompilerTest {
 		String importExpression = "br.com.caelum.vraptor.panettone.*";
 		Compiler compiler = new Compiler(sources, targets, Arrays.asList(importExpression));
 		copy("oi.tone", "<%@ User user %><html>Guilherme</html>");
-		compiler.compileAll();
+		compiler.compileAllOrError();
 		assertEquals("<html>Guilherme</html>", run(compiler.get("oi"),new Class[]{User.class}, new User("guilherme")));
 	}
 	
@@ -86,7 +86,7 @@ public class CompilerTest {
 		Compiler compiler = new Compiler(sources, targets);
 		copy("oi.tone", "<html>Oi</html>");
 		copy("welcome.tone", "<html>Welcome</html>");
-		compiler.compileAll();
+		compiler.compileAllOrError();
 		assertEquals("<html>Oi</html>", run(compiler.get("oi"),new Class[]{}));
 		assertEquals("<html>Welcome</html>", run(compiler.get("welcome"),new Class[]{}));
 	}
