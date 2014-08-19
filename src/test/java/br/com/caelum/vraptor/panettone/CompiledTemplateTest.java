@@ -1,5 +1,6 @@
 package br.com.caelum.vraptor.panettone;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
@@ -32,7 +33,7 @@ public class CompiledTemplateTest {
 		assertEquals(expected, tryToRun(template));
 	}
 	
-	private CompiledTemplate compile(String name, String imports, String content) {
+	private CompiledTemplate compile(String name, List<String> imports, String content) {
 		return new CompiledTemplate(dir, name, imports, new Template(content).renderType());
 	}
 	
@@ -50,7 +51,7 @@ public class CompiledTemplateTest {
 	
 	@Test
 	public void shouldSupportMethodInvocation() {
-		CompiledTemplate template = compile("interpolateObject", "<%@ br.com.caelum.vraptor.momofuku.User user %><html><%=user.getName()%></html>");
+		CompiledTemplate template = compile("interpolateObject", "<%@ br.com.caelum.vraptor.panettone.User user %><html><%=user.getName()%></html>");
 		
 		String expected = "<html>guilherme</html>";
 		assertEquals(expected, tryToRun(template, new Class[]{User.class}, new User("guilherme")));
@@ -58,15 +59,23 @@ public class CompiledTemplateTest {
 
 	@Test
 	public void shouldSupportImports() {
-		CompiledTemplate template = compile("interpolateObject", "import br.com.caelum.vraptor.momofuku.*;", "<%@ User user %><html><%=user.getName()%></html>");
+		CompiledTemplate template = compile("interpolateObject", asList("br.com.caelum.vraptor.panettone.*"), "<%@ User user %><html><%=user.getName()%></html>");
 		
 		String expected = "<html>guilherme</html>";
 		assertEquals(expected, tryToRun(template, new Class[]{User.class}, new User("guilherme")));
 	}
 
 	@Test
+	public void shouldSupportInheritanceFromDefaultTemplate() {
+		CompiledTemplate template = compile("interpolateObject", asList("br.com.caelum.vraptor.panettone.defaulted.*"), "<html><%=environment%></html>");
+		
+		String expected = "<html>production</html>";
+		assertEquals(expected, tryToRun(template, new Class[]{}));
+	}
+
+	@Test
 	public void shouldSupportLoop() {
-		CompiledTemplate template = compile("interpolateObject", "<%@ java.util.List<br.com.caelum.vraptor.momofuku.User> users %><html><%for(br.com.caelum.vraptor.momofuku.User user : users) {%><%=user.getName()%><%}%></html>");
+		CompiledTemplate template = compile("interpolateObject", "<%@ java.util.List<br.com.caelum.vraptor.panettone.User> users %><html><%for(br.com.caelum.vraptor.panettone.User user : users) {%><%=user.getName()%><%}%></html>");
 		
 		String expected = "<html>joaoguilherme</html>";
 		assertEquals(expected, tryToRun(template, new Class[]{List.class}, Arrays.asList(new User("joao"),new User("guilherme"))));
@@ -81,6 +90,7 @@ public class CompiledTemplateTest {
 	private String tryToRun(CompiledTemplate template) {
 		return tryToRun(template, new Class[]{});
 	}
+
 	private String tryToRun(CompiledTemplate template, Class<?>[] types, Object ... params) {
 		Class<?> type = template.getType();
 		return ReflectionHelper.run(type, types, params);

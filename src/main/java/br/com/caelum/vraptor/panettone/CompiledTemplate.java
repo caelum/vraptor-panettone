@@ -2,6 +2,7 @@ package br.com.caelum.vraptor.panettone;
 
 import static java.net.URLClassLoader.newInstance;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.joining;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +12,11 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
@@ -28,17 +33,19 @@ public class CompiledTemplate {
 	private final Class<?> type;
 
 	public CompiledTemplate(File dir, String name, String content) {
-		this(dir, name, "", content);
+		this(dir, name, new ArrayList<String>(), content);
 	}
-	public CompiledTemplate(File dir, String name, String imports, String content) {
+	public CompiledTemplate(File dir, String name, List<String> imports, String content) {
 		try {
 			File templates = new File(dir, "templates");
 			templates.mkdirs();
 			this.file = new File(templates, name + ".java");
 			String typeName = getTypeName();
+			String extension = baseClassFor(imports);
+			String importString = importStatementsFor(imports);
 			String main = "package templates;\n\n" + 
-							imports + (imports.isEmpty()?"": "\n\n")+
-							"public class " + typeName + " {\n" +
+							importString +
+							"public class " + typeName + " " + extension + " {\n" +
 							"private final java.io.PrintWriter out;\n" +
 							"public " + typeName + "(java.io.PrintWriter out) { this.out = out; }\n" +
 							content +
@@ -58,13 +65,40 @@ public class CompiledTemplate {
 			    	   		builder.append(String.format("Error on line %d in %s%n",
 			    				   diagnostic.getLineNumber(),
 			    				   diagnostic.getSource().toString()));
-			    	   	throw new CompilationIOException("Compilation error: "+ out.getBuffer().toString() + " ==> " + builder.toString());
+			    	   	throw new CompilationIOException("Compilation error: "+ out.getBuffer().toString() + " ==> " + builder.toString() + " // " + main);
 		       }
 	       }
 	       this.type = loadType();
 		} catch (IOException e) {
 			throw new CompilationIOException("Unable to compile", e);
 		}
+	}
+	private String baseClassFor(List<String> imports) {
+		Stream<String> nonStatics = imports.stream().filter(p -> !p.startsWith("static"));
+		Stream<String> defaultsOrWholePackages = nonStatics
+						.filter(p -> p.endsWith(".DefaultTemplate") || p.endsWith(".*"));
+		Stream<String> defaultTemplates = defaultsOrWholePackages
+						.map(p -> p.endsWith(".*") ? p.replace(".*", ".DefaultTemplate") : p);
+		
+		Stream<String> existing = defaultTemplates
+						.filter(this::existsType);
+		Optional<String> found = existing
+						.map(p -> " extends " + p + " ")
+						.findFirst();
+		return found.orElse("");
+	}
+	private boolean existsType(String type) {
+		try {
+			Class.forName(type);
+			return true;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+	}
+	private String importStatementsFor(List<String> imports) {
+		if (imports.isEmpty())
+			return "";
+		return imports.stream().map(s -> "import " + s + ";\n").collect(joining()) + "\n";
 	}
 	private Iterable<? extends JavaFileObject> unitsFor(
 			StandardJavaFileManager files) {

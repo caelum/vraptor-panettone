@@ -22,6 +22,7 @@ public class Template {
 		StringBuilder builder = new StringBuilder();
 		List<String> variables = new ArrayList<>();
 		List<String> methods = new ArrayList<>();
+		
 		while (position < content.length()) {
 			int next = content.indexOf("<%", position);
 			if (next == -1) {

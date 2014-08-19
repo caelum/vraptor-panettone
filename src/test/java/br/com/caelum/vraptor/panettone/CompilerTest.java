@@ -63,6 +63,15 @@ public class CompilerTest {
 	}
 	
 	@Test
+	public void testShouldAutoImportFileInDirectory() {
+		String importExpression = "import br.com.caelum.vraptor.panettone.*;";
+		Compiler compiler = new Compiler(sources, targets, importExpression);
+		copy("oi.tone", "<%@ User user %><html>Guilherme</html>");
+		compiler.compileAll();
+		assertEquals("<html>Guilherme</html>", run(compiler.get("oi.tone"),new Class[]{User.class}, new User("guilherme")));
+	}
+	
+	@Test
 	public void testShouldCompileFilesInDirectory() {
 		Compiler compiler = new Compiler(sources, targets);
 		copy("oi.tone", "<html>Oi</html>");
