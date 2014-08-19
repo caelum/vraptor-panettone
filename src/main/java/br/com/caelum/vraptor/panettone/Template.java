@@ -27,12 +27,12 @@ public class Template {
 			int next = content.indexOf("<%", position);
 			if (next == -1) {
 				String part = content.substring(position);
-				builder.append("out.write(\"" + part + "\");\n");
+				builder.append("out.write(\"" + escapeQuotes(part) + "\");\n");
 				position = content.length();
 			} else {
 				if (position != next) {
 					String part = content.substring(position, next);
-					builder.append("out.write(\"" + part + "\");\n");
+					builder.append("out.write(\"" + escapeQuotes(part) + "\");\n");
 				}
 
 				// BUG: a random %> in the middle of some java code
@@ -61,6 +61,10 @@ public class Template {
 		String render = "public void render(" + parameters + ") {\n" + builder.toString() + "}\n";
 		String result = methodCode + render;
 		return result;
+	}
+
+	private String escapeQuotes(String content) {
+		return content.replace("\"", "\\\"");
 	}
 
 	public class InvalidTemplate extends RuntimeException {

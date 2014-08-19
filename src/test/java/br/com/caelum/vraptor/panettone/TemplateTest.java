@@ -15,6 +15,20 @@ public class TemplateTest {
 		assertEquals(expected, result);
 	}
 
+	@Test
+	public void shouldSupportLineBreak() {
+		String expected = emptyRun("out.write(\"<html>Oi</html>\");\n");
+		String result = new Template("<html>Oi</html>").renderType();
+		assertEquals(expected, result);
+	}
+
+	@Test
+	public void shouldSupportQuotes() {
+		String expected = emptyRun("out.write(\"<html>\\\"Oi\\\"</html>\");\n");
+		String result = new Template("<html>\"Oi\"</html>").renderType();
+		assertEquals(expected, result);
+	}
+
 	private String emptyRun(String msg) {
 		return "public void render() {\n" + msg+"}\n";
 	}
