@@ -96,7 +96,9 @@ public class Compiler {
 	}
 
 	public void watch() {
-		new Thread(watcher).start();
+		Thread t = new Thread(watcher);
+		t.setDaemon(true);
+		t.start();
 	}
 
 	public void stop() {

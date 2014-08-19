@@ -120,6 +120,29 @@ full.tone:
 <html><% new templates.partial(out).render(); %></html>
 ```
 
+# Default values
+
+You can define a variable with a default value by simply initializing it:
+
+```
+<%@ String message = "hello" %>
+```
+
+Each default variable must be defined in its own context:
+
+```
+<%@ User user %>
+<%@ String message = "hello" %>
+```
+
+Only one method will be generated: `render(User user, String message)` and within its body there will be a default check:
+
+```
+if(message==null) message = "hello";
+```
+
+Be careful with default variables hell, as with any other language.
+
 # API Levels
 
 3 - you will probably use this
@@ -141,7 +164,6 @@ To build a jar SNAPSHOT run `mvn package`.
 - bug watcher is only running once
 - vraptor4 support CompiledTemplate return (generate example at src/extras)
 - vraptor3 support CompiledTemplate return (generate example at src/extras)
-- support default parameters
 - auto-reload com o classloader separado
 - docs
 	vantagens

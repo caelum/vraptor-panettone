@@ -51,9 +51,10 @@ public class SimpleJavaCompiler {
 			StringWriter out) {
 		StringBuilder builder = new StringBuilder();
 		for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
-			builder.append(String.format("Error '%s' on line %d in %s%n",
+			String fullMessage = String.format("Error '%s' on line %d in %s%n",
 					diagnostic.getMessage(null), diagnostic.getLineNumber(),
-					diagnostic.getSource().toString()));
+					diagnostic.getSource().toString());
+			builder.append(fullMessage);
 		}
 		throw new CompilationIOException("Compilation error: "
 				+ out.getBuffer().toString() + " ==> " + builder.toString());

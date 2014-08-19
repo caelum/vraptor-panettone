@@ -1,9 +1,13 @@
 package br.com.caelum.vraptor.panettone;
 
+import static java.lang.String.format;
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Template {
@@ -47,7 +51,18 @@ public class Template {
 				} else if(evaluation.startsWith("--")){
 					// comments
 				} else if(evaluation.startsWith("@")){
-					variables.add(evaluation.substring(1));
+					String variableFull = evaluation.substring(1);
+					int equalsPosition = variableFull.indexOf("=");
+					if(equalsPosition==-1) {
+						variables.add(variableFull);
+					} else {
+						String definition = variableFull.substring(0, equalsPosition);
+						variables.add(definition);
+						
+						String name = new LinkedList<String>(asList(definition.split("\\s+"))).getLast();
+						String value = variableFull.substring(equalsPosition + 1);
+						builder.append(format("if(%s == null) %s = %s;\n", name, name, value));
+					}
 				} else if(evaluation.startsWith("$")){
 					methods.add(evaluation.substring(1) + "\n");
 				} else {

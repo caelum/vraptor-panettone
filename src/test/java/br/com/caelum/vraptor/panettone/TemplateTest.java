@@ -48,6 +48,13 @@ public class TemplateTest {
 	}
 
 	@Test
+	public void shouldAddDefaultVariables() {
+		String expected = "public void render( String mensagem ) {\nif(mensagem == null) mensagem =  \"hello\" ;\nout.write(\"<html>\");\nout.write(mensagem);\nout.write(\"</html>\");\n}\n";
+		String result = new Template("<%@ String mensagem = \"hello\" %><html><%=mensagem%></html>").renderType();
+		assertEquals(expected, result);
+	}
+
+	@Test
 	public void shouldSupportMethodInvocation() {
 		String expected = emptyRun("out.write(\"<html>\");\nout.write(user.getName());\nout.write(\"</html>\");\n");
 		String result = new Template("<html><%=user.getName()%></html>").renderType();

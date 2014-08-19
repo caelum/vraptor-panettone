@@ -25,7 +25,7 @@ public class VRaptorCompiler {
 	public void compileAll() {
 		List<Exception> exceptions = compiler.compileAll();
 		for(Exception ex : exceptions) {
-			ex.printStackTrace();
+			System.out.println(ex.getMessage());
 		}
 	}
 

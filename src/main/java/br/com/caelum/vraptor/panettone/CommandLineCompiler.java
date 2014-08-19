@@ -21,6 +21,7 @@ public class CommandLineCompiler {
 			System.out.println("Compiler up and running, hit ENTER to stop...");
 			System.in.read();
 			compiler.stop();
+			System.out.println("Finishing the auto compiler");
 		}
 	}
 
