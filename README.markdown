@@ -106,6 +106,20 @@ public class DefaultTemplate {
 
 If the compiled template finds multiple classes called `DefaultTemplate` in the auto imported packages, it will extends one of them, you don't know which one.
 
+# Invoking another template
+
+Feel free to include another template in any part of your template:
+
+partial.tone:
+```
+<body>Hello</body>
+```
+
+full.tone:
+```
+<html><% new templates.partial(out).render(); %></html>
+```
+
 # API Levels
 
 3 - you will probably use this
