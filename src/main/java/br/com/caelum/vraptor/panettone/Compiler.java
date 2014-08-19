@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 
 public class Compiler {
 
+	private static final String EXTENSION = ".tone";
 	private final File from;
 	private final File to;
 	private final Map<String, Class<?>> types = new HashMap<>();
@@ -23,16 +24,20 @@ public class Compiler {
 	public Compiler(File from, File to) {
 		this(from, to, new ArrayList<String>());
 	}
+	
 	public Compiler(File from, File to, List<String> imports) {
 		this.from = from;
 		this.to = to;
 		this.imports = imports;
+		from.mkdirs();
+		to.mkdirs();
 		this.watcher = new Watcher(from.toPath(), this);
 	}
 
 	public void compileAll() {
 		List<File> files = stream(from.listFiles())
 			.filter(matchesExtension()).collect(toList());
+		System.out.println("Compiling " + files.size() + " files.");
 		List<Exception> exceptions = new ArrayList<>();
 		for(File f : files) {
 			try(FileReader reader = new FileReader(f)) {
@@ -54,7 +59,7 @@ public class Compiler {
 	}
 
 	private Predicate<? super File> matchesExtension() {
-		return f -> f.getName().endsWith(".tone");
+		return f -> f.getName().endsWith(EXTENSION);
 	}
 
 	public Class<?> get(String type) {
