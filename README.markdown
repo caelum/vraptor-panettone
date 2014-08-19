@@ -1,17 +1,20 @@
 ## vraptor-panettone
 
-# API Levels
+VRaptor Panettone is a type safe template language written in Java:
 
-3 - you will probably use this
-2 - Compiling Templates by hand
-1 - Rendering types
+```
+<%@ String message %>
+<html>
+<h1><%= message %></h1>
+</html>
+```
 
 # VRaptor-Panettone API - high level API
 
 Run in your command line:
 
 ```
-java -jar vraptor-panettone-version.jar --watch br.com.caelum.vraptor.mymodelpackage 
+java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar --watch br.com.caelum.vraptor.mymodelpackage 
 ```
 
 Create your source panettone file at `src/main/templates`, such as `hello.tone`.
@@ -30,15 +33,14 @@ As soon as you save your file, there should be a new file at `target/view-classe
 Compile your templates once:
 
 ```
-java -jar vraptor-panettone-version.jar br.com.caelum.vraptor.mymodelpackage 
+java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar br.com.caelum.vraptor.mymodelpackage 
 ```
 
 Keep watching for changes:
 
 ```
-java -jar vraptor-panettone-version.jar --watch br.com.caelum.vraptor.mymodelpackage 
+java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar --watch br.com.caelum.vraptor.mymodelpackage 
 ```
-
 
 # Defaults
 It will look at the directories X, Y for classes and jars
@@ -53,7 +55,7 @@ It will look at the directories X, Y for classes and jars
 		<pathelement location="src/main/webapp/WEB-INF/classes" />
 	</path>
 	<target name="compile-views">
-		<java jar="lib/local/vraptor-panettone-1.0.1.jar" classpathref="running.path.id">
+		<java jar="lib/local/vraptor-panettone-0.9.0-SNAPSHOT.jar" classpathref="running.path.id">
 			<arg>br.com.caelum.myproject.model.*</arg>
 			<arg>br.com.caelum.myproject.model.course.*</arg>
 		</java>
@@ -104,6 +106,12 @@ public class DefaultTemplate {
 
 If the compiled template finds multiple classes called `DefaultTemplate` in the auto imported packages, it will extends one of them, you don't know which one.
 
+# API Levels
+
+3 - you will probably use this
+2 - Compiling Templates by hand
+1 - Rendering types
+
 # CompiledTemplate - middle level API
 
 # Template API - low level API
@@ -111,11 +119,15 @@ If the compiled template finds multiple classes called `DefaultTemplate` in the 
 Use the Template Class to instantiate and render the string of a compatible Java method to what you want to render.
 Use this String as you wish. 
 
+# Development
+
+To build a jar SNAPSHOT run `mvn package`.
+
 # TODO
-- "mvn package" neste projeto aqui gera o jar ja com a classe CommanLineCompiler para ser rodado na mao automatico
 - usar no gnarus em um branch
+- vraptor4 support CompiledTemplate return (generate example at src/extras)
+- vraptor3 support CompiledTemplate return (generate example at src/extras)
 - auto-reload com o classloader separado
-- permitir que o vraptor retorne CompiledTemplate e esse compiled template ja resolva
 - docs
 	vantagens
 	- a mesma que a deles https://www.playframework.com/documentation/2.3.x/ScalaTemplates
