@@ -54,7 +54,10 @@ public class Watcher implements Runnable {
 					if(ENTRY_DELETE == kind) {
 					}
 				}
-				if(key.reset()) break;
+				if(key.reset()) {
+					System.out.println("Stop watching due to break");
+					break;
+				}
 			} catch (InterruptedException e) {
 				// timedout
 			}

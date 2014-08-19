@@ -124,9 +124,11 @@ Use this String as you wish.
 To build a jar SNAPSHOT run `mvn package`.
 
 # TODO
-- usar no gnarus em um branch
+- support compile everything at once so one template can invoke the other
+- bug watcher is only running once
 - vraptor4 support CompiledTemplate return (generate example at src/extras)
 - vraptor3 support CompiledTemplate return (generate example at src/extras)
+- support default parameters
 - auto-reload com o classloader separado
 - docs
 	vantagens

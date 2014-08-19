@@ -65,7 +65,8 @@ public class Template {
 	private void linePrint(StringBuilder builder, String parts) {
 		String[] allParts = parts.split("\n");
 		for(int i=0;i<allParts.length;i++) {
-			String part = allParts[i];
+			String part = allParts[i].trim();
+			if(part.isEmpty()) continue;
 			String slash = i == allParts.length-1 ? "" : "\\n";
 			builder.append("out.write(\"" + escapeQuotes(part) + slash + "\");\n");
 		}
