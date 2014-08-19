@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Compiler {
 
@@ -38,15 +39,27 @@ public class Compiler {
 		List<File> files = tonesAt(from);
 		System.out.println("Compiling " + files.size() + " files: " + files);
 		List<Exception> exceptions = new ArrayList<>();
+		List<CompiledTemplate> toCompile = new ArrayList<>();
 		for(File f : files) {
 			try(FileReader reader = new FileReader(f)) {
 				Template template = new Template(reader);
 				String name = noExtension(nameFor(f));
 				CompiledTemplate compiled = new CompiledTemplate(to, name, imports, template.renderType());
-				compiled.compile();
-				types.put(compiled.getPackagedName(), compiled.getType());
+				toCompile.add(compiled);
 			} catch (IOException | CompilationLoadException | CompilationIOException e) {
 				exceptions.add(e);
+			}
+		}
+		SimpleJavaCompiler compiler = new SimpleJavaCompiler(to);
+		Stream<File> filesToCompile = toCompile.stream().map(CompiledTemplate::getFile);
+		try {
+			compiler.compile(filesToCompile);
+		} catch (CompilationLoadException | CompilationIOException e) {
+			exceptions.add(e);
+		}
+		if(exceptions.isEmpty()) {
+			for(CompiledTemplate template : toCompile) {
+				types.put(template.getPackagedName(), compiler.load(template));
 			}
 		}
 		return exceptions;

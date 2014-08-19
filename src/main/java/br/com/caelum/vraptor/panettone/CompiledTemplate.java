@@ -24,14 +24,14 @@ public class CompiledTemplate {
 	private final File file;
 	private final String packages;
 	private final String sourceCode;
-	private final File classpath;
+	private final File classPath;
 
 	public CompiledTemplate(File classpath, String name, String content) {
 		this(classpath, name, new ArrayList<String>(), content);
 	}
 	public CompiledTemplate(File classpath, String name, List<String> imports, String content) {
 		try {
-			this.classpath = classpath;
+			this.classPath = classpath;
 			File templates = new File(classpath, "templates");
 			String javaName = name + ".java";
 			this.file = new File(templates, javaName);
@@ -88,28 +88,33 @@ public class CompiledTemplate {
 		return file.getName().substring(0, file.getName().lastIndexOf("."));
 	}
 	
-	public void compile() {
-		new SimpleJavaCompiler().compile(file);
+	public CompiledTemplate compile() {
+		new SimpleJavaCompiler(classPath).compile(file);
+		return this;
 	}
 
-	public Class<?> getType() {
-		return loadType();
+	public Class<?> getTypeFromNewClassLoader() {
+		return loadType(this.classPath);
 	}
 
 	@SuppressWarnings("deprecation")
-	private Class<?> loadType() {
-		String name = "templates" + packages + "." + getTypeName();
+	Class<?> loadType(File classPath) {
 		try {
 			ClassLoader parent = getClass().getClassLoader();
-			URL[] url = new URL[]{classpath.toURL()};
+			URL[] url = new URL[]{classPath.toURL()};
 			URLClassLoader loader = newInstance(url, parent);
-			return loader.loadClass(name);
+			return loader.loadClass(getFullName());
 		} catch (IOException e) {
 			throw new CompilationLoadException("Unable to compile", e);
 		} catch (ClassNotFoundException e) {
-			throw new CompilationLoadException("Unable to find class " + name + " at " + classpath, e);
+			throw new CompilationLoadException("Unable to find class " + getFullName() + " at " + classPath, e);
 		}
 	}
+	
+	private String getFullName() {
+		return "templates" + packages + "." + getTypeName();
+	}
+	
 	public static String toString(Reader reader) {
 		try(Scanner scanner = new Scanner(reader)) {
 			return readAll(scanner);
@@ -132,5 +137,9 @@ public class CompiledTemplate {
 		String noExtension = file.getName().replace(".java", "");
 		if(packages.isEmpty()) return noExtension;
 		return packages.substring(1) + "." + noExtension;
+	}
+	
+	public File getFile() {
+		return file;
 	}
 }

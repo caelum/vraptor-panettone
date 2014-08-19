@@ -34,11 +34,11 @@ public class CompiledTemplateTest {
 	}
 	
 	private CompiledTemplate compile(String name, List<String> imports, String content) {
-		return new CompiledTemplate(dir, name, imports, new Template(content).renderType());
+		return new CompiledTemplate(dir, name, imports, new Template(content).renderType()).compile();
 	}
 	
 	private CompiledTemplate compile(String name, String content) {
-		return new CompiledTemplate(dir, name, new Template(content).renderType());
+		return new CompiledTemplate(dir, name, new Template(content).renderType()).compile();
 	}
 	
 	@Test
@@ -92,7 +92,7 @@ public class CompiledTemplateTest {
 	}
 
 	private String tryToRun(CompiledTemplate template, Class<?>[] types, Object ... params) {
-		Class<?> type = template.getType();
+		Class<?> type = template.getTypeFromNewClassLoader();
 		return ReflectionHelper.run(type, types, params);
 	}
 	

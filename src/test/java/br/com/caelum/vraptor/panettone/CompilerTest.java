@@ -8,9 +8,11 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.junit.After;
 import org.junit.Before;
@@ -41,19 +43,24 @@ public class CompilerTest {
 	}
 
 	private void clear(File dir) {
-		Optional<File> internalDir = stream(dir.listFiles()).filter(File::isDirectory)
-					.filter(f->!f.getName().equals("templates"))
-					.filter(f->!f.getName().equals("tone"))
-					.findFirst();
-		internalDir.ifPresent(
-				(f) -> {
-					throw new RuntimeException(
+		try {
+			List<String> internalDirs = Files.list(dir.toPath())
+						.map(Path::toFile)
+						.filter(File::isDirectory)
+						.map(File::getName)
+						.collect(Collectors.toList());
+			internalDirs.remove("templates");
+			internalDirs.remove("tone");
+			if(!internalDirs.isEmpty()) {
+				throw new RuntimeException(
 						"I will not delete if there is recurssion, is there a problem here? @"
-								+ f.getAbsolutePath());
-				}
-		);
-		stream(dir.listFiles()).filter(File::isDirectory).forEach(this::clear);
-		stream(dir.listFiles()).forEach(File::delete);
+									+ internalDirs);
+			}
+			stream(dir.listFiles()).filter(File::isDirectory).forEach(this::clear);
+			stream(dir.listFiles()).forEach(File::delete);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Test
@@ -92,13 +99,12 @@ public class CompilerTest {
 	}
 
 	@Test
-	public void testShouldCompileIfOneHasError() {
+	public void testShouldIgnoreExceptions() {
 		Compiler compiler = new Compiler(sources, targets);
 		copy("oi.tone", "<html>Oi<% for a %></html>");
 		copy("welcomeUnique.tone", "<html>Welcome</html>");
 		List<Exception> exceptions = compiler.compileAll();
 		assertEquals(1, exceptions.size());
-		assertEquals("<html>Welcome</html>", run(compiler.get("welcomeUnique"), new Class[]{}));
 	}
 
 	@Test

@@ -124,7 +124,6 @@ Use this String as you wish.
 To build a jar SNAPSHOT run `mvn package`.
 
 # TODO
-- support compile everything at once so one template can invoke the other
 - bug watcher is only running once
 - vraptor4 support CompiledTemplate return (generate example at src/extras)
 - vraptor3 support CompiledTemplate return (generate example at src/extras)
@@ -136,6 +135,7 @@ To build a jar SNAPSHOT run `mvn package`.
 	- pq java? mensagens de erro iguais que as deles. todas as vantagens da linguagem
 	- pq <%%> ao inves de ${}? ao inves de @?
 - o compiler ser chamado em build via maven para packagear (maven plugin)
+- improve compilation because there is a Compiler <-> SimpleJavaCompiler <-> CompiledTemplate reference now
 - body com lambda
 <% template2(usuario, () -> { %>
 

@@ -1,10 +1,13 @@
 package br.com.caelum.vraptor.panettone;
 
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
@@ -14,6 +17,12 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
 public class SimpleJavaCompiler {
+	
+	private final File classPath;
+
+	SimpleJavaCompiler(File classPath) {
+		this.classPath = classPath;
+	}
 
 	public void compile(List<File> toCompile) {
 
@@ -49,7 +58,15 @@ public class SimpleJavaCompiler {
 	}
 
 	public void compile(File... files) {
-		compile(Arrays.asList(files));
+		compile(asList(files));
+	}
+
+	public void compile(Stream<File> files) {
+		compile(files.collect(toList()));
+	}
+
+	public Class<?> load(CompiledTemplate template) {
+		return template.loadType(classPath);
 	}
 
 }
