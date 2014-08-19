@@ -27,12 +27,12 @@ public class Template {
 			int next = content.indexOf("<%", position);
 			if (next == -1) {
 				String part = content.substring(position);
-				builder.append("out.write(\"" + escapeQuotes(part) + "\");\n");
+				linePrint(builder, part);
 				position = content.length();
 			} else {
 				if (position != next) {
 					String part = content.substring(position, next);
-					builder.append("out.write(\"" + escapeQuotes(part) + "\");\n");
+					linePrint(builder, part);
 				}
 
 				// BUG: a random %> in the middle of some java code
@@ -61,6 +61,14 @@ public class Template {
 		String render = "public void render(" + parameters + ") {\n" + builder.toString() + "}\n";
 		String result = methodCode + render;
 		return result;
+	}
+	private void linePrint(StringBuilder builder, String parts) {
+		String[] allParts = parts.split("\n");
+		for(int i=0;i<allParts.length;i++) {
+			String part = allParts[i];
+			String slash = i == allParts.length-1 ? "" : "\\n";
+			builder.append("out.write(\"" + escapeQuotes(part) + slash + "\");\n");
+		}
 	}
 
 	private String escapeQuotes(String content) {

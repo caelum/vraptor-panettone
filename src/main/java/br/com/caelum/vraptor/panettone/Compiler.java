@@ -1,6 +1,5 @@
 package br.com.caelum.vraptor.panettone;
 
-import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
 import java.io.File;
@@ -12,13 +11,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Compiler {
 
-	private static final String EXTENSION = ".tone";
 	private final File from;
 	private final File to;
 	private final Map<String, Class<?>> types = new HashMap<>();
@@ -38,7 +34,7 @@ public class Compiler {
 		this.watcher = new Watcher(from.toPath(), this);
 	}
 
-	public void compileAll() {
+	public List<Exception> compileAll() {
 		List<File> files = tonesAt(from);
 		System.out.println("Compiling " + files.size() + " files: " + files);
 		List<Exception> exceptions = new ArrayList<>();
@@ -52,9 +48,7 @@ public class Compiler {
 				exceptions.add(e);
 			}
 		}
-		if(!exceptions.isEmpty()) {
-			throw new CompilationIOException(exceptions);
-		}
+		return exceptions;
 	}
 
 	private String nameFor(File f) {
@@ -78,10 +72,6 @@ public class Compiler {
 
 	private String noExtension(String name) {
 		return name.substring(0, name.lastIndexOf("."));
-	}
-
-	private Predicate<? super File> matchesExtension() {
-		return f -> f.getName().endsWith(EXTENSION);
 	}
 
 	public Class<?> get(String type) {

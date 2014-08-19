@@ -4,12 +4,12 @@ import static br.com.caelum.vraptor.panettone.ReflectionHelper.run;
 import static com.google.common.io.Files.write;
 import static java.util.Arrays.stream;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.After;
@@ -96,12 +96,8 @@ public class CompilerTest {
 		Compiler compiler = new Compiler(sources, targets);
 		copy("oi.tone", "<html>Oi<% for a %></html>");
 		copy("welcomeUnique.tone", "<html>Welcome</html>");
-		try {
-			compiler.compileAll();
-			fail("Should have complained about compilation error");
-		} catch (CompilationIOException ex) {
-			// expected
-		}
+		List<Exception> exceptions = compiler.compileAll();
+		assertEquals(1, exceptions.size());
 		assertEquals("<html>Welcome</html>", run(compiler.get("welcomeUnique"), new Class[]{}));
 	}
 

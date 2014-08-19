@@ -17,8 +17,8 @@ public class TemplateTest {
 
 	@Test
 	public void shouldSupportLineBreak() {
-		String expected = emptyRun("out.write(\"<html>Oi</html>\");\n");
-		String result = new Template("<html>Oi</html>").renderType();
+		String expected = emptyRun("out.write(\"<html>\\n\");\nout.write(\"Oi</html>\");\n");
+		String result = new Template("<html>\nOi</html>").renderType();
 		assertEquals(expected, result);
 	}
 
