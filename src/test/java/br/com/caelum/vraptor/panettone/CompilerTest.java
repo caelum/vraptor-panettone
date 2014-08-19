@@ -9,14 +9,12 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import br.com.caelum.vraptor.panettone.CompilationIOException;
-import br.com.caelum.vraptor.panettone.Compiler;
 
 public class CompilerTest {
 
@@ -64,8 +62,8 @@ public class CompilerTest {
 	
 	@Test
 	public void testShouldAutoImportFileInDirectory() {
-		String importExpression = "import br.com.caelum.vraptor.panettone.*;";
-		Compiler compiler = new Compiler(sources, targets, importExpression);
+		String importExpression = "br.com.caelum.vraptor.panettone.*";
+		Compiler compiler = new Compiler(sources, targets, Arrays.asList(importExpression));
 		copy("oi.tone", "<%@ User user %><html>Guilherme</html>");
 		compiler.compileAll();
 		assertEquals("<html>Guilherme</html>", run(compiler.get("oi.tone"),new Class[]{User.class}, new User("guilherme")));
