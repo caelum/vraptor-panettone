@@ -17,7 +17,7 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
 public class SimpleJavaCompiler {
-	
+
 	private final File classPath;
 
 	SimpleJavaCompiler(File classPath) {
@@ -50,9 +50,11 @@ public class SimpleJavaCompiler {
 	private void parseErrors(DiagnosticCollector<JavaFileObject> diagnostics,
 			StringWriter out) {
 		StringBuilder builder = new StringBuilder();
-		for (Diagnostic diagnostic : diagnostics.getDiagnostics())
-			builder.append(String.format("Error on line %d in %s%n", diagnostic
-					.getLineNumber(), diagnostic.getSource().toString()));
+		for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
+			builder.append(String.format("Error '%s' on line %d in %s%n",
+					diagnostic.getMessage(null), diagnostic.getLineNumber(),
+					diagnostic.getSource().toString()));
+		}
 		throw new CompilationIOException("Compilation error: "
 				+ out.getBuffer().toString() + " ==> " + builder.toString());
 	}

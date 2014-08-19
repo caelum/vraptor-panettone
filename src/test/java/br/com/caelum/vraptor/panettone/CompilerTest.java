@@ -99,6 +99,16 @@ public class CompilerTest {
 	}
 
 	@Test
+	public void testAllowCrossReference() {
+		Compiler compiler = new Compiler(sources, targets);
+		copy("oi.tone", "<body>Oi</body>");
+		copy("welcome.tone", "<html><% new templates.oi(out).render(); %></html>");
+		compiler.compileAllOrError();
+		assertEquals("<body>Oi</body>", run(compiler.get("oi"),new Class[]{}));
+		assertEquals("<html><body>Oi</body></html>", run(compiler.get("welcome"),new Class[]{}));
+	}
+
+	@Test
 	public void testShouldIgnoreExceptions() {
 		Compiler compiler = new Compiler(sources, targets);
 		copy("oi.tone", "<html>Oi<% for a %></html>");

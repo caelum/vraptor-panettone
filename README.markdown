@@ -136,6 +136,7 @@ To build a jar SNAPSHOT run `mvn package`.
 	- pq <%%> ao inves de ${}? ao inves de @?
 - o compiler ser chamado em build via maven para packagear (maven plugin)
 - improve compilation because there is a Compiler <-> SimpleJavaCompiler <-> CompiledTemplate reference now
+- show code on compilation error
 - body com lambda
 <% template2(usuario, () -> { %>
 
