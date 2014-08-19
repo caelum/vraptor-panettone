@@ -18,8 +18,8 @@ import org.junit.Test;
 
 public class CompilerTest {
 
-	File sources = new File("target/tmp/sources");
-	File targets = new File("target/tmp/results");
+	private File sources = new File("target/tmp/sources");
+	private File targets = new File("target/tmp/results");
 
 	@Before
 	public void before() {
@@ -41,7 +41,10 @@ public class CompilerTest {
 	}
 
 	private void clear(File dir) {
-		Optional<File> internalDir = stream(dir.listFiles()).filter(File::isDirectory).filter(f->!f.getName().equals("templates")).findFirst();
+		Optional<File> internalDir = stream(dir.listFiles()).filter(File::isDirectory)
+					.filter(f->!f.getName().equals("templates"))
+					.filter(f->!f.getName().equals("tone"))
+					.findFirst();
 		internalDir.ifPresent(
 				(f) -> {
 					throw new RuntimeException(
@@ -49,15 +52,24 @@ public class CompilerTest {
 								+ f.getAbsolutePath());
 				}
 		);
+		stream(dir.listFiles()).filter(File::isDirectory).forEach(this::clear);
 		stream(dir.listFiles()).forEach(File::delete);
 	}
 
 	@Test
-	public void testShouldCompileFileInDirectory() {
+	public void testShouldCompileFile() {
 		Compiler compiler = new Compiler(sources, targets);
 		copy("oi.tone", "<html>Oi</html>");
 		compiler.compileAll();
-		assertEquals("<html>Oi</html>", run(compiler.get("oi.tone"),new Class[]{}));
+		assertEquals("<html>Oi</html>", run(compiler.get("oi"),new Class[]{}));
+	}
+	
+	@Test
+	public void testShouldCompileFileInSubdirectory() {
+		Compiler compiler = new Compiler(sources, targets);
+		copy("tone/oi.tone", "<html>Oi</html>");
+		compiler.compileAll();
+		assertEquals("<html>Oi</html>", run(compiler.get("tone.oi"),new Class[]{}));
 	}
 	
 	@Test
@@ -66,7 +78,7 @@ public class CompilerTest {
 		Compiler compiler = new Compiler(sources, targets, Arrays.asList(importExpression));
 		copy("oi.tone", "<%@ User user %><html>Guilherme</html>");
 		compiler.compileAll();
-		assertEquals("<html>Guilherme</html>", run(compiler.get("oi.tone"),new Class[]{User.class}, new User("guilherme")));
+		assertEquals("<html>Guilherme</html>", run(compiler.get("oi"),new Class[]{User.class}, new User("guilherme")));
 	}
 	
 	@Test
@@ -75,8 +87,8 @@ public class CompilerTest {
 		copy("oi.tone", "<html>Oi</html>");
 		copy("welcome.tone", "<html>Welcome</html>");
 		compiler.compileAll();
-		assertEquals("<html>Oi</html>", run(compiler.get("oi.tone"),new Class[]{}));
-		assertEquals("<html>Welcome</html>", run(compiler.get("welcome.tone"),new Class[]{}));
+		assertEquals("<html>Oi</html>", run(compiler.get("oi"),new Class[]{}));
+		assertEquals("<html>Welcome</html>", run(compiler.get("welcome"),new Class[]{}));
 	}
 
 	@Test
@@ -90,7 +102,7 @@ public class CompilerTest {
 		} catch (CompilationIOException ex) {
 			// expected
 		}
-		assertEquals("<html>Welcome</html>", run(compiler.get("welcomeUnique.tone"), new Class[]{}));
+		assertEquals("<html>Welcome</html>", run(compiler.get("welcomeUnique"), new Class[]{}));
 	}
 
 	@Test
@@ -105,7 +117,7 @@ public class CompilerTest {
 			// nothing
 		}		
 		try {
-			assertEquals("<html>Oi</html>", run(compiler.get("oiWatch.tone"),new Class[]{}));
+			assertEquals("<html>Oi</html>", run(compiler.get("oiWatch"),new Class[]{}));
 		} finally {
 			compiler.stop();
 		}
@@ -113,7 +125,9 @@ public class CompilerTest {
 
 	private void copy(String fileName, String content) {
 		try {
-			write(content, new File(sources, fileName), Charset.forName("UTF-8"));
+			File file = new File(sources, fileName);
+			file.getParentFile().mkdirs();
+			write(content, file, Charset.forName("UTF-8"));
 		} catch (IOException e) {
 			throw new RuntimeException("Unexpected exception ", e);
 		}

@@ -2,6 +2,7 @@ package br.com.caelum.vraptor.panettone;
 
 import static java.net.URLClassLoader.newInstance;
 import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 
 import java.io.File;
@@ -31,19 +32,25 @@ public class CompiledTemplate {
 
 	private final File file;
 	private final Class<?> type;
+	private final String packages;
 
-	public CompiledTemplate(File dir, String name, String content) {
-		this(dir, name, new ArrayList<String>(), content);
+	public CompiledTemplate(File classpath, String name, String content) {
+		this(classpath, name, new ArrayList<String>(), content);
 	}
-	public CompiledTemplate(File dir, String name, List<String> imports, String content) {
+	public CompiledTemplate(File classpath, String name, List<String> imports, String content) {
 		try {
-			File templates = new File(dir, "templates");
-			templates.mkdirs();
-			this.file = new File(templates, name + ".java");
+			File templates = new File(classpath, "templates");
+			String javaName = name + ".java";
+			this.file = new File(templates, javaName);
+			this.packages = stream(javaName.split("/"))
+				.filter(f -> !f.endsWith(".java"))
+				.map(packageName -> "." + packageName)
+				.collect(joining());
+			file.getParentFile().mkdirs();
 			String typeName = getTypeName();
 			String extension = baseClassFor(imports);
 			String importString = importStatementsFor(imports);
-			String main = "package templates;\n\n" + 
+			String main = "package templates" + packages + ";\n\n" + 
 							importString +
 							"public class " + typeName + " " + extension + " {\n" +
 							"private final java.io.PrintWriter out;\n" +
@@ -68,7 +75,7 @@ public class CompiledTemplate {
 			    	   	throw new CompilationIOException("Compilation error: "+ out.getBuffer().toString() + " ==> " + builder.toString() + " // " + main);
 		       }
 	       }
-	       this.type = loadType();
+	       this.type = loadType(classpath);
 		} catch (IOException e) {
 			throw new CompilationIOException("Unable to compile", e);
 		}
@@ -113,12 +120,13 @@ public class CompiledTemplate {
 		return this.type;
 	}
 
-	private Class<?> loadType() {
+	@SuppressWarnings("deprecation")
+	private Class<?> loadType(File classpath) {
 		try {
 			ClassLoader parent = getClass().getClassLoader();
-			URL[] url = new URL[]{file.getParentFile().getParentFile().toURL()};
+			URL[] url = new URL[]{classpath.toURL()};
 			URLClassLoader loader = newInstance(url, parent);
-			return loader.loadClass("templates." + getTypeName());
+			return loader.loadClass("templates" + packages + "." + getTypeName());
 		} catch (IOException | ClassNotFoundException e) {
 			throw new CompilationLoadException("Unable to compile", e);
 		}
@@ -139,5 +147,11 @@ public class CompiledTemplate {
 		String input = scanner.hasNext() ? scanner.next() : "";
 		scanner.close();
 		return input;
+	}
+	
+	public String getPackagedName() {
+		String noExtension = file.getName().replace(".java", "");
+		if(packages.isEmpty()) return noExtension;
+		return packages.substring(1) + "." + noExtension;
 	}
 }

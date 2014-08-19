@@ -6,11 +6,15 @@ import static java.util.stream.Collectors.toList;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Compiler {
 
@@ -35,22 +39,40 @@ public class Compiler {
 	}
 
 	public void compileAll() {
-		List<File> files = stream(from.listFiles())
-			.filter(matchesExtension()).collect(toList());
-		System.out.println("Compiling " + files.size() + " files.");
+		List<File> files = tonesAt(from);
+		System.out.println("Compiling " + files.size() + " files: " + files);
 		List<Exception> exceptions = new ArrayList<>();
 		for(File f : files) {
 			try(FileReader reader = new FileReader(f)) {
 				Template template = new Template(reader);
-				String name = noExtension(f.getName());
+				String name = noExtension(nameFor(f));
 				CompiledTemplate compiled = new CompiledTemplate(to, name, imports, template.renderType());
-				types.put(f.getName(), compiled.getType());
+				types.put(compiled.getPackagedName(), compiled.getType());
 			} catch (IOException | CompilationLoadException | CompilationIOException e) {
 				exceptions.add(e);
 			}
 		}
 		if(!exceptions.isEmpty()) {
 			throw new CompilationIOException(exceptions);
+		}
+	}
+
+	private String nameFor(File f) {
+		String replaced = f.getAbsolutePath().replace(from.getAbsolutePath(), "");
+		if(replaced.startsWith("/")) return replaced.substring(1);
+		return replaced;
+	}
+
+	private List<File> tonesAt(File currentDir) {
+		try {
+			List<File> tones = Files.walk(currentDir.toPath(), 10)
+					.map(Path::toFile)
+					.filter(p -> p.isDirectory() ||  p.getName().endsWith(".tone"))
+					.collect(Collectors.toList());
+			
+			return tones.stream().filter(File::isFile).collect(toList());
+		} catch (IOException e) {
+			throw new CompilationIOException(e);
 		}
 	}
 
