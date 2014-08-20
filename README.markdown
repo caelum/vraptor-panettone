@@ -187,7 +187,6 @@ Use this String as you wish.
 To build a jar SNAPSHOT run `mvn package`.
 
 # ISSUES for now
-- auto-reload without full reload
 - docs
 	vantagens
 	- a mesma que a deles https://www.playframework.com/documentation/2.3.x/ScalaTemplates
@@ -203,6 +202,7 @@ To build a jar SNAPSHOT run `mvn package`.
 
 
 # ISSUES for later
+- auto-reload without full reload: create an interface and a class, the interface only changes if the parameters change. the class is provided by MyProvider, which looks in a child classloader
 - vraptor4 support CompiledTemplate return (generate example at src/extras)
 - vraptor3 support CompiledTemplate return (generate example at src/extras)
 - auto import all view packages
