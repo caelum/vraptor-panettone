@@ -85,8 +85,10 @@ public class Watcher implements Runnable {
 			boolean shouldDelete = events.stream()
 				.map(WatchEvent::kind)
 				.anyMatch(ENTRY_DELETE::equals);
-			events.stream().filter(e -> e.kind()==ENTRY_CREATE)
+			events.stream()
 				.map(e -> (WatchEvent<Path>) e)
+				.peek(e -> System.out.println("> " + dir.resolve(e.context()).getFileName()))
+				.filter(e -> e.kind()==ENTRY_CREATE)
 				.map(e -> e.context())
 				.map(name -> dir.resolve(name))
 				.filter(path ->Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS))

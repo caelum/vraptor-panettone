@@ -45,6 +45,7 @@ public class Compiler {
 
 	public List<CompiledTemplate> precompile(List<Exception> exceptions) {
 		List<File> files = tonesAt(from);
+		long start = System.currentTimeMillis();
 		System.out.println("Compiling " + files.size() + " files...");
 		List<CompiledTemplate> toCompile = new ArrayList<>();
 		for(File f : files) {
@@ -57,10 +58,12 @@ public class Compiler {
 				exceptions.add(e);
 			}
 		}
+		long finish = System.currentTimeMillis();
+		double delta = (finish - start) / 1000.0;
 		if(exceptions.isEmpty()) {
-			System.out.println("Precompilation successful.");
+			System.out.println(String.format("Precompilation successful in %.2f secs", delta));
 		} else {
-			System.out.println("Precompilation failed.");
+			System.err.println(String.format("Precompilation failed in %.2f secs", delta));
 		}
 		return toCompile;
 	}
