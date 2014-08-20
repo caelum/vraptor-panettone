@@ -1,13 +1,12 @@
 package br.com.caelum.vraptor.panettone;
 
-import static java.nio.file.StandardWatchEventKinds.*;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
-import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.concurrent.TimeUnit;
@@ -33,36 +32,30 @@ public class Watcher implements Runnable {
 	@Override
 	public void run() {
 		while (running) {
-			try {
-				// Obtaining watch keys every 10 seconds
-				WatchKey key = service.poll(30, TimeUnit.SECONDS);
-				// key value can be null if no event was triggered
-				if (key == null)
-					continue;
-				for (WatchEvent<?> watchEvent : key.pollEvents()) {
-					Kind<?> kind = watchEvent.kind();
-					if (OVERFLOW == kind)
-						continue;
-					WatchEvent<Path> wePath = ( WatchEvent<Path>) watchEvent;
-					Path path = wePath.context();
-					if(ENTRY_DELETE == kind) {
-						// TODO: delete all output files prior to recompiling
-					}
-					compiler.compileAll();
-					if (key.reset()) {
-						System.out.println("Stop watching due to break");
-						break;
-					}
-				}
-			} catch (InterruptedException e) {
-				// timedout
-			}
+			WatchKey key = getKey();
+			if (key == null)
+				continue;
+			boolean shouldDelete = key.pollEvents().stream()
+				.map(WatchEvent::kind)
+				.anyMatch(ENTRY_DELETE::equals);
+			if(shouldDelete) compiler.clear();
+			compiler.compileAll();
+			key.reset();
+		}
+	}
+
+	private WatchKey getKey() {
+		try {
+			return service.poll(30, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			return null;
 		}
 	}
 
 	void stop() {
 		try {
 			this.running = false;
+			System.out.println("Stopping compilation service");
 			service.close();
 			System.out.println("Stopped compilation service");
 		} catch (IOException e) {

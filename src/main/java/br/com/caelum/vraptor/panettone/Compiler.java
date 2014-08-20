@@ -125,4 +125,17 @@ public class Compiler {
 		if(!exceptions.isEmpty()) throw new CompilationIOException(exceptions);
 	}
 
+	public void clear() {
+		System.out.println("Clearing compilation path...");
+		clearChildren(to);
+	}
+
+	private void clearChildren(File current) {
+		try {
+			Files.walk(current.toPath()).forEach(p -> p.toFile().delete());
+		} catch (IOException e) {
+			System.out.println("Unable to clear folders: " + current.getAbsolutePath() + " due to " + e.getMessage());
+		}
+	}
+
 }
