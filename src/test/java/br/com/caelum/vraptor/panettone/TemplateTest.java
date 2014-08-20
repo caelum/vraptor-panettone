@@ -16,6 +16,41 @@ public class TemplateTest {
 	}
 
 	@Test
+	public void shouldSupportExpressionLanguageVariable() {
+		String expected = emptyRun("out.write(\"<html>\");\nout.write(mensagem);\nout.write(\"</html>\");\n");
+		String result = new Template("<html>${mensagem}</html>").renderType();
+		assertEquals(expected, result);
+	}
+
+	@Test
+	public void shouldSupportExpressionLanguageGetterInvocation() {
+		String expected = emptyRun("out.write(\"<html>\");\nout.write(message.getBytes());\nout.write(\"</html>\");\n");
+		String result = new Template("<html>${message.bytes}</html>").renderType();
+		assertEquals(expected, result);
+	}
+
+	@Test
+	public void shouldSupportExpressionLanguageDoubleGetterInvocation() {
+		String expected = emptyRun("out.write(\"<html>\");\nout.write(message.getBytes().getLength());\nout.write(\"</html>\");\n");
+		String result = new Template("<html>${message.bytes.length}</html>").renderType();
+		assertEquals(expected, result);
+	}
+
+	@Test
+	public void shouldSupportExpressionLanguageMapAccess() {
+		String expected = emptyRun("out.write(\"<html>\");\nout.write(message.get(15));\nout.write(\"</html>\");\n");
+		String result = new Template("<html>${message[15]}</html>").renderType();
+		assertEquals(expected, result);
+	}
+
+	@Test
+	public void shouldSupportExpressionLanguageComplexInvocation() {
+		String expected = emptyRun("out.write(\"<html>\");\nout.write(message.getSize().get(bytes));\nout.write(\"</html>\");\n");
+		String result = new Template("<html>${message.size[bytes]}</html>").renderType();
+		assertEquals(expected, result);
+	}
+
+	@Test
 	public void shouldSupportLineBreak() {
 		String expected = emptyRun("out.write(\"<html>\\n\");\nout.write(\"Oi</html>\");\n");
 		String result = new Template("<html>\nOi</html>").renderType();

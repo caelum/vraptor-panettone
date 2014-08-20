@@ -21,15 +21,17 @@ public class Compiler {
 	private final Map<String, Class<?>> types = new HashMap<>();
 	private final Watcher watcher;
 	private final List<String> imports;
+	private final CompilationListener[] listeners;
 
 	public Compiler(File from, File to) {
 		this(from, to, new ArrayList<String>());
 	}
 	
-	public Compiler(File from, File to, List<String> imports) {
+	public Compiler(File from, File to, List<String> imports, CompilationListener... listeners) {
 		this.from = from;
 		this.to = to;
 		this.imports = imports;
+		this.listeners = listeners;
 		from.mkdirs();
 		to.mkdirs();
 		this.watcher = new Watcher(from.toPath(), this);
@@ -49,7 +51,7 @@ public class Compiler {
 			try(FileReader reader = new FileReader(f)) {
 				Template template = new Template(reader);
 				String name = noExtension(nameFor(f));
-				CompiledTemplate compiled = new CompiledTemplate(to, name, imports, template.renderType());
+				CompiledTemplate compiled = new CompiledTemplate(to, name, imports, template.renderType(), listeners);
 				toCompile.add(compiled);
 			} catch (IOException | CompilationLoadException | CompilationIOException e) {
 				exceptions.add(e);

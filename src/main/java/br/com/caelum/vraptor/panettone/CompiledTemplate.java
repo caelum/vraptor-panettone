@@ -12,9 +12,11 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import com.google.common.io.Files;
 
@@ -28,7 +30,7 @@ public class CompiledTemplate {
 	public CompiledTemplate(File classpath, String name, String content) {
 		this(classpath, name, new ArrayList<String>(), content);
 	}
-	public CompiledTemplate(File classpath, String name, List<String> imports, String content) {
+	public CompiledTemplate(File classpath, String name, List<String> imports, String content, CompilationListener ... listeners) {
 		try {
 			this.classPath = classpath;
 			File templates = new File(classpath, "templates");
@@ -42,11 +44,12 @@ public class CompiledTemplate {
 			String typeName = getTypeName();
 			String extension = baseClassFor(imports);
 			String importString = importStatementsFor(imports);
+			String interfaces = interfacesFor(listeners);
 			this.sourceCode = "package templates" + packages + ";\n\n" + 
 							importString +
-							"public class " + typeName + " " + extension + " {\n" +
+							"public class " + typeName + " " + extension + " " + interfaces + " {\n" +
 							"private final java.io.PrintWriter out;\n" +
-							"public " + typeName + "(java.io.PrintWriter out) { this.out = out; }\n" +
+							getConstructor(typeName, listeners) +
 							content +
 							"}\n";
 			Files.write(sourceCode, file, Charset.forName("UTF-8"));
@@ -56,6 +59,22 @@ public class CompiledTemplate {
 		}
 	}
 	
+	private String getConstructor(String typeName,
+			CompilationListener[] listeners) {
+		for (CompilationListener cl : listeners) {
+			if (cl.overrideConstructor(typeName) != null)
+				return cl.overrideConstructor(typeName);
+		}
+		String standard = "public " + typeName + "(java.io.PrintWriter out) {\n"
+				+ "this.out = out;\n"
+				+ "}\n";
+		return standard;
+	}
+	private String interfacesFor(CompilationListener[] listeners) {
+		String interfaces = Arrays.stream(listeners).flatMap(l -> stream(l.getInterfaces())).collect(Collectors.joining(","));
+		if(interfaces.isEmpty()) return "";
+		return "implements " + interfaces;
+	}
 	private String baseClassFor(List<String> imports) {
 		Optional<String> existing = imports.stream().filter(p -> p.endsWith(".DefaultTemplate")).findFirst();
 		return "extends " + existing.orElse("Object");

@@ -12,7 +12,7 @@ public class VRaptorCompiler {
 	private final Compiler compiler;
 	
 	VRaptorCompiler(List<String> imports) {
-		this.compiler = new Compiler(new File(VIEW_INPUT), new File(VIEW_OUTPUT), imports);
+		this.compiler = new Compiler(new File(VIEW_INPUT), new File(VIEW_OUTPUT), imports, new VRaptorCompilationListener());
 	}
 	
 	public void start() {

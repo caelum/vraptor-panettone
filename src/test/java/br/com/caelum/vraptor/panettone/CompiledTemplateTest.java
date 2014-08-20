@@ -67,7 +67,7 @@ public class CompiledTemplateTest {
 
 	@Test
 	public void shouldSupportInheritanceFromDefaultTemplate() {
-		CompiledTemplate template = compile("interpolateObject", asList("br.com.caelum.vraptor.panettone.defaulted.*"), "<html><%=environment%></html>");
+		CompiledTemplate template = compile("interpolateObject", asList("br.com.caelum.vraptor.panettone.defaulted.DefaultTemplate"), "<html><%=environment%></html>");
 		
 		String expected = "<html>production</html>";
 		assertEquals(expected, tryToRun(template, new Class[]{}));

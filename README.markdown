@@ -147,6 +147,22 @@ if(message==null) message = "hello";
 
 Be careful with default variables hell, as with any other language.
 
+# Expression language with $
+
+Current simple support to make it easier to migrate JSP files. We do not recommend sticking to this one on the long run as we do not intend to make it more complex.
+
+```
+${message} ==> out.write(message);
+${message.bytes} ==> out.write(message.getBytes());
+${message.bytes.length} ==> out.write(message.getBytes().getLength());
+${message[15]} ==> out.write(message.get(15));
+${message['15']} ==> out.write(message.get("15"));
+${messages.size[bytes]==> out.write(messages.getSize().get(bytes);
+```
+
+We currently **DO NOT** support nested map [] and getter access.
+We currently **DO NOT** support *is* methods.
+
 # API Levels
 
 3 - you will probably use this
@@ -175,12 +191,14 @@ To build a jar SNAPSHOT run `mvn package`.
 	- pq java? mensagens de erro iguais que as deles. todas as vantagens da linguagem
 	- pq <%%> ao inves de ${}? ao inves de @?
 - o compiler ser chamado em build via maven para packagear (maven plugin)
-- keep or remove our own compilation phase?
-- improve compilation because there is a Compiler <-> SimpleJavaCompiler <-> CompiledTemplate reference now
-- show code on compilation error
 - body com lambda
 <% template2(usuario, () -> { %>
 
 <% }); %>
-- syntax sugar: ${} => a.b ou a.getB ou a.isB (verifica qual existe em compilacao). interface ELParser
-	ELParser padrao acessa request scoped e mantem nao typesafe para migrar facil o JSP, com mensagem amigavel
+
+# TODO later
+- keep or remove our own compilation phase?
+	- improve compilation because there is a Compiler <-> SimpleJavaCompiler <-> CompiledTemplate reference now
+	- show code on compilation error
+	- ELParser padrao acessa request scoped e mantem nao typesafe para migrar facil o JSP, com mensagem amigavel
+	
