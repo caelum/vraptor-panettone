@@ -187,7 +187,6 @@ Use this String as you wish.
 To build a jar SNAPSHOT run `mvn package`.
 
 # ISSUES for now
-- bug watcher subdirectory
 - printwriter encoding coming wrong
 - auto-reload without full reload
 - docs

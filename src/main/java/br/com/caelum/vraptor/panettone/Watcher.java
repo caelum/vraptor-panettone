@@ -1,14 +1,23 @@
 package br.com.caelum.vraptor.panettone;
 
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class Watcher implements Runnable {
@@ -16,18 +25,49 @@ public class Watcher implements Runnable {
 	private final WatchService service;
 	private boolean running = true;
 	private final Compiler compiler;
+	private final Map<WatchKey,Path> keys = new HashMap<>();
+	private boolean trace = false;
 
 	Watcher(Path folder, Compiler compiler) {
 		this.compiler = compiler;
 		try {
 			this.service = FileSystems.getDefault().newWatchService();
-			folder.register(service, StandardWatchEventKinds.ENTRY_CREATE,
-					StandardWatchEventKinds.ENTRY_MODIFY,
-					StandardWatchEventKinds.ENTRY_DELETE);
+			registerAll(folder);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+		trace = true;
 	}
+	
+   private void registerAll(final Path start) {
+        try {
+			Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
+			    @Override
+			    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+			        register(dir);
+			        return FileVisitResult.CONTINUE;
+			    }
+			});
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+    }
+   
+   private void register(Path dir) throws IOException {
+       WatchKey key = dir.register(service, ENTRY_CREATE,
+				ENTRY_MODIFY,
+				ENTRY_DELETE);
+       if (trace) {
+           Path prev = keys.get(key);
+           if (prev == null) {
+               System.out.format("Registering new path: %s\n", dir);
+           } else if (!dir.equals(prev)) {
+               System.out.format("update: %s -> %s\n", prev, dir);
+           }
+       }
+       keys.put(key, dir);
+   }
+ 
 
 	@Override
 	public void run() {
@@ -35,9 +75,23 @@ public class Watcher implements Runnable {
 			WatchKey key = getKey();
 			if (key == null)
 				continue;
-			boolean shouldDelete = key.pollEvents().stream()
+			Path dir = keys.get(key);
+			if (dir == null) {
+				System.err.println("WatchKey not recognized: " + key);
+				continue;
+			}
+
+			List<WatchEvent<?>> events = key.pollEvents();
+			boolean shouldDelete = events.stream()
 				.map(WatchEvent::kind)
 				.anyMatch(ENTRY_DELETE::equals);
+			events.stream().filter(e -> e.kind()==ENTRY_CREATE)
+				.map(e -> (WatchEvent<Path>) e)
+				.map(e -> e.context())
+				.map(name -> dir.resolve(name))
+				.filter(path ->Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS))
+				.forEach(this::registerAll);
+
 			if(shouldDelete) compiler.clear();
 			compiler.compileAll();
 			key.reset();

@@ -45,7 +45,7 @@ public class Compiler {
 
 	public List<CompiledTemplate> precompile(List<Exception> exceptions) {
 		List<File> files = tonesAt(from);
-		System.out.println("Compiling " + files.size() + " files: " + files);
+		System.out.println("Compiling " + files.size() + " files...");
 		List<CompiledTemplate> toCompile = new ArrayList<>();
 		for(File f : files) {
 			try(FileReader reader = new FileReader(f)) {
@@ -58,7 +58,9 @@ public class Compiler {
 			}
 		}
 		if(exceptions.isEmpty()) {
-			System.out.println("Precompilation successful");
+			System.out.println("Precompilation successful.");
+		} else {
+			System.out.println("Precompilation failed.");
 		}
 		return toCompile;
 	}
