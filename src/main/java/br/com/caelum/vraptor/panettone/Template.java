@@ -99,10 +99,11 @@ public class Template {
 	}
 	private void linePrint(StringBuilder builder, String parts) {
 		String[] allParts = parts.split("\n");
-		for(int i=0;i<allParts.length;i++) {
-			String part = allParts[i].trim();
+		int last = allParts.length - 1;
+		for (int i = 0; i < allParts.length; i++) {
+			String part = allParts[i];
 			if(part.isEmpty()) continue;
-			String slash = i == allParts.length-1 ? "" : "\\n";
+			String slash = i == last ? "" : "\\n";
 			builder.append("write(\"" + escapeQuotes(part) + slash + "\");\n");
 		}
 	}
