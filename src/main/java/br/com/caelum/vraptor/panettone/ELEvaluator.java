@@ -3,25 +3,17 @@ package br.com.caelum.vraptor.panettone;
 public class ELEvaluator {
 
 	public String evaluate(String evaluation) {
-		// TODO create a EL supplier. and make this optional.
 		StringBuilder sb = new StringBuilder();
-		// TODO can be faster
-		for(int i=0;i<evaluation.length();i++) {
+		for (int i = 0; i < evaluation.length(); i++) {
 			char currentChar = evaluation.charAt(i);
 			if(currentChar=='\'' || currentChar=='"') {
-				int end = evaluation.indexOf(currentChar, i + 1);
-				if (end == -1) {
-					throw new CompilationIOException("Unfinished " + evaluation.charAt(i) + " expression language statement.");
-				}
+				int end = findNext(evaluation, i + 1, currentChar);
 				sb.append(evaluation.substring(i, end + 1));
 				i = end;
 			} else if(currentChar=='[') {
 				sb.append(".get(");
-				int end = evaluation.indexOf("]", i);
-				if (end == -1) {
-					throw new CompilationIOException("Not found a closing ] for your expression");
-				}
-				// TODO no support to nested ] so far
+				int end = findNext(evaluation, i, ']');
+				// TODO BUG no support to nested ] so far
 				String internalContent = evaluation.substring(i + 1, end);
 				sb.append(evaluate(internalContent));
 				sb.append(")");
@@ -47,6 +39,14 @@ public class ELEvaluator {
 			}
 		}
 		return sb.toString().replace("'", "\"");
+	}
+
+	private int findNext(String evaluation, int i, char toFind) {
+		int end = evaluation.indexOf(toFind, i);
+		if (end == -1) {
+			throw new CompilationIOException("Unfinished " + toFind + " expression language statement.");
+		}
+		return end;
 	}
 
 	private int getNextDelimiter(String evaluation, int i) {
