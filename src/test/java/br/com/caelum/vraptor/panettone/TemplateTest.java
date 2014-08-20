@@ -58,6 +58,20 @@ public class TemplateTest {
 	}
 
 	@Test
+	public void shouldSupportExpressionLanguageString() {
+		String expected = emptyRun("write(\"<html>\");\nwrite(\"a.b\");\nwrite(\"</html>\");\n");
+		String result = new Template("<html>${'a.b'}</html>").renderType();
+		assertEquals(expected, result);
+	}
+
+	@Test
+	public void shouldSupportExpressionLanguageMapAccessWithString() {
+		String expected = emptyRun("write(\"<html>\");\nwrite(message.get(\"a.b\"));\nwrite(\"</html>\");\n");
+		String result = new Template("<html>${message['a.b']}</html>").renderType();
+		assertEquals(expected, result);
+	}
+
+	@Test
 	public void shouldSupportExpressionLanguageComplexInvocation() {
 		String expected = emptyRun("write(\"<html>\");\nwrite(message.getSize().get(bytes));\nwrite(\"</html>\");\n");
 		String result = new Template("<html>${message.size[bytes]}</html>").renderType();

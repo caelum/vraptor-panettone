@@ -88,7 +88,15 @@ public class Template {
 		StringBuilder sb = new StringBuilder();
 		// TODO can be faster
 		for(int i=0;i<evaluation.length();i++) {
-			if(evaluation.charAt(i)=='[') {
+			char currentChar = evaluation.charAt(i);
+			if(currentChar=='\'' || currentChar=='"') {
+				int end = evaluation.indexOf(currentChar, i + 1);
+				if (end == -1) {
+					throw new CompilationIOException("Unfinished " + evaluation.charAt(i) + " expression language statement.");
+				}
+				sb.append(evaluation.substring(i, end + 1));
+				i = end;
+			} else if(currentChar=='[') {
 				sb.append(".get(");
 				int end = evaluation.indexOf("]", i);
 				if (end == -1) {
@@ -99,7 +107,7 @@ public class Template {
 				sb.append(evaluateEL(internalContent));
 				sb.append(")");
 				i = end;
-			} else if(evaluation.charAt(i)=='.') {
+			} else if(currentChar=='.') {
 				int nextDelimiter = getNextDelimiter(evaluation, i+1);
 				char nextToken = ' ';
 				if(nextDelimiter!=-1) nextToken = evaluation.charAt(nextDelimiter);
@@ -116,7 +124,7 @@ public class Template {
 					i = nextDelimiter - 1;
 				}
 			} else {
-				sb.append(evaluation.charAt(i));
+				sb.append(currentChar);
 			}
 		}
 		return sb.toString().replace("'", "\"");
@@ -124,7 +132,7 @@ public class Template {
 	private int getNextDelimiter(String evaluation, int i) {
 		for(int j=i;j<evaluation.length();j++) {
 			char c = evaluation.charAt(j);
-			if (c == '.' || c == '[' || c == '(' || c==')' || c==']' || c=='"' || c=='\'')
+			if (c == '.' || c == '[' || c == '(' || c==')' || c==']' || c=='"' || c=='\'' || c==' ')
 				return j;
 		}
 		return -1;

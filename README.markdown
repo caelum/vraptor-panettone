@@ -149,19 +149,21 @@ Be careful with default variables hell, as with any other language.
 
 # Expression language with $
 
-Current simple support to make it easier to migrate JSP files. We do not recommend sticking to this one on the long run as we do not intend to make it more complex.
+Current simple support to make it easier to migrate JSP files.
+We do not recommend sticking to this one on the long run as we do not intend to make it more complex.
 
 ```
-${message} ==> out.write(message);
-${message()} ==> out.write(message());
-${message(x)} ==> out.write(message(x));
-${message(a.b)} ==> out.write(message(a.getB()));
-${message.bytes} ==> out.write(message.getBytes());
-${message.bytes.length} ==> out.write(message.getBytes().getLength());
-${message[15]} ==> out.write(message.get(15));
-${message[a.b]} ==> out.write(message.get(a.getB()));
-${message['15']} ==> out.write(message.get("15"));
-${messages.size[bytes]==> out.write(messages.getSize().get(bytes);
+${message} ==> write(message);
+${message()} ==> write(message());
+${message(x)} ==> write(message(x));
+${message(a.b)} ==> write(message(a.getB()));
+${message.bytes} ==> write(message.getBytes());
+${message.bytes.length} ==> write(message.getBytes().getLength());
+${message[15]} ==> write(message.get(15));
+${message[a.b]} ==> write(message.get(a.getB()));
+${message['15']} ==> write(message.get("15"));
+${messages.size[bytes]==> write(messages.getSize().get(bytes);
+${'xpto'} ==> write("xpto");
 ```
 
 We currently support some level of nested invocations. Do not abuse.
@@ -185,21 +187,27 @@ Use this String as you wish.
 To build a jar SNAPSHOT run `mvn package`.
 
 # ISSUES for now
-- TUTORIAL: DefaultTemplate by DefaultHelpers helpers
-- TUTORIAL: <%$ @javax.inject.Inject Translator t %>
 - bug watcher is only running once
 - printwriter encoding coming wrong
-- vraptor4 support CompiledTemplate return (generate example at src/extras)
-- vraptor3 support CompiledTemplate return (generate example at src/extras)
 - auto-reload without full reload
 - docs
 	vantagens
 	- a mesma que a deles https://www.playframework.com/documentation/2.3.x/ScalaTemplates
 	- pq java? mensagens de erro iguais que as deles. todas as vantagens da linguagem
 	- pq <%%> ao inves de ${}? ao inves de @?
+	- TUTORIAL: DefaultTemplate by DefaultHelpers helpers
+	- TUTORIAL: <%$ @javax.inject.Inject Translator t %>
+	- you can debug your view
 - cutting some spaces (check templates)
+- how to deal with nulls? ${}! <%=! %> (null pointer?)
+
+
+
 
 # ISSUES for later
+- vraptor4 support CompiledTemplate return (generate example at src/extras)
+- vraptor3 support CompiledTemplate return (generate example at src/extras)
+- auto import all view packages
 - keep or remove our own compilation phase?
 	- improve compilation because there is a Compiler <-> SimpleJavaCompiler <-> CompiledTemplate reference now
 	- show code on compilation error
@@ -207,6 +215,11 @@ To build a jar SNAPSHOT run `mvn package`.
 	- body com lambda
 <% template2(usuario, () -> { %>
 
-<% }); %>
+<% }); %> ou
+<%#body
+xpto
+%> 
+<% use(a).render(x, body); %>
+
 - o compiler ser chamado em build via maven para packagear (maven plugin)
 - custom easy default variable for <%$ @javax.inject.Inject Translator t %>

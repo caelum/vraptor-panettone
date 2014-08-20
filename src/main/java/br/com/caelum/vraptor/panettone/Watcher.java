@@ -45,18 +45,14 @@ public class Watcher implements Runnable {
 						continue;
 					WatchEvent<Path> wePath = ( WatchEvent<Path>) watchEvent;
 					Path path = wePath.context();
-					if (ENTRY_CREATE == kind) {
-						compiler.compileAll();
-					}
-					if(ENTRY_MODIFY == kind) {
-						compiler.compileAll();
-					}
 					if(ENTRY_DELETE == kind) {
+						// TODO: delete all output files prior to recompiling
 					}
-				}
-				if(key.reset()) {
-					System.out.println("Stop watching due to break");
-					break;
+					compiler.compileAll();
+					if (key.reset()) {
+						System.out.println("Stop watching due to break");
+						break;
+					}
 				}
 			} catch (InterruptedException e) {
 				// timedout
