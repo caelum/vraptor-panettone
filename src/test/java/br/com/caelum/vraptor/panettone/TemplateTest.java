@@ -29,6 +29,12 @@ public class TemplateTest {
 		assertEquals(expected, result);
 	}
 
+	@Test
+	public void shouldSupportExpressionLanguageGetWithString() {
+		String expected = emptyRun("write(\"<html>\");\nwrite(message.get(\"bytes\"));\nwrite(\"</html>\");\n");
+		String result = new Template("<html>${message['bytes']}</html>").renderType();
+		assertEquals(expected, result);
+	}
 
 	@Test
 	public void shouldSupportExpressionLanguageMethodInvocation() {

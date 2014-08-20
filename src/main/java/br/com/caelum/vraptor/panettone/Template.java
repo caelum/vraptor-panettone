@@ -124,7 +124,7 @@ public class Template {
 	private int getNextDelimiter(String evaluation, int i) {
 		for(int j=i;j<evaluation.length();j++) {
 			char c = evaluation.charAt(j);
-			if (c == '.' || c == '[' || c == '(' || c==')' || c==']')
+			if (c == '.' || c == '[' || c == '(' || c==')' || c==']' || c=='"' || c=='\'')
 				return j;
 		}
 		return -1;
