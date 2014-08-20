@@ -180,25 +180,27 @@ Use this String as you wish.
 
 To build a jar SNAPSHOT run `mvn package`.
 
-# TODO
+# ISSUES for now
+- DefaultTemplate by DefaultHelpers helpers
+- <%$ @javax.inject.Inject Translator t %>
 - bug watcher is only running once
+- printwriter encoding coming wrong
 - vraptor4 support CompiledTemplate return (generate example at src/extras)
 - vraptor3 support CompiledTemplate return (generate example at src/extras)
-- auto-reload com o classloader separado
+- auto-reload without full reload
 - docs
 	vantagens
 	- a mesma que a deles https://www.playframework.com/documentation/2.3.x/ScalaTemplates
 	- pq java? mensagens de erro iguais que as deles. todas as vantagens da linguagem
 	- pq <%%> ao inves de ${}? ao inves de @?
-- o compiler ser chamado em build via maven para packagear (maven plugin)
-- body com lambda
-<% template2(usuario, () -> { %>
 
-<% }); %>
-
-# TODO later
+# ISSUES for later
 - keep or remove our own compilation phase?
 	- improve compilation because there is a Compiler <-> SimpleJavaCompiler <-> CompiledTemplate reference now
 	- show code on compilation error
 	- ELParser padrao acessa request scoped e mantem nao typesafe para migrar facil o JSP, com mensagem amigavel
-	
+	- body com lambda
+<% template2(usuario, () -> { %>
+
+<% }); %>
+- o compiler ser chamado em build via maven para packagear (maven plugin)

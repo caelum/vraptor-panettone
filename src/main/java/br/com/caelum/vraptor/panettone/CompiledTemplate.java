@@ -26,7 +26,6 @@ public class CompiledTemplate {
 	private final String packages;
 	private final String sourceCode;
 	private final File classPath;
-
 	public CompiledTemplate(File classpath, String name, String content) {
 		this(classpath, name, new ArrayList<String>(), content);
 	}
@@ -48,9 +47,11 @@ public class CompiledTemplate {
 			this.sourceCode = "package templates" + packages + ";\n\n" + 
 							importString +
 							"public class " + typeName + " " + extension + " " + interfaces + " {\n" +
-							"private final java.io.PrintWriter out;\n" +
+							"private java.io.PrintWriter out;\n" +
 							getConstructor(typeName, listeners) +
 							content +
+							"private void write(Object o) { if(o!=null) out.write(o.toString()); }" +
+							"private void write(String o) { if(o!=null) out.write(o); }" +
 							"}\n";
 			Files.write(sourceCode, file, Charset.forName("UTF-8"));
 			
@@ -65,9 +66,9 @@ public class CompiledTemplate {
 			if (cl.overrideConstructor(typeName) != null)
 				return cl.overrideConstructor(typeName);
 		}
-		String standard = "public " + typeName + "(java.io.PrintWriter out) {\n"
-				+ "this.out = out;\n"
-				+ "}\n";
+		String standard = "public " + typeName + "(java.io.PrintWriter out) {\n" +
+				" this.out = out; "+
+				"}\n";
 		return standard;
 	}
 	private String interfacesFor(CompilationListener[] listeners) {

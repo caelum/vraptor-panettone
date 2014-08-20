@@ -6,7 +6,6 @@ import static java.util.stream.Collectors.joining;
 
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -51,7 +50,7 @@ public class Template {
 			if(startDelimiter.equals("<%")) {
 				String evaluation = content.substring(next + 2, finish);
 				if(evaluation.startsWith("=")) {
-					builder.append("out.write(" + evaluation.substring(1) + ");\n");
+					builder.append("write(" + evaluation.substring(1) + ");\n");
 				} else if(evaluation.startsWith("--")){
 					// comments
 				} else if(evaluation.startsWith("@")){
@@ -74,7 +73,7 @@ public class Template {
 				}
 			} else {
 				String evaluation = content.substring(next + 2, finish);
-				builder.append("out.write(" + evaluateEL(evaluation) + ");\n");
+				builder.append("write(" + evaluateEL(evaluation) + ");\n");
 			}
 			position = finish + endDelimiter.length();
 		}
@@ -142,7 +141,7 @@ public class Template {
 			String part = allParts[i].trim();
 			if(part.isEmpty()) continue;
 			String slash = i == allParts.length-1 ? "" : "\\n";
-			builder.append("out.write(\"" + escapeQuotes(part) + slash + "\");\n");
+			builder.append("write(\"" + escapeQuotes(part) + slash + "\");\n");
 		}
 	}
 
