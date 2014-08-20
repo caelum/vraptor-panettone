@@ -222,3 +222,4 @@ xpto
 - o compiler ser chamado em build via maven para packagear (maven plugin)
 - custom easy default variable for <%$ @javax.inject.Inject Translator t %>
 - support other encodings on vraptor-panettone(currently only UTF-8)
+- eclipse plugin that runs the compiler and keeps watching and refresh the target folder

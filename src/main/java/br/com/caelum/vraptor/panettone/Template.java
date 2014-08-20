@@ -45,7 +45,7 @@ public class Template {
 			String endDelimiter = endDelimiterFor(startDelimiter);
 			int finish = content.indexOf(endDelimiter, next + 1);
 			if(finish==-1) {
-				throw new InvalidTemplate(String.format("Template did not finish %s entry.", endDelimiter));
+				throw new InvalidTemplate(format("Template did not finish %s entry.", endDelimiter));
 			}
 			
 			if(startDelimiter.equals("<%")) {
