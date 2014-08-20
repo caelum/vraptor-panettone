@@ -187,7 +187,6 @@ Use this String as you wish.
 To build a jar SNAPSHOT run `mvn package`.
 
 # ISSUES for now
-- printwriter encoding coming wrong
 - auto-reload without full reload
 - docs
 	vantagens
@@ -222,3 +221,4 @@ xpto
 
 - o compiler ser chamado em build via maven para packagear (maven plugin)
 - custom easy default variable for <%$ @javax.inject.Inject Translator t %>
+- support other encodings on vraptor-panettone(currently only UTF-8)
