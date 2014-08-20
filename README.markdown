@@ -204,7 +204,6 @@ To build a jar SNAPSHOT run `mvn package`.
 
 
 # ISSUES for later
-- bug watcher on rename should delete
 - vraptor4 support CompiledTemplate return (generate example at src/extras)
 - vraptor3 support CompiledTemplate return (generate example at src/extras)
 - auto import all view packages
