@@ -29,6 +29,14 @@ public class TemplateTest {
 		assertEquals(expected, result);
 	}
 
+
+	@Test
+	public void shouldSupportExpressionLanguageMethodInvocation() {
+		String expected = emptyRun("write(\"<html>\");\nwrite(message.bytes(a.getB()).c(d).getE().f());\nwrite(\"</html>\");\n");
+		String result = new Template("<html>${message.bytes(a.b).c(d).e.f()}</html>").renderType();
+		assertEquals(expected, result);
+	}
+
 	@Test
 	public void shouldSupportExpressionLanguageDoubleGetterInvocation() {
 		String expected = emptyRun("write(\"<html>\");\nwrite(message.getBytes().getLength());\nwrite(\"</html>\");\n");
@@ -50,8 +58,13 @@ public class TemplateTest {
 		assertEquals(expected, result);
 	}
 
+	@Test
+	public void shouldSupportExpressionLanguageComplexInvocation2() {
+		String expected = emptyRun("write(\"<html>\");\nwrite(l.get(nip.getDate()).custom(\"date_hour\"));\nwrite(\"</html>\");\n");
+		String result = new Template("<html>${l[nip.date].custom('date_hour')}</html>").renderType();
+		assertEquals(expected, result);
+	}
 	
-	l[nip.date].custom('date_hour')
 	@Test
 	public void shouldSupportLineBreak() {
 		String expected = emptyRun("write(\"<html>\\n\");\nwrite(\"Oi</html>\");\n");

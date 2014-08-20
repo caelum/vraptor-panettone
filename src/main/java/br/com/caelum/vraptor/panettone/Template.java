@@ -95,22 +95,25 @@ public class Template {
 					throw new CompilationIOException("Not found a closing ] for your expression");
 				}
 				// TODO no support to nested ] so far
-				sb.append(evaluation.substring(i + 1, end));
+				String internalContent = evaluation.substring(i + 1, end);
+				sb.append(evaluateEL(internalContent));
 				sb.append(")");
 				i = end;
 			} else if(evaluation.charAt(i)=='.') {
-				sb.append(".get");
-				sb.append(Character.toUpperCase(evaluation.charAt(i+1)));
-				i++;
-				int nextDelimiter = getNextDelimiter(evaluation, i);
-				if(nextDelimiter==-1) {
-					sb.append(evaluation.substring(i+1));
-					sb.append("()");
-					i = evaluation.length();
+				int nextDelimiter = getNextDelimiter(evaluation, i+1);
+				char nextToken = ' ';
+				if(nextDelimiter!=-1) nextToken = evaluation.charAt(nextDelimiter);
+				else nextDelimiter = evaluation.length();
+				if(nextToken == '(') {
+					sb.append('.');
+					sb.append(evaluation.substring(i + 1, nextDelimiter));
+					i = nextDelimiter - 1;
 				} else {
-					sb.append(evaluation.substring(i+1, nextDelimiter));
+					sb.append(".get");
+					sb.append(Character.toUpperCase(evaluation.charAt(i + 1)));
+					sb.append(evaluation.substring(i + 2, nextDelimiter));
 					sb.append("()");
-					i = nextDelimiter-1;
+					i = nextDelimiter - 1;
 				}
 			} else {
 				sb.append(evaluation.charAt(i));
@@ -119,9 +122,12 @@ public class Template {
 		return sb.toString().replace("'", "\"");
 	}
 	private int getNextDelimiter(String evaluation, int i) {
-		int nextDelimiter = evaluation.indexOf(".", i);
-		if(nextDelimiter == -1) nextDelimiter = evaluation.indexOf("[", i);
-		return nextDelimiter;
+		for(int j=i;j<evaluation.length();j++) {
+			char c = evaluation.charAt(j);
+			if (c == '.' || c == '[' || c == '(' || c==')' || c==']')
+				return j;
+		}
+		return -1;
 	}
 	private String endDelimiterFor(String delimiter) {
 		if(delimiter.equals("${")) return "}";

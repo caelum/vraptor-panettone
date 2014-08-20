@@ -153,14 +153,18 @@ Current simple support to make it easier to migrate JSP files. We do not recomme
 
 ```
 ${message} ==> out.write(message);
+${message()} ==> out.write(message());
+${message(x)} ==> out.write(message(x));
+${message(a.b)} ==> out.write(message(a.getB()));
 ${message.bytes} ==> out.write(message.getBytes());
 ${message.bytes.length} ==> out.write(message.getBytes().getLength());
 ${message[15]} ==> out.write(message.get(15));
+${message[a.b]} ==> out.write(message.get(a.getB()));
 ${message['15']} ==> out.write(message.get("15"));
 ${messages.size[bytes]==> out.write(messages.getSize().get(bytes);
 ```
 
-We currently **DO NOT** support nested map [] and getter access.
+We currently support some level of nested invocations. Do not abuse.
 We currently **DO NOT** support *is* methods.
 
 # API Levels
@@ -181,8 +185,8 @@ Use this String as you wish.
 To build a jar SNAPSHOT run `mvn package`.
 
 # ISSUES for now
-- DefaultTemplate by DefaultHelpers helpers
-- <%$ @javax.inject.Inject Translator t %>
+- TUTORIAL: DefaultTemplate by DefaultHelpers helpers
+- TUTORIAL: <%$ @javax.inject.Inject Translator t %>
 - bug watcher is only running once
 - printwriter encoding coming wrong
 - vraptor4 support CompiledTemplate return (generate example at src/extras)
@@ -193,6 +197,7 @@ To build a jar SNAPSHOT run `mvn package`.
 	- a mesma que a deles https://www.playframework.com/documentation/2.3.x/ScalaTemplates
 	- pq java? mensagens de erro iguais que as deles. todas as vantagens da linguagem
 	- pq <%%> ao inves de ${}? ao inves de @?
+- cutting some spaces (check templates)
 
 # ISSUES for later
 - keep or remove our own compilation phase?
@@ -204,3 +209,4 @@ To build a jar SNAPSHOT run `mvn package`.
 
 <% }); %>
 - o compiler ser chamado em build via maven para packagear (maven plugin)
+- custom easy default variable for <%$ @javax.inject.Inject Translator t %>
