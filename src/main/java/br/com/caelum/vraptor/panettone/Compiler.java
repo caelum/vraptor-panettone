@@ -54,7 +54,7 @@ public class Compiler {
 				String name = noExtension(nameFor(f));
 				CompiledTemplate compiled = new CompiledTemplate(to, name, imports, template.renderType(), listeners);
 				toCompile.add(compiled);
-			} catch (IOException | CompilationLoadException | CompilationIOException e) {
+			} catch (Exception e) {
 				exceptions.add(e);
 			}
 		}

@@ -232,6 +232,29 @@ We currently support some level of nested invocations. Do not abuse.
 We currently **DO NOT** support *is* methods.
 Take care of your NULLs, please. If you are nullable, it is up to you to be careful with what you did. Don't play nullable, play safe.
 
+# Debugging
+
+Write your template:
+
+```
+<%@String mensagem %>
+<html>
+<%= mensagem %>
+</html>
+```
+
+Debug your file as you are used to:
+
+```
+public void render(String mensagem ) {
+write("<html>");
+write( mensagem );
+write("</html>");
+}
+```
+
+Live your life as usual, no crazy `yield`s to debug :).
+
 # API Levels
 
 3. you will probably use this, the one you saw so far
@@ -253,7 +276,7 @@ The main issues we try to tackle in other Java world template engines:
 - freemarker creepy error messages
 - velocity old bugs
 - jsp jasper limitations or servlet container requirements
-- Twirl scala dependencies
+- Twirl scala dependencies, hard to understand what you are debugging
 - other language template engines: the need to learn other languages
 
 For those reasons we choose to stick to a Java type safe one.
@@ -278,3 +301,9 @@ Fork, write code, write test, send pull request :)
 Register issues in our github tracker
 
 Talk to us at www.guj.com.br or twitter @guilhermecaelum
+
+
+
+TODO:
+
+support .tone.html
