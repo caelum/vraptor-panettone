@@ -196,3 +196,6 @@ To build a jar SNAPSHOT run `mvn package`.
 	- TUTORIAL: <%$ @javax.inject.Inject Translator t %>
 	- you can debug your view
 	- take care of your NULLs, please
+	- CTRL+SHIFT+G your view uses it
+- later
+	refactor also refactors view?
