@@ -57,23 +57,19 @@ Download it here:
 # VRaptor-Panettone API - high level API
 
 1. Start the compiler:
-
 ```
 java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar --watch br.com.caelum.vraptor.mymodelpackage 
 ```
-
 2. Create your source panettone file at `src/main/templates`, such as `hello.tone`, yummy.
-
 ```
 <%@ String message %>
 <html>
 <h1><%= message %></h1>
 </html>
 ```
+3. Save it. Look now for `templates/hello.java` at `target/view-classes`. Add this path to your classpath!
 
-Save it. Look now for `templates/hello.java` at `target/view-classes`. Add this path to your classpath!
-
-# Keep watching x Compile once
+# Keep watching or compile once?
 
 Compile your templates once:
 
@@ -125,7 +121,7 @@ Or to keep watching:
 ant ~compile-views
 ```
 
-# VRAPTOR: defaults
+# Defaults using vraptor
 
 Simply define injected variables in your template:
 
@@ -189,7 +185,7 @@ VRaptor version:
 <html><% use(partial.class).render(); %></html>
 ```
 
-# Default values
+# Parameter defaults
 
 You can define a object reference variable (no primitive, sorry) with a default value by simply initializing it:
 
@@ -212,10 +208,11 @@ if(message==null) message = "hello";
 
 Be careful with default variables hell, as with any other language. This is a beta feature and does not feel right, does it?
 
-# Expression language with $
+# Expression language
 
 Current simple support to make it easier to migrate JSP files.
-We do not recommend sticking to this one on the long run as we do not intend to make it more complex.
+We do not recommend sticking to this one on the long run as we do not intend to make it more complex,
+unless the code is contributed by someone like you, thanks :)
 
 ```
 ${message} ==> write(message);
@@ -237,9 +234,9 @@ Take care of your NULLs, please. If you are nullable, it is up to you to be care
 
 # API Levels
 
-3 - you will probably use this, the one you saw so far
-2 - Compiling Templates by hand
-1 - Rendering strings to be compiled
+3. you will probably use this, the one you saw so far
+2. Compiling Templates by hand
+1. Rendering strings to be compiled
 
 # CompiledTemplate - middle level API
 
