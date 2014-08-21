@@ -28,22 +28,24 @@ to use Panettone. So let's avoid quick awesome expressive compact adjectives whi
 hello.tone:
 
 ```
-<%@ User user %>
+<%@ List<User> users %>
 <html>
+<% for(User user : users) { %>
 <h1>Hi ${user.name}</h1>
+<% }; %>
 </html>
 ```
 
 Hello.java (VRaptor):
 
 ```
-result.use(hello.class).render(user);
+result.use(hello.class).render(users);
 ```
 
 Hello.java (standalone):
 
 ```
-new hello(out).render(user);
+new hello(out).render(users);
 ```
 
 # VRaptor-Panettone API - high level API
@@ -79,7 +81,9 @@ Keep watching for changes:
 java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar --watch br.com.caelum.vraptor.mymodelpackage 
 ```
 
-# ANT
+# ANT example
+
+Copyright: copy and paste this example at will
 
 ```
 <project name="myproject" default="compile-views">
@@ -115,37 +119,19 @@ Or to keep watching:
 ant ~compile-views
 ```
 
-# Maven
+# VRAPTOR: defaults
 
-# How to add Defaults
-
-Simply create a class called `DefaultTemplate` that has all the injects you need, and add a explicit import for it.
+Simply define injected variables
 
 ```
-package br.com.caelum.vraptor.panettone;
-
-public class DefaultTemplate {
-
-	@Inject;
-	private LinkedTo linkTo;
-	
-	@Inject
-	private HttpServletRequest request;
-	
-	@Inject
-	@Nullable
-	private User loggedUser;
-}
+<%$ Localizer l %>
 ```
 
 And compile:
 
 ```
-java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar br.com.caelum.vraptor.mymodelpackage br.com.caelum.vraptor.mymodelpackage.DefaultTemplate 
+java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar javax.inject.* br.com.caelum.vraptor.i18n.* 
 ```
-
-If the compiled template finds multiple classes called `DefaultTemplate` in the auto imported packages, it will extends one of them, you don't know which one:
-
 
 # Invoking another template
 
@@ -161,9 +147,14 @@ full.tone:
 <html><% new templates.partial(out).render(); %></html>
 ```
 
+VRaptor version:
+```
+<html><% use(partial.class).render(); %></html>
+```
+
 # Default values
 
-You can define a variable with a default value by simply initializing it:
+You can define a object reference variable (no primitive, sorry) with a default value by simply initializing it:
 
 ```
 <%@ String message = "hello" %>
@@ -182,7 +173,7 @@ Only one method will be generated: `render(User user, String message)` and withi
 if(message==null) message = "hello";
 ```
 
-Be careful with default variables hell, as with any other language.
+Be careful with default variables hell, as with any other language. This is a beta feature and does not feel right, does it?
 
 # Expression language with $
 
@@ -209,16 +200,16 @@ Take care of your NULLs, please. If you are nullable, it is up to you to be care
 
 # API Levels
 
-3 - you will probably use this
+3 - you will probably use this, the one you saw so far
 2 - Compiling Templates by hand
-1 - Rendering types
+1 - Rendering strings to be compiled
 
 # CompiledTemplate - middle level API
 
 # Template API - low level API
 
 Use the Template Class to instantiate and render the string of a compatible Java method to what you want to render.
-Use this String as you wish. 
+Use this String as you wish. You can print and memorize it, for instance. Or you can use it to compile it using Java's Compiler API. 
 
 # Why shouldn't I use this other template engine?
 
@@ -231,6 +222,8 @@ The main issues we try to tackle in other Java world template engines:
 - Twirl scala dependencies
 - other language template engines: the need to learn other languages
 
+For those reasons we choose to stick to a Java type safe one.
+
 # Development
 
 To build a jar SNAPSHOT run `mvn package`.
@@ -242,9 +235,3 @@ Fork, write code, write test, send pull request :)
 Register issues in our github tracker
 
 Talk to us at www.guj.com.br or twitter @guilhermecaelum
-
-# ISSUES for now
-- docs
-	- TUTORIAL: DefaultTemplate by DefaultHelpers helpers
-	- TUTORIAL: <%$ @javax.inject.Inject Translator t %>
-	- create the mailing list
