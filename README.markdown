@@ -1,12 +1,49 @@
-## vraptor-panettone
+## panettone
 
-VRaptor Panettone is a type safe template language written in Java:
+Panettone is a type safe template language written in Java.
+
+# Why?
+
+- refactor-friendly: oh yeah! 
+- it is compiled
+- it is type safe
+- therefore... get your type errors during your view compilation
+- debug it
+- html + java
+- use the same template engine for your view, emails and much more
+- easy to learn: you already know Java
+- edit once, debug anywhere
+- no extra dependencies
+- no need to download the entire internet (also known as scala libraries)
+- no servlet container requirement
+- no jasper compiler issues with some servlet containers
+- compilation error messages come from your known compiler
+- always supporting the latest Java release
+
+We could use words like "compact", "expressive", "fluid", "awesome", "quickly" and some other self-help phrases to convince you
+to use Panettone. So let's avoid quick awesome expressive compact adjectives while describing this library. 
+
+# First example: 
+
+hello.tone:
 
 ```
-<%@ String message %>
+<%@ User user %>
 <html>
-<h1><%= message %></h1>
+<h1>Hi ${user.name}</h1>
 </html>
+```
+
+Hello.java (VRaptor):
+
+```
+result.use(hello.class).render(user);
+```
+
+Hello.java (standalone):
+
+```
+new hello(out).render(user);
 ```
 
 # VRaptor-Panettone API - high level API
@@ -168,6 +205,7 @@ ${'xpto'} ==> write("xpto");
 
 We currently support some level of nested invocations. Do not abuse.
 We currently **DO NOT** support *is* methods.
+Take care of your NULLs, please. If you are nullable, it is up to you to be careful with what you did. Don't play nullable, play safe.
 
 # API Levels
 
@@ -182,20 +220,31 @@ We currently **DO NOT** support *is* methods.
 Use the Template Class to instantiate and render the string of a compatible Java method to what you want to render.
 Use this String as you wish. 
 
+# Why shouldn't I use this other template engine?
+
+Compare your template engine options and check if it makes sense for you, your team, your project and your company's short and long term goals.
+The main issues we try to tackle in other Java world template engines:
+
+- freemarker creepy error messages
+- velocity old bugs
+- jsp jasper limitations or servlet container requirements
+- Twirl scala dependencies
+- other language template engines: the need to learn other languages
+
 # Development
 
 To build a jar SNAPSHOT run `mvn package`.
 
+# Issues, help, contributing
+
+Fork, write code, write test, send pull request :)
+
+Register issues in our github tracker
+
+Talk to us at www.guj.com.br or twitter @guilhermecaelum
+
 # ISSUES for now
 - docs
-	vantagens
-	- a mesma que a deles https://www.playframework.com/documentation/2.3.x/ScalaTemplates
-	- pq java? mensagens de erro iguais que as deles. todas as vantagens da linguagem
-	- pq <%%> ao inves de ${}? ao inves de @?
 	- TUTORIAL: DefaultTemplate by DefaultHelpers helpers
 	- TUTORIAL: <%$ @javax.inject.Inject Translator t %>
-	- you can debug your view
-	- take care of your NULLs, please
-	- CTRL+SHIFT+G your view uses it
-- later
-	refactor also refactors view?
+	- create the mailing list
