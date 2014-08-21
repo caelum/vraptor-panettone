@@ -21,7 +21,9 @@ Panettone is a type safe template language written in Java.
 - always supporting the latest Java release
 
 We could use words like "compact", "expressive", "fluid", "awesome", "quickly" and some other self-help phrases to convince you
-to use Panettone. So let's avoid quick awesome expressive compact adjectives while describing this library. 
+to use Panettone. But if you really need some self-help guidance in order to choose a template engine, we recommend [these books](http://www.amazon.com/Paulo-Coelho/e/B000AQ3HB8/ref=sr_ntt_srch_lnk_1?qid=1408630389&sr=8-1).
+
+So we will try avoiding quick awesome expressive compact fluid adjective sentences while describing this library. 
 
 # First example: 
 
