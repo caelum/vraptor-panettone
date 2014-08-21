@@ -50,15 +50,19 @@ Hello.java (standalone):
 new hello(out).render(users);
 ```
 
+# Download
+
+Download it here: 
+
 # VRaptor-Panettone API - high level API
 
-(STEP 1) Run in your command line:
+1. Start the compiler:
 
 ```
 java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar --watch br.com.caelum.vraptor.mymodelpackage 
 ```
 
-(STEP 2) Create your source panettone file at `src/main/templates`, such as `hello.tone`.
+2. Create your source panettone file at `src/main/templates`, such as `hello.tone`, yummy.
 
 ```
 <%@ String message %>
@@ -67,7 +71,7 @@ java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar --watch br.com.caelum.vraptor.mym
 </html>
 ```
 
-(STEP 3) As soon as you save your file, there should be a new file at `target/view-classes`. Add this path to your classpath!
+Save it. Look now for `templates/hello.java` at `target/view-classes`. Add this path to your classpath!
 
 # Keep watching x Compile once
 
@@ -85,7 +89,7 @@ java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar --watch br.com.caelum.vraptor.mym
 
 # ANT example
 
-Copyright: copy and paste this example at will
+Copy and paste ready
 
 ```
 <project name="myproject" default="compile-views">
@@ -123,10 +127,10 @@ ant ~compile-views
 
 # VRAPTOR: defaults
 
-Simply define injected variables
+Simply define injected variables in your template:
 
 ```
-<%$ Localizer l %>
+<%$ @Inject Localizer l %>
 ```
 
 And compile:
@@ -134,6 +138,37 @@ And compile:
 ```
 java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar javax.inject.* br.com.caelum.vraptor.i18n.* 
 ```
+
+# Methods and lambdas
+
+Yeah, we all love methods, and we know we should be careful with logic in the view layer, right?
+Methods *do not* have access to the local variables defined in the templates, you need to receive them if you want.
+
+<%$
+public void love(User user) {
+	out.write("yes, " + user.getName() + ", I do.");
+}
+%>
+
+And invoke it:
+
+<%
+love(user);
+%>
+
+Want a method that is cheap and access the variables? Define a lambda:
+
+<%
+Runnable love = () -> {
+	out.write("Hi " + user.getName());
+};
+%>
+
+And invoke it:
+
+<% love.run(); %>
+
+Yes, this is Java 8 compatible, in fact we require Java 8.
 
 # Invoking another template
 
@@ -225,6 +260,15 @@ The main issues we try to tackle in other Java world template engines:
 - other language template engines: the need to learn other languages
 
 For those reasons we choose to stick to a Java type safe one.
+
+# Teach me more
+
+Go through the test cases, there are plenty of working examples.
+
+# What is that crazy parser I saw?
+
+Good question. The parser was not intended to be a complex one. It should run in a linear time, and preferably just
+do a one step read so it precompiles to Java. So far, so good. Help refactoring the parser is appreciated.  
 
 # Development
 
