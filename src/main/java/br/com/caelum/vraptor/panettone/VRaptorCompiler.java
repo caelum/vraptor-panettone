@@ -11,8 +11,12 @@ public class VRaptorCompiler {
 	
 	private final Compiler compiler;
 	
-	VRaptorCompiler(List<String> imports) {
-		this.compiler = new Compiler(new File(VIEW_INPUT), new File(VIEW_OUTPUT), imports, new VRaptorCompilationListener());
+	public VRaptorCompiler(List<String> imports) {
+		this(new File("."), imports);
+	}
+	
+	public VRaptorCompiler(File baseDir, List<String> imports) {
+		this.compiler = new Compiler(new File(baseDir, VIEW_INPUT), new File(baseDir, VIEW_OUTPUT), imports, new VRaptorCompilationListener());
 	}
 	
 	public void start() {
@@ -24,11 +28,24 @@ public class VRaptorCompiler {
 	}
 
 	public void compileAll() {
-		List<Exception> exceptions = new ArrayList<>();
-		compiler.precompile(exceptions);
-		for(Exception ex : exceptions) {
+		for(Exception ex : compileAndRetrieveErrors()) {
 			System.out.println(ex.getMessage());
 		}
+	}
+
+	public List<Exception> compileAndRetrieveErrors() {
+		List<Exception> exceptions = new ArrayList<>();
+		compiler.precompile(exceptions);
+		return exceptions;
+	}
+	
+	public void clear() {
+		compiler.clear();
+	}
+
+	public void compile(File file) {
+		compiler.compile(file);
+		// TODO should return the error
 	}
 
 }

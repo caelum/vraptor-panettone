@@ -143,4 +143,8 @@ public class Compiler {
 		}
 	}
 
+	public void compile(File file) {
+		// TODO how to compile just this file?
+	}
+
 }

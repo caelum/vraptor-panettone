@@ -11,14 +11,13 @@ import java.io.Reader;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
-
-import com.google.common.io.Files;
 
 public class CompiledTemplate {
 
@@ -53,7 +52,7 @@ public class CompiledTemplate {
 							"private void write(Object o) { if(o!=null) out.write(o.toString()); }" +
 							"private void write(String o) { if(o!=null) out.write(o); }" +
 							"}\n";
-			Files.write(sourceCode, file, Charset.forName("UTF-8"));
+			Files.write(file.toPath(), Arrays.asList(sourceCode), Charset.forName("UTF-8"));
 			
 		} catch (IOException e) {
 			throw new CompilationIOException("Unable to compile", e);
