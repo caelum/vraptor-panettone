@@ -30,11 +30,26 @@ public class Compiler {
 	public Compiler(File from, File to, List<String> imports, CompilationListener... listeners) {
 		this.from = from;
 		this.to = to;
-		this.imports = imports;
+		this.imports = new ArrayList<>(imports);
 		this.listeners = listeners;
 		from.mkdirs();
 		to.mkdirs();
 		this.watcher = new Watcher(from.toPath(), this);
+		File defaults = new File(from, "tone.defaults");
+		if(defaults.exists()) {
+			parse(defaults);
+		}
+	}
+
+	private void parse(File defaults) {
+		try {
+			Files.lines(defaults.toPath())
+				.filter(l -> l.startsWith("import "))
+				.map(l -> l.substring("import ".length()).trim())
+				.forEach(l -> this.imports.add(l));
+		} catch (IOException e) {
+			throw new RuntimeException("Unable to read defaults "+ defaults.getAbsolutePath());
+		}
 	}
 
 	public List<Exception> compileAll() {
