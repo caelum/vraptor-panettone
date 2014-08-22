@@ -1,8 +1,8 @@
 package br.com.caelum.vraptor.panettone;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class VRaptorCompiler {
 
@@ -34,9 +34,7 @@ public class VRaptorCompiler {
 	}
 
 	public List<Exception> compileAndRetrieveErrors() {
-		List<Exception> exceptions = new ArrayList<>();
-		compiler.precompile(exceptions);
-		return exceptions;
+		return compiler.compileAll();
 	}
 	
 	public void clear() {
@@ -47,9 +45,8 @@ public class VRaptorCompiler {
 		compiler.removeJavaVersionOf(path);
 	}
 
-	public void compile(File file) {
-		compiler.compile(file);
-		// TODO should return the error
+	public Optional<Exception> compile(File file) {
+		return compiler.compile(file);
 	}
 
 }

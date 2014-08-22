@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Compiler {
 
@@ -38,53 +38,37 @@ public class Compiler {
 	}
 
 	public List<Exception> compileAll() {
-		List<Exception> exceptions = new ArrayList<>();
-		List<CompiledTemplate> toCompile = precompile(exceptions);
-		return fullyCompile(exceptions, toCompile);
+		return precompile();
 	}
 
-	public List<CompiledTemplate> precompile(List<Exception> exceptions) {
+	private List<Exception> precompile() {
 		List<File> files = tonesAt(from);
 		long start = System.currentTimeMillis();
 		System.out.println("Compiling " + files.size() + " files...");
-		List<CompiledTemplate> toCompile = new ArrayList<>();
-		for(File f : files) {
-			try(FileReader reader = new FileReader(f)) {
-				Template template = new Template(reader);
-				String name = noExtension(nameFor(f));
-				CompiledTemplate compiled = new CompiledTemplate(to, name, imports, template.renderType(), listeners);
-				toCompile.add(compiled);
-			} catch (Exception e) {
-				exceptions.add(e);
-			}
-		}
+		List<Exception> exceptions = files.stream()
+			.map(this::compile)
+			.filter(Optional::isPresent)
+			.map(Optional::get)
+			.collect(Collectors.toList());
 		long finish = System.currentTimeMillis();
 		double delta = (finish - start) / 1000.0;
-		if(exceptions.isEmpty()) {
-			System.out.println(String.format("Precompilation successful in %.2f secs", delta));
-		} else {
+		if(!exceptions.isEmpty()) {
 			System.err.println(String.format("Precompilation failed in %.2f secs", delta));
-		}
-		return toCompile;
-	}
-
-	private List<Exception> fullyCompile(List<Exception> exceptions,
-			List<CompiledTemplate> toCompile) {
-		SimpleJavaCompiler compiler = new SimpleJavaCompiler(to);
-		Stream<File> filesToCompile = toCompile.stream().map(CompiledTemplate::getFile);
-		try {
-			compiler.compile(filesToCompile);
-		} catch (CompilationLoadException | CompilationIOException e) {
-			exceptions.add(e);
-		}
-		if(exceptions.isEmpty()) {
-			for(CompiledTemplate template : toCompile) {
-				types.put(template.getPackagedName(), compiler.load(template));
-			}
 		}
 		return exceptions;
 	}
-	
+
+	public Optional<Exception> compile(File f) {
+		try(FileReader reader = new FileReader(f)) {
+			Template template = new Template(reader);
+			String name = noExtension(nameFor(f));
+			new CompiledTemplate(to, name, imports, template.renderType(), listeners);
+			return Optional.empty();
+		} catch (Exception e) {
+			return Optional.of(e);
+		}
+	}
+
 	private String nameFor(File f) {
 		String replaced = f.getAbsolutePath().replace(from.getAbsolutePath(), "");
 		if(replaced.startsWith("/")) return replaced.substring(1);
@@ -141,10 +125,6 @@ public class Compiler {
 		} catch (IOException e) {
 			System.out.println("Unable to clear folders: " + current.getAbsolutePath() + " due to " + e.getMessage());
 		}
-	}
-
-	public void compile(File file) {
-		// TODO how to compile just this file?
 	}
 
 	public void removeJavaVersionOf(String path) {
