@@ -99,6 +99,20 @@ public class TemplateTest {
 		assertEquals(expected, result);
 	}
 
+	@Test
+	public void shouldSupportBackslashes() {
+		String expected = emptyRun("write(\"<html>\\\\s</html>\");\n");
+		String result = new Template("<html>\\s</html>").renderType();
+		assertEquals(expected, result);
+	}
+
+	@Test
+	public void shouldSupportBackslashesInQuotes() {
+		String expected = emptyRun("write(\"var words = p.split(\\\"\\\\s+\\\");\");\n");
+		String result = new Template("var words = p.split(\"\\s+\");").renderType();
+		assertEquals(expected, result);
+	}
+
 	private String emptyRun(String msg) {
 		return "public void render() {\n" + msg+"}\n";
 	}

@@ -10,7 +10,6 @@ public class VRaptorCompilationListener implements CompilationListener {
 	@Override
 	public String overrideConstructor(String typeName) {
 		return "@javax.inject.Inject\n"
-				+ "@javax.annotation.Nullable\n"
 				+ "private javax.servlet.http.HttpServletResponse res;\n"
 				+ "@javax.inject.Inject\n"
 				+ "private br.com.caelum.vraptor.Result result;\n"

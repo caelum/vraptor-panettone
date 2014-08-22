@@ -109,7 +109,7 @@ public class Template {
 	}
 
 	private String escapeQuotes(String content) {
-		return content.replace("\"", "\\\"");
+		return content.replace("\\", "\\\\").replace("\"", "\\\"");
 	}
 
 	public class InvalidTemplate extends RuntimeException {
