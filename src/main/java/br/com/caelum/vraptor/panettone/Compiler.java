@@ -147,4 +147,11 @@ public class Compiler {
 		// TODO how to compile just this file?
 	}
 
+	public void removeJavaVersionOf(String path) {
+		int position = path.indexOf(VRaptorCompiler.VIEW_INPUT);
+		path = path.substring(position + VRaptorCompiler.VIEW_INPUT.length() + 1);
+		String java = "templates/" + path.replace(".tone", ".java");
+		new File(to, java).delete();
+	}
+
 }

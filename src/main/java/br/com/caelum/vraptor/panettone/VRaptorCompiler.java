@@ -6,8 +6,8 @@ import java.util.List;
 
 public class VRaptorCompiler {
 
-	private static final String VIEW_OUTPUT = "target/view-classes";
-	private static final String VIEW_INPUT = "src/main/view";
+	public static final String VIEW_OUTPUT = "target/view-classes";
+	public static final String VIEW_INPUT = "src/main/views";
 	
 	private final Compiler compiler;
 	
@@ -41,6 +41,10 @@ public class VRaptorCompiler {
 	
 	public void clear() {
 		compiler.clear();
+	}
+	
+	public void removeJavaVersionOf(String path) {
+		compiler.removeJavaVersionOf(path);
 	}
 
 	public void compile(File file) {

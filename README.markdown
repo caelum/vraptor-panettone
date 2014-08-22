@@ -60,7 +60,7 @@ Download it here:
 ```
 java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar --watch br.com.caelum.vraptor.mymodelpackage 
 ```
-2. Create your source panettone file at `src/main/templates`, such as `hello.tone`, yummy.
+2. Create your source panettone file at `src/main/views`, such as `hello.tone`, yummy.
 ```
 <%@ String message %>
 <html>
