@@ -81,9 +81,10 @@ public class CompiledTemplate {
 	}
 	
 	private String importStatementsFor(List<String> imports) {
+		String base = "import java.util.*;\n";
 		if (imports.isEmpty())
-			return "";
-		return imports.stream().map(s -> "import " + s + ";\n").collect(joining()) + "\n";
+			return base;
+		return base + imports.stream().map(s -> "import " + s + ";\n").collect(joining()) + "\n";
 	}
 
 	private String getTypeName() {
