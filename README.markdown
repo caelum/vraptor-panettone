@@ -50,12 +50,19 @@ Hello.java (standalone):
 new hello(out).render(users);
 ```
 
-# Download
+# Eclipse
 
-Download it here: 
+Why would you use the command line if you have an IDE? Just add the plugin from this update site
+and add the project nature:
 
-# VRaptor-Panettone API - high level API
+```
+``` 
 
+# Command line high level api download
+
+0. Download
+```
+```
 1. Start the compiler:
 ```
 java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar --watch br.com.caelum.vraptor.mymodelpackage 
