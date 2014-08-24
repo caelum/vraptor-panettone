@@ -54,6 +54,13 @@ public class Template {
 					builder.append("write(" + evaluation.substring(1) + ");\n");
 				} else if(evaluation.startsWith("--")){
 					// comments
+				} else if(evaluation.startsWith("&")){
+					if(evaluation.startsWith("&/")) {
+						builder.append("};\n");
+					} else {
+						String name = evaluation.substring(1);
+						builder.append("Runnable " + name + " = () -> {\n");
+					}
 				} else if(evaluation.startsWith("@")){
 					String variableFull = evaluation.substring(1);
 					int equalsPosition = variableFull.indexOf("=");

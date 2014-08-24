@@ -94,7 +94,7 @@ public class Compiler {
 		try {
 			List<File> tones = Files.walk(currentDir.toPath(), 10)
 					.map(Path::toFile)
-					.filter(p -> p.isDirectory() ||  p.getName().endsWith(".tone"))
+					.filter(p -> p.isDirectory() ||  p.getName().endsWith(".tone") || p.getName().contains(".tone."))
 					.collect(Collectors.toList());
 			
 			return tones.stream().filter(File::isFile).collect(toList());
@@ -104,7 +104,7 @@ public class Compiler {
 	}
 
 	private String noExtension(String name) {
-		return name.substring(0, name.lastIndexOf("."));
+		return name.replaceAll("\\.tone.*", "");
 	}
 
 	public Class<?> get(String type) {
@@ -145,7 +145,7 @@ public class Compiler {
 	public void removeJavaVersionOf(String path) {
 		int position = path.indexOf(VRaptorCompiler.VIEW_INPUT);
 		path = path.substring(position + VRaptorCompiler.VIEW_INPUT.length() + 1);
-		String java = "templates/" + path.replace(".tone", ".java");
+		String java = "templates/" + path.replace("\\.tone.*", "\\.java");
 		new File(to, java).delete();
 	}
 

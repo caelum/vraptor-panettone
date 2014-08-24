@@ -88,7 +88,7 @@ public class CompiledTemplate {
 	}
 
 	private String getTypeName() {
-		return file.getName().substring(0, file.getName().lastIndexOf("."));
+		return file.getName().replaceAll("\\.java.*", "");
 	}
 	
 	public CompiledTemplate compile() {

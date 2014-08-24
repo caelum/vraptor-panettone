@@ -47,6 +47,7 @@ public class SimpleJavaCompiler {
 		}
 	}
 
+	@SuppressWarnings("rawtypes") 
 	private void parseErrors(DiagnosticCollector<JavaFileObject> diagnostics,
 			StringWriter out) {
 		StringBuilder builder = new StringBuilder();

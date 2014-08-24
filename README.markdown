@@ -27,7 +27,7 @@ So we will try avoiding quick awesome expressive compact fluid adjective sentenc
 
 # First example: 
 
-hello.tone:
+hello.tone.html:
 
 ```
 <%@ List<User> users %>
@@ -60,7 +60,7 @@ Download it here:
 ```
 java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar --watch br.com.caelum.vraptor.mymodelpackage 
 ```
-2. Create your source panettone file at `src/main/views`, such as `hello.tone`, yummy.
+2. Create your source panettone file at `src/main/views`, such as `hello.tone.html`, yummy.
 ```
 <%@ String message %>
 <html>
@@ -121,6 +121,17 @@ Or to keep watching:
 ant ~compile-views
 ```
 
+# Imports
+
+`java.util.*` is imported by default to all your templates.
+
+You can add extra imports by creating a file `src/main/views/tone.defaults` such as:
+
+```
+import br.com.caelum.myproject.model.*
+import java.function.*
+```
+
 # Defaults using vraptor
 
 Simply define injected variables in your template:
@@ -170,12 +181,12 @@ Yes, this is Java 8 compatible, in fact we require Java 8.
 
 Feel free to include another template in any part of your template:
 
-partial.tone:
+partial.tone.html:
 ```
 <body>Hello</body>
 ```
 
-full.tone:
+full.tone.html:
 ```
 <html><% new templates.partial(out).render(); %></html>
 ```
@@ -184,6 +195,31 @@ VRaptor version:
 ```
 <html><% use(partial.class).render(); %></html>
 ```
+
+# Invoking another template with a custom body tag
+
+partial.tone.html:
+```
+<%@ Runnable body %>
+<body>${body.run()}</body>
+```
+
+VRaptor version:
+```
+<html>
+<%&body%>
+	Custom code here
+<%&/body%>
+<% use(partial.class).render(body); %>
+</html>
+```
+
+Because %body% is a `Runnable`, it can be invoked with the method `run`. It has also access to all variables
+that the parent template has (and none to its children template).
+
+If you want to make it optional:
+
+<%@ Runnable body = () -> {} %>
 
 # Parameter defaults
 
@@ -255,15 +291,23 @@ write("</html>");
 
 Live your life as usual, no crazy `yield`s to debug :).
 
-# API Levels
 
-3. you will probably use this, the one you saw so far
-2. Compiling Templates by hand
-1. Rendering strings to be compiled
+# Quick question and answers
 
-# CompiledTemplate - middle level API
+1. Why is everything type safe?
+Because we are playing Java.
+2. Why is everything compiled?
+Because we are playing safer.
+3. Why is (almost) everything programmatic?
+Because it is easy to provide a config file when something is programatic. It is hard to provide a programatic API to something that is based in text files.
+4. Why is everything so hard in life?
+Because we are playing hard.
 
-# Template API - low level API
+# What are the API levels?
+
+## you will probably use this, the one you saw so far
+## Compiling Templates by hand
+## Rendering strings to be compiled
 
 Use the Template Class to instantiate and render the string of a compatible Java method to what you want to render.
 Use this String as you wish. You can print and memorize it, for instance. Or you can use it to compile it using Java's Compiler API. 
@@ -301,9 +345,3 @@ Fork, write code, write test, send pull request :)
 Register issues in our github tracker
 
 Talk to us at www.guj.com.br or twitter @guilhermecaelum
-
-
-
-TODO:
-
-support .tone.html

@@ -86,7 +86,6 @@ public class CompiledTemplateTest {
 		compile("error", "<%for a%>");
 	}
 
-
 	private String tryToRun(CompiledTemplate template) {
 		return tryToRun(template, new Class[]{});
 	}

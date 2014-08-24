@@ -38,49 +38,63 @@ public class TemplateTest {
 
 	@Test
 	public void shouldSupportExpressionLanguageMethodInvocation() {
-		String expected = emptyRun("write(\"<html>\");\nwrite(message.bytes(a.getB()).c(d).getE().f());\nwrite(\"</html>\");\n");
+		String expected = emptyRun("write(\"<html>\");\n"
+				+ "write(message.bytes(a.getB()).c(d).getE().f());\n"
+				+ "write(\"</html>\");\n");
 		String result = new Template("<html>${message.bytes(a.b).c(d).e.f()}</html>").renderType();
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldSupportExpressionLanguageDoubleGetterInvocation() {
-		String expected = emptyRun("write(\"<html>\");\nwrite(message.getBytes().getLength());\nwrite(\"</html>\");\n");
+		String expected = emptyRun("write(\"<html>\");\n"
+				+ "write(message.getBytes().getLength());\n"
+				+ "write(\"</html>\");\n");
 		String result = new Template("<html>${message.bytes.length}</html>").renderType();
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldSupportExpressionLanguageMapAccess() {
-		String expected = emptyRun("write(\"<html>\");\nwrite(message.get(15));\nwrite(\"</html>\");\n");
+		String expected = emptyRun("write(\"<html>\");\n"
+				+ "write(message.get(15));\n"
+				+ "write(\"</html>\");\n");
 		String result = new Template("<html>${message[15]}</html>").renderType();
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldSupportExpressionLanguageString() {
-		String expected = emptyRun("write(\"<html>\");\nwrite(\"a.b\");\nwrite(\"</html>\");\n");
+		String expected = emptyRun("write(\"<html>\");\n"
+				+ "write(\"a.b\");\n"
+				+ "write(\"</html>\");\n");
 		String result = new Template("<html>${'a.b'}</html>").renderType();
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldSupportExpressionLanguageMapAccessWithString() {
-		String expected = emptyRun("write(\"<html>\");\nwrite(message.get(\"a.b\"));\nwrite(\"</html>\");\n");
+		String expected = emptyRun("write(\"<html>\");\n"
+				+ "write(message.get(\"a.b\"));\n"
+				+ "write(\"</html>\");\n");
 		String result = new Template("<html>${message['a.b']}</html>").renderType();
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldSupportExpressionLanguageComplexInvocation() {
-		String expected = emptyRun("write(\"<html>\");\nwrite(message.getSize().get(bytes));\nwrite(\"</html>\");\n");
+		String expected = emptyRun("write(\"<html>\");\n"
+				+ "write(message.getSize().get(bytes));\n"
+				+ "write(\"</html>\");\n");
 		String result = new Template("<html>${message.size[bytes]}</html>").renderType();
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldSupportExpressionLanguageComplexInvocation2() {
-		String expected = emptyRun("write(\"<html>\");\nwrite(l.get(nip.getDate()).custom(\"date_hour\"));\nwrite(\"</html>\");\n");
+		String expected = emptyRun("write(\"<html>\");\n"
+				+ "write(l.get(nip.getDate()).custom(\"date_hour\"));\n"
+				+ "write(\"</html>\");\n");
 		String result = new Template("<html>${l[nip.date].custom('date_hour')}</html>").renderType();
 		assertEquals(expected, result);
 	}
@@ -167,9 +181,24 @@ public class TemplateTest {
 	@Test
 	public void shouldSupportMethods() {
 		String getName = " String getName() { return \"Guilherme\"; } \n";
-		String render = "public void render( String mensagem ) {\nwrite(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
+		String render = "public void render( String mensagem ) {\n"
+				+ "write(\"<html>\");\n"
+				+ "write(mensagem);\n"
+				+ "write(\"</html>\");\n"
+				+ "}\n";
 		String expected = getName + render;
 		String result = new Template("<%@ String mensagem %><html><%=mensagem%><%$ String getName() { return \"Guilherme\"; } %></html>").renderType();
+		assertEquals(expected, result);
+	}
+
+	@Test
+	public void shouldSupportBodies() {
+		String expected = "public void render() {\n"
+				+ "Runnable body = () -> {\n"
+				+ "write(\"Guilherme\");\n"
+				+ "};\n"
+				+ "write(\"<html>\");\nbody.run();\nwrite(\"</html>\");\n}\n";
+		String result = new Template("<%&body%>Guilherme<%&/body%><html><%body.run();%></html>").renderType();
 		assertEquals(expected, result);
 	}
 
