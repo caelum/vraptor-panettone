@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.caelum.vraptor.panettone.parser.ast.ASTWalker;
+import br.com.caelum.vraptor.panettone.parser.ast.CommentNode;
 import br.com.caelum.vraptor.panettone.parser.ast.ExpressionNode;
 import br.com.caelum.vraptor.panettone.parser.ast.HTMLNode;
 import br.com.caelum.vraptor.panettone.parser.ast.InjectDeclarationNode;
@@ -93,6 +94,12 @@ public class PanettoneWalker implements ASTWalker {
 
 	@Override
 	public void visitReusableVariable(ReusableVariableNode node) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visitComment(CommentNode node) {
 		// TODO Auto-generated method stub
 		
 	}

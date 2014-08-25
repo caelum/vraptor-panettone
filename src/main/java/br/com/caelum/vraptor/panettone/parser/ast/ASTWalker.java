@@ -22,4 +22,6 @@ public interface ASTWalker {
 
 	void visitReusableVariable(ReusableVariableNode node);
 
+	void visitComment(CommentNode node);
+
 }

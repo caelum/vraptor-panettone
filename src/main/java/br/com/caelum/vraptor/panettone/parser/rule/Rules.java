@@ -13,6 +13,7 @@ public enum Rules {
 	EXPRESSION(new ExpressionRule(), true),
 	METHOD_INVOCATION(new MethodInvocationRule(), true),
 	PRINT_VARIABLE(new PrintVariableRule(), true),
+	COMMENT(new CommentRule(), true),
 
 	SCRIPTLET_PRINT(new ScriptletPrintRule(), true),
 	
