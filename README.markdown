@@ -228,7 +228,7 @@ If you want to make it optional:
 
 <%@ Runnable body = () -> {} %>
 
-# Parameter defaults
+# Parameter defaults (to be implemented)
 
 You can define a object reference variable (no primitive, sorry) with a default value by simply initializing it:
 
