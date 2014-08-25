@@ -21,9 +21,9 @@ public class VariableDeclarationRuleTest {
 	@Test
 	public void shouldUnderstandVariablesWithFullTypeName() {
 		SourceCode sc = new SourceCode(
-				"bla bla"+
-				" (@ pac1.pac2.Class end) "+
-				"ble ble"
+				"bla bla\n"+
+				" (@ pac1.pac2.Class end)\n"+
+				"ble ble\n"
 		);
 		
 		List<TextChunk> chunks = rule.getChunks(sc);
@@ -33,8 +33,8 @@ public class VariableDeclarationRuleTest {
 	@Test
 	public void shouldUnderstandVariablesWithGenerics() {
 		SourceCode sc = new SourceCode(
-						" (@ java.util.List<br.com.Entity> var1) "+
-						" (@ java.util.List < br.com.Entity > var2)"
+						" (@ java.util.List<br.com.Entity> var1)\n"+
+						" (@ java.util.List < br.com.Entity > var2)\n"
 				);
 		
 		List<TextChunk> chunks = rule.getChunks(sc);
@@ -46,10 +46,10 @@ public class VariableDeclarationRuleTest {
 	@Test
 	public void shouldUnderstandVariablesWithSimpleTypes() {
 		SourceCode sc = new SourceCode(
-				"bla bla"+
-				" (@ String nome) "+
-				" (@ String end) "+
-				"ble ble"
+				"bla bla\n"+
+				" (@ String nome) \n"+
+				" (@ String end) \n"+
+				"ble ble\n"
 		);
 		
 		List<TextChunk> chunks = rule.getChunks(sc);
@@ -57,14 +57,27 @@ public class VariableDeclarationRuleTest {
 		Assert.assertEquals("(@ String nome)", chunks.get(0).getText());
 		Assert.assertEquals("(@ String end)", chunks.get(1).getText());
 	}
+
+	@Test
+	public void shouldUnderstandDefaultValues() {
+		SourceCode sc = new SourceCode(
+						" (@ String nome = \"Mau\")\n"+
+						" (@ int number = \"10\")\n"
+				);
+		
+		List<TextChunk> chunks = rule.getChunks(sc);
+		Assert.assertEquals(2, chunks.size());
+		Assert.assertEquals("(@ String nome = \"Mau\")", chunks.get(0).getText());
+		Assert.assertEquals("(@ int number = \"10\")", chunks.get(1).getText());
+	}
 	
 	@Test
 	public void shouldIgnoreWhitespaces() {
 		SourceCode sc = new SourceCode(
-				"bla bla"+
-						" (@String   nome) "+
-						" (@   String   end   ) "+
-						"ble ble"
+				"bla bla\n"+
+						" (@String   nome) \n"+
+						" (@   String   end   ) \n"+
+						"ble ble\n"
 				);
 		
 		List<TextChunk> chunks = rule.getChunks(sc);
@@ -77,9 +90,15 @@ public class VariableDeclarationRuleTest {
 	public void shouldCreateNode() {
 		
 		VariableDeclarationNode node = (VariableDeclarationNode) rule.getNode(new TextChunk("(@ String nome)"));
+		VariableDeclarationNode node2 = (VariableDeclarationNode) rule.getNode(new TextChunk("(@ int x = \"10\")"));
 		
 		Assert.assertEquals("String", node.getType());
 		Assert.assertEquals("nome", node.getName());
+		Assert.assertNull(node.getDefaultValue());
+
+		Assert.assertEquals("int", node2.getType());
+		Assert.assertEquals("x", node2.getName());
+		Assert.assertEquals("10", node2.getDefaultValue());
 		
 	}
 }
