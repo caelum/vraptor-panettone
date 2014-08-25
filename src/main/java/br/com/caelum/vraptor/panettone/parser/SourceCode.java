@@ -1,12 +1,13 @@
 package br.com.caelum.vraptor.panettone.parser;
 
 import java.util.HashMap;
+
 import java.util.Map;
 
 import br.com.caelum.vraptor.panettone.parser.rule.Rules;
 import static br.com.caelum.vraptor.panettone.parser.Tokens.RULECHUNK_END;
 import static br.com.caelum.vraptor.panettone.parser.Tokens.RULECHUNK_START;
-import static br.com.caelum.vraptor.panettone.parser.Tokens.RULECHUNK_START_REGEX;
+import static br.com.caelum.vraptor.panettone.parser.Regexes.RULECHUNK_START_REGEX;
 import static br.com.caelum.vraptor.panettone.parser.Tokens.SCRIPTLET_END;
 import static br.com.caelum.vraptor.panettone.parser.Tokens.SCRIPTLET_START;
 

@@ -45,6 +45,19 @@ public class InjectDeclarationRuleTest {
 		Assert.assertEquals("(@inject String nome)", chunks.get(0).getText());
 		Assert.assertEquals("(@inject String end_)", chunks.get(1).getText());
 	}
+
+	@Test
+	public void shouldUnderstandGenericDeclaration() {
+		SourceCode sc = new SourceCode(
+						"(@inject List<X> var1)"+
+						"(@inject List< a.b.Bla > var2)"
+				);
+		
+		List<TextChunk> chunks = rule.getChunks(sc);
+		Assert.assertEquals(2, chunks.size());
+		Assert.assertEquals("(@inject List<X> var1)", chunks.get(0).getText());
+		Assert.assertEquals("(@inject List< a.b.Bla > var2)", chunks.get(1).getText());
+	}
 	
 	@Test
 	public void shouldCreateNode() {

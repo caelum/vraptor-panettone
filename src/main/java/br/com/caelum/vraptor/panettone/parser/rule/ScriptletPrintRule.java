@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import br.com.caelum.vraptor.panettone.parser.Regexes;
 import br.com.caelum.vraptor.panettone.parser.SourceCode;
 import br.com.caelum.vraptor.panettone.parser.TextChunk;
 import br.com.caelum.vraptor.panettone.parser.ast.Node;
@@ -17,7 +18,7 @@ public class ScriptletPrintRule implements Rule {
 		List<TextChunk> chunks = new ArrayList<TextChunk>();
 		
 		String variableExpr = "[\\w\\.\\(\\)\\_]";
-		Pattern p = Pattern.compile("<%=\\s*(" + variableExpr + ")+\\s*%>");
+		Pattern p = Pattern.compile("<%=" + Regexes.SPACE + "(" + variableExpr + ")+" + Regexes.SPACE + "%>");
 		Matcher matcher = p.matcher(sc.getSource());
 		
 		while(matcher.find()) {

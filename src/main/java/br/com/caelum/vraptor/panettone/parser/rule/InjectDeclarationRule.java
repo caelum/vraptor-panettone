@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import br.com.caelum.vraptor.panettone.parser.Regexes;
 import br.com.caelum.vraptor.panettone.parser.SourceCode;
 import br.com.caelum.vraptor.panettone.parser.TextChunk;
 import br.com.caelum.vraptor.panettone.parser.ast.InjectDeclarationNode;
@@ -15,8 +16,16 @@ public class InjectDeclarationRule implements Rule {
 	@Override
 	public List<TextChunk> getChunks(SourceCode sc) {
 		List<TextChunk> chunks = new ArrayList<TextChunk>();
-		
-		Pattern p = Pattern.compile("\\(@inject (\\w|[\\.\\_<>])+\\s*(\\w|[\\_])+\\s*\\)");
+				
+		Pattern p = Pattern.compile(
+				"\\(@inject " + 
+				Regexes.CLASS_NAME + 
+				Regexes.SPACE + 
+				Regexes.GENERICS +
+				Regexes.SPACE + 
+				"[\\w\\_]+" +
+				Regexes.SPACE+
+				"\\)");
 		Matcher matcher = p.matcher(sc.getSource());
 		
 		while(matcher.find()) {

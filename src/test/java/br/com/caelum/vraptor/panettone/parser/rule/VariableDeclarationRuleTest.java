@@ -33,13 +33,13 @@ public class VariableDeclarationRuleTest {
 	@Test
 	public void shouldUnderstandVariablesWithGenerics() {
 		SourceCode sc = new SourceCode(
-				"bla bla"+
-						" (@ java.util.List<br.com.Entity> end) "+
-						"ble ble"
+						" (@ java.util.List<br.com.Entity> var1) "+
+						" (@ java.util.List < br.com.Entity > var2)"
 				);
 		
 		List<TextChunk> chunks = rule.getChunks(sc);
-		Assert.assertEquals("(@ java.util.List<br.com.Entity> end)", chunks.get(0).getText());
+		Assert.assertEquals("(@ java.util.List<br.com.Entity> var1)", chunks.get(0).getText());
+		Assert.assertEquals("(@ java.util.List < br.com.Entity > var2)", chunks.get(1).getText());
 	}
 	
 	

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import br.com.caelum.vraptor.panettone.parser.Regexes;
 import br.com.caelum.vraptor.panettone.parser.SourceCode;
 import br.com.caelum.vraptor.panettone.parser.TextChunk;
 import br.com.caelum.vraptor.panettone.parser.ast.Node;
@@ -16,8 +17,18 @@ public class VariableDeclarationRule implements Rule {
 	public List<TextChunk> getChunks(SourceCode sc) {
 		List<TextChunk> chunks = new ArrayList<TextChunk>();
 		
-		String space = "\\s*";
-		Pattern p = Pattern.compile("\\(@" + space + "(\\w|[\\.\\_<>])+" + space + "(\\w|[\\_])+" + space + "\\)");
+		
+		Pattern p = Pattern.compile(
+				"\\(@" + 
+				Regexes.SPACE + 
+				Regexes.CLASS_NAME + 
+				Regexes.SPACE + 
+				Regexes.GENERICS + 
+				Regexes.SPACE + 
+				Regexes.CLASS_NAME + 
+				Regexes.SPACE + 
+				"\\)");
+		
 		Matcher matcher = p.matcher(sc.getSource());
 		
 		while(matcher.find()) {
