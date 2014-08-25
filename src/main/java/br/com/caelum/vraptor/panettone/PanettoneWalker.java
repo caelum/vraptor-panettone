@@ -11,6 +11,7 @@ import br.com.caelum.vraptor.panettone.parser.ast.HTMLNode;
 import br.com.caelum.vraptor.panettone.parser.ast.InjectDeclarationNode;
 import br.com.caelum.vraptor.panettone.parser.ast.MethodInvocationNode;
 import br.com.caelum.vraptor.panettone.parser.ast.PrintVariableNode;
+import br.com.caelum.vraptor.panettone.parser.ast.ReusableVariableNode;
 import br.com.caelum.vraptor.panettone.parser.ast.ScriptletNode;
 import br.com.caelum.vraptor.panettone.parser.ast.ScriptletPrintNode;
 import br.com.caelum.vraptor.panettone.parser.ast.VariableDeclarationNode;
@@ -88,6 +89,12 @@ public class PanettoneWalker implements ASTWalker {
 		String prefix = "public void render(" + parameters + ") {\n";
 		String sufix = "}\n";
 		return injects + prefix + code.toString() + sufix;
+	}
+
+	@Override
+	public void visitReusableVariable(ReusableVariableNode node) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

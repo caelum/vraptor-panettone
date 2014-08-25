@@ -20,4 +20,6 @@ public interface ASTWalker {
 
 	void visitInjectDeclaration(InjectDeclarationNode node);
 
+	void visitReusableVariable(ReusableVariableNode node);
+
 }
