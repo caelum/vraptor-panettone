@@ -20,6 +20,19 @@ public class ScriptletPrintRuleTest {
 	}
 	
 	@Test
+	public void shouldIgnoreSpaces() {
+		SourceCode sc = new SourceCode(
+				"<%=var%> <%= var%> <%=var %> <%= var %>"
+				);
+		
+		List<TextChunk> chunks = rule.getChunks(sc);
+		Assert.assertEquals("<%=var%>", chunks.get(0).getText());
+		Assert.assertEquals("<%= var%>", chunks.get(1).getText());
+		Assert.assertEquals("<%=var %>", chunks.get(2).getText());
+		Assert.assertEquals("<%= var %>", chunks.get(3).getText());
+	}
+	
+	@Test
 	public void shouldAcceptScriptletPrint() {
 		SourceCode sc = new SourceCode(
 				"bla <%= a_b %> bla"

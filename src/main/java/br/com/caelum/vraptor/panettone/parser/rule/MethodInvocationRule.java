@@ -21,8 +21,11 @@ public class MethodInvocationRule implements Rule {
 		String quotes = "\\\"";
 		String underscore = "\\_";
 		String simpleQuotes = "'";
-		String specialChars = dot + brackets + quotes + simpleQuotes + underscore;
-		Pattern p = Pattern.compile("@\\S(\\w|[" + specialChars + "])*\\(\\)");
+		
+		String specialChars = "[\\w" + dot + brackets + quotes + simpleQuotes + underscore + "]";
+		String parameters = "([\\w'\",\\s]*)";
+		
+		Pattern p = Pattern.compile("@\\S(" + specialChars + ")*\\(" + parameters + "\\)");
 		Matcher matcher = p.matcher(sc.getSource());
 		
 		while(matcher.find()) {

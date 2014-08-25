@@ -28,6 +28,17 @@ public class MethodInvocationRuleTest {
 	}
 
 	@Test
+	public void shouldAcceptParameters() {
+		SourceCode sc = new SourceCode("@v1(1) @v1.v2_x( 1, 2 ) @v3('mau') @v4(\"mau\")");
+		
+		List<TextChunk> chunks = rule.getChunks(sc);
+		Assert.assertEquals("@v1(1)", chunks.get(0).getText());
+		Assert.assertEquals("@v1.v2_x( 1, 2 )", chunks.get(1).getText());
+		Assert.assertEquals("@v3('mau')", chunks.get(2).getText());
+		Assert.assertEquals("@v4(\"mau\")", chunks.get(3).getText());
+	}
+
+	@Test
 	public void shouldAcceptMethodInvocationsWithBrackets() {
 		SourceCode sc = new SourceCode("@v1['bla'].method()");
 		
