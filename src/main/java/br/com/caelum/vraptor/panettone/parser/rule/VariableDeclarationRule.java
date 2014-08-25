@@ -17,7 +17,7 @@ public class VariableDeclarationRule implements Rule {
 	public List<TextChunk> getChunks(SourceCode sc) {
 		List<TextChunk> chunks = new ArrayList<TextChunk>();
 		
-		String possibleDefaultValue = "(\\s*=" + Regexes.SPACE + "\"" + "(.*)" + "\")?";
+		String possibleDefaultValue = "(\\s*=" + Regexes.SPACE + "\"?" + "(.*)" + "\"?)?";
 		String pattern = 
 				"\\(@" + 
 				Regexes.SPACE + 
@@ -49,8 +49,8 @@ public class VariableDeclarationRule implements Rule {
 		
 		String value = null;
 		if(chunk.getText().indexOf("=")>-1) {
-			value = chunk.getText().substring(chunk.getText().indexOf("\"")+1);
-			value = value.substring(0, value.indexOf("\""));
+			value = chunk.getText().substring(chunk.getText().indexOf("=")+1).trim();
+			value = value.substring(0, value.length()-1);
 		}
 		
 		return new VariableDeclarationNode(type, name, value);

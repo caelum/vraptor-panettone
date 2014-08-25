@@ -141,14 +141,14 @@ public class TemplateTest {
 	@Test
 	public void shouldAddVariables() {
 		String expected = "public void render(String mensagem) {\nwrite(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
-		String result = new Template("(@ String mensagem )<html><%= mensagem %></html>").renderType();
+		String result = new Template("(@ String mensagem )\n<html><%= mensagem %></html>").renderType();
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldAddDefaultVariables() {
-		String expected = "public void render(String mensagem) {\nif(mensagem == null) mensagem =  \"hello\" ;\nwrite(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
-		String result = new Template("(@ String mensagem = \"hello\" )<html><%=mensagem%></html>").renderType();
+		String expected = "public void render(String mensagem) {\nif(mensagem == null) mensagem = \"hello\" ;\nwrite(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
+		String result = new Template("(@ String mensagem = \"hello\" )\n<html><%=mensagem%></html>").renderType();
 		assertEquals(expected, result);
 	}
 
@@ -174,7 +174,7 @@ public class TemplateTest {
 	public void shouldSupportComments() {
 		String expected = emptyRun("write(\"<html>\");\n"
 				+ "write(\"</html>\");\n");
-		String result = new Template("<html><%-- comments here %></html>").renderType();
+		String result = new Template("<html>@-- comments here --@</html>").renderType();
 		assertEquals(expected, result);
 	}
 
@@ -187,11 +187,13 @@ public class TemplateTest {
 				+ "write(\"</html>\");\n"
 				+ "}\n";
 		String expected = variable + render;
-		String result = new Template("(@ String mensagem)<html><%= mensagem %>(@inject User user)</html>").renderType();
+		String result = new Template("(@inject User user)\n(@ String mensagem)\n<html><%= mensagem %></html>").renderType();
 		assertEquals(expected, result);
 	}
 
 	@Test
+	// GUI: tem o metodo no visitor agora la pra vc implementar, mas ele retorna codigo cru, precisa parsear de novo
+	// vamos falar sobre isso?
 	public void shouldSupportBodies() {
 		String expected = "public void render() {\n"
 				+ "Runnable body = () -> {\n"
@@ -199,7 +201,7 @@ public class TemplateTest {
 				+ "write(mensagem);\n"
 				+ "};\n"
 				+ "write(\"<html>\");\nbody.run();\nwrite(\"</html>\");\n}\n";
-		String result = new Template("@{{body\nGuilherme @mensagem }}@<html>@body.run()</html>").renderType();
+		String result = new Template("@{{body\nGuilherme @mensagem @}}<html>@body.run()</html>").renderType();
 		assertEquals(expected, result);
 	}
 

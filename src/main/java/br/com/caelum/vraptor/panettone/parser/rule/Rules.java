@@ -6,14 +6,13 @@ import java.util.List;
 public enum Rules {
 
 	// be careful... currently, the order matters... :/
-	// in particular, method_invocation should be executed before print_variable
+	// in particular, comment should be executed before print_variable
+	COMMENT(new CommentRule(), true),
 	INJECT_DECLARATION(new InjectDeclarationRule(), true),
 	VARIABLE_DECLARATION(new VariableDeclarationRule(), true),
 	REUSABLE_VARIABLE(new ReusableVariableRule(), true),
 	EXPRESSION(new ExpressionRule(), true),
-	METHOD_INVOCATION(new MethodInvocationRule(), true),
 	PRINT_VARIABLE(new PrintVariableRule(), true),
-	COMMENT(new CommentRule(), true),
 
 	SCRIPTLET_PRINT(new ScriptletPrintRule(), true),
 	

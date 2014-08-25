@@ -90,7 +90,8 @@ public class VariableDeclarationRuleTest {
 	public void shouldCreateNode() {
 		
 		VariableDeclarationNode node = (VariableDeclarationNode) rule.getNode(new TextChunk("(@ String nome)"));
-		VariableDeclarationNode node2 = (VariableDeclarationNode) rule.getNode(new TextChunk("(@ int x = \"10\")"));
+		VariableDeclarationNode node2 = (VariableDeclarationNode) rule.getNode(new TextChunk("(@ int x = 10)"));
+		VariableDeclarationNode node3 = (VariableDeclarationNode) rule.getNode(new TextChunk("(@ String email = \"bla@bla.com\")"));
 		
 		Assert.assertEquals("String", node.getType());
 		Assert.assertEquals("nome", node.getName());
@@ -99,6 +100,10 @@ public class VariableDeclarationRuleTest {
 		Assert.assertEquals("int", node2.getType());
 		Assert.assertEquals("x", node2.getName());
 		Assert.assertEquals("10", node2.getDefaultValue());
+
+		Assert.assertEquals("String", node3.getType());
+		Assert.assertEquals("email", node3.getName());
+		Assert.assertEquals("\"bla@bla.com\"", node3.getDefaultValue());
 		
 	}
 }

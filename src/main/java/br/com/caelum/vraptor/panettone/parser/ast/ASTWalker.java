@@ -10,8 +10,6 @@ public interface ASTWalker {
 
 	void visitHTML(HTMLNode node);
 
-	void visitMethodInvocation(MethodInvocationNode node);
-
 	void visitExpression(ExpressionNode node);
 
 	void visitScriptletPrint(ScriptletPrintNode node);

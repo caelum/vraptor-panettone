@@ -1,7 +1,5 @@
 package br.com.caelum.vraptor.panettone;
 
-import static java.util.stream.Collectors.joining;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,12 +8,12 @@ import br.com.caelum.vraptor.panettone.parser.ast.CommentNode;
 import br.com.caelum.vraptor.panettone.parser.ast.ExpressionNode;
 import br.com.caelum.vraptor.panettone.parser.ast.HTMLNode;
 import br.com.caelum.vraptor.panettone.parser.ast.InjectDeclarationNode;
-import br.com.caelum.vraptor.panettone.parser.ast.MethodInvocationNode;
 import br.com.caelum.vraptor.panettone.parser.ast.PrintVariableNode;
 import br.com.caelum.vraptor.panettone.parser.ast.ReusableVariableNode;
 import br.com.caelum.vraptor.panettone.parser.ast.ScriptletNode;
 import br.com.caelum.vraptor.panettone.parser.ast.ScriptletPrintNode;
 import br.com.caelum.vraptor.panettone.parser.ast.VariableDeclarationNode;
+import static java.util.stream.Collectors.joining;
 
 public class PanettoneWalker implements ASTWalker {
 	
@@ -34,12 +32,11 @@ public class PanettoneWalker implements ASTWalker {
 	public void visitVariableDeclaration(VariableDeclarationNode node) {
 		String variableFull = node.getType() + " " + node.getName();
 		variables.add(variableFull);
-//		String definition = variableFull.substring(0, equalsPosition);
-//		variables.add(definition);
-//		
-//		String name = new LinkedList<String>(asList(definition.split("\\s+"))).getLast();
-//		String value = variableFull.substring(equalsPosition + 1);
-//		builder.append(format("if(%s == null) %s = %s;\n", name, name, value));
+		
+		if(node.getDefaultValue()!=null) {
+			code.append(String.format("if(%s == null) %s = %s;\n", node.getName(), node.getName(), node.getDefaultValue()));
+		}
+		
 	}
 
 	@Override
@@ -60,10 +57,6 @@ public class PanettoneWalker implements ASTWalker {
 
 	private String escapeSlashesAndQuotes(String content) {
 		return content.replace("\\", "\\\\").replace("\"", "\\\"");
-	}
-
-	@Override
-	public void visitMethodInvocation(MethodInvocationNode node) {
 	}
 
 	@Override

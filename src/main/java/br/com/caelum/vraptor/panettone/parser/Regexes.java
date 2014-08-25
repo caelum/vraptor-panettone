@@ -14,5 +14,6 @@ public class Regexes {
 	public static final String QUOTES = "\\\"";
 	public static final String SIMPLE_QUOTES = "'";
 	public static final String UNDERSCORE = "\\_";
+	public static final String PAREN = "\\(\\)";
 	public static final String SPECIAL_CHARS = "[\\w" + DOT + BRACKETS + QUOTES + SIMPLE_QUOTES + UNDERSCORE + "]";
 }

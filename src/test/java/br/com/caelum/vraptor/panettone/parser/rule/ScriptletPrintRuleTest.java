@@ -45,11 +45,13 @@ public class ScriptletPrintRuleTest {
 	@Test
 	public void shouldAcceptScriptletPrintInMethodInvocation() {
 		SourceCode sc = new SourceCode(
-				"bla <%= a.b() %> bla"
+				"<%= a.b() %>" +
+				"<%= a.b(d.e, 10) %>"
 				);
 		
 		List<TextChunk> chunks = rule.getChunks(sc);
 		Assert.assertEquals("<%= a.b() %>", chunks.get(0).getText());
+		Assert.assertEquals("<%= a.b(d.e, 10) %>", chunks.get(1).getText());
 	}
 
 	@Test

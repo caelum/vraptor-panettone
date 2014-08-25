@@ -29,9 +29,18 @@ public class PrintVariableRuleTest {
 		Assert.assertEquals("@v1.v2[bla]", chunks.get(1).getText());
 	}
 
+	@Test
+	public void shouldAcceptMethodInvocationChaining() {
+		SourceCode sc = new SourceCode("@name.bla(a, b, 10).b(1,2).c.f() @name.bla(a, b, 10).b(1,2).c.f");
+		
+		List<TextChunk> chunks = rule.getChunks(sc);
+		Assert.assertEquals("@name.bla(a, b, 10).b(1,2).c.f()", chunks.get(0).getText());
+		Assert.assertEquals("@name.bla(a, b, 10).b(1,2).c.f", chunks.get(1).getText());
+	}
+
 	@Test @Ignore
-	public void shouldIgnoreIfMethodInvocation() {
-		SourceCode sc = new SourceCode("invoca metodo @v1.metodo() bla bla");
+	public void shouldIgnoreIfComment() {
+		SourceCode sc = new SourceCode("@-- comentario --@");
 		
 		List<TextChunk> chunks = rule.getChunks(sc);
 		Assert.assertEquals(0, chunks.size());
@@ -62,14 +71,17 @@ public class PrintVariableRuleTest {
 				" @v1_v1 "+
 				" @v2.texto "+
 				" @v3.texto.texto2 " +
+				" @a.b(d.e, 10) " +
 				"ble ble"
 		);
 		
 		List<TextChunk> chunks = rule.getChunks(sc);
-		Assert.assertEquals(3, chunks.size());
+		Assert.assertEquals(4, chunks.size());
+		
 		Assert.assertEquals("@v1_v1", chunks.get(0).getText());
 		Assert.assertEquals("@v2.texto", chunks.get(1).getText());
 		Assert.assertEquals("@v3.texto.texto2", chunks.get(2).getText());
+		Assert.assertEquals("@a.b(d.e, 10)", chunks.get(3).getText());
 		
 	}
 	
