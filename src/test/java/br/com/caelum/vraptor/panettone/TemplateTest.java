@@ -144,6 +144,23 @@ public class TemplateTest {
 		String result = new Template("(@ String mensagem )\n<html><%= mensagem %></html>").renderType();
 		assertEquals(expected, result);
 	}
+	@Test
+	public void shouldAddVariablesEvenWithLaterAts() {
+		String expected = "public void render(String mensagem) {\nwrite(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
+		String result = new Template("@( String mensagem )\n<html>@mensagem</html>").renderType();
+		assertEquals(expected, result);
+	}
+
+	@Test(expected=RuntimeException.class)
+	public void shouldDieInInvalidSyntax() {
+		new Template("(@)").renderType();
+	}
+	@Test
+	public void shouldAddVariablesWithoutSpace() {
+		String expected = "public void render(String mensagem) {\nwrite(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
+		String result = new Template("(@String mensagem)\n<html><%= mensagem %></html>").renderType();
+		assertEquals(expected, result);
+	}
 
 	@Test
 	public void shouldAddDefaultVariables() {
@@ -158,6 +175,23 @@ public class TemplateTest {
 		String result = new Template("<html><%= user.getName() %></html>").renderType();
 		assertEquals(expected, result);
 	}
+	
+	@Test
+	public void shouldSupportMethodInvocationWithPackage() {
+		String expected = emptyRun("write(\"<html>\");\nwrite(user.getName());\nwrite(\"</html>\");\n");
+		String result = new Template("@(inject br.com.caelum.vraptor.panettone.User user)\n"
+				+ "<html><%=user.getName()%></html>").renderType();
+		assertEquals(expected, result);
+	}
+
+	@Test
+	public void shouldSupportMethodInvocationWithMember() {
+		String expected = emptyRun("write(\"<html>\");\nwrite(user.getName());\nwrite(\"</html>\");\n");
+		String result = new Template("@(inject User user)\n"
+				+ "<html><%=user.getName()%></html>").renderType();
+		assertEquals(expected, result);
+	}
+
 
 	@Test
 	public void shouldSupportLoop() {
@@ -178,6 +212,28 @@ public class TemplateTest {
 		assertEquals(expected, result);
 	}
 
+	@Test
+	public void shouldSupportSingleMemberWithNoSpace() {
+		String expected = "@javax.inject.Inject private String mensagem;\n"
+				+ "public void render() {\n"
+				+ "write(\"<html>\");\n"
+				+ "write(mensagem);\n"
+				+ "write(\"</html>\");\n"
+				+ "}\n";
+		String result = new Template("(@inject String mensagem)\n<html><%= mensagem %></html>").renderType();
+		assertEquals(expected, result);
+	}
+	@Test
+	public void shouldSupportSingleMember() {
+		String expected = "@javax.inject.Inject private String mensagem;\n"
+				+ "public void render() {\n"
+				+ "write(\"<html>\");\n"
+				+ "write(mensagem);\n"
+				+ "write(\"</html>\");\n"
+				+ "}\n";
+		String result = new Template("(@inject String mensagem )\n<html><%= mensagem %></html>").renderType();
+		assertEquals(expected, result);
+	}
 	@Test
 	public void shouldSupportMembers() {
 		String variable = "@javax.inject.Inject private User user;\n";
