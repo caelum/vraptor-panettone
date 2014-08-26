@@ -44,8 +44,10 @@ public class VariableDeclarationRule implements Rule {
 
 	@Override
 	public Node getNode(TextChunk chunk) {
-		String type = chunk.getText().split(" ")[1].trim();
-		String name = chunk.getText().split(" ")[2].replace(")", "").trim();
+		String cleanChunk = chunk.getText().replace("(@", "").replace(")", "").trim();
+		String[] splittedCleanChunk = cleanChunk.split(" ");
+		String type = splittedCleanChunk[0].trim();
+		String name = splittedCleanChunk[1].trim();
 		
 		String value = null;
 		if(chunk.getText().indexOf("=")>-1) {

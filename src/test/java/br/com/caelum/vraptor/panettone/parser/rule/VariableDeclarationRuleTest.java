@@ -89,7 +89,7 @@ public class VariableDeclarationRuleTest {
 	@Test
 	public void shouldCreateNode() {
 		
-		VariableDeclarationNode node = (VariableDeclarationNode) rule.getNode(new TextChunk("(@ String nome)"));
+		VariableDeclarationNode node = (VariableDeclarationNode) rule.getNode(new TextChunk("(@String nome)"));
 		VariableDeclarationNode node2 = (VariableDeclarationNode) rule.getNode(new TextChunk("(@ int x = 10)"));
 		VariableDeclarationNode node3 = (VariableDeclarationNode) rule.getNode(new TextChunk("(@ String email = \"bla@bla.com\")"));
 		
