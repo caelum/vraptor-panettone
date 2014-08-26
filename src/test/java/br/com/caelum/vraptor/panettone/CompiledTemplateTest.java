@@ -53,7 +53,7 @@ public class CompiledTemplateTest {
 	@Test
 	public void shouldSupportMethodInvocation() {
 		CompiledTemplate template = compile("interpolateObject",
-				"@(inject br.com.caelum.vraptor.panettone.User user)\n"
+				"(@inject br.com.caelum.vraptor.panettone.User user)\n"
 				+ "<html><%=user.getName()%></html>");
 		
 		String expected = "<html>guilherme</html>";
@@ -63,7 +63,7 @@ public class CompiledTemplateTest {
 	@Test
 	public void shouldSupportImports() {
 		CompiledTemplate template = compile("interpolateObject", asList("br.com.caelum.vraptor.panettone.*"),
-				"@(inject User user)\n"
+				"(@inject User user)\n"
 				+ "<html><%=user.getName()%></html>");
 		
 		String expected = "<html>guilherme</html>";
@@ -80,7 +80,7 @@ public class CompiledTemplateTest {
 
 	@Test
 	public void shouldSupportLoop() {
-		CompiledTemplate template = compile("interpolateObject", "@( java.util.List<br.com.caelum.vraptor.panettone.User> users )<html><%for(br.com.caelum.vraptor.panettone.User user : users) {%><%=user.getName()%><%}%></html>");
+		CompiledTemplate template = compile("interpolateObject", "(@ java.util.List<br.com.caelum.vraptor.panettone.User> users )\n<html><%for(br.com.caelum.vraptor.panettone.User user : users) {%><%=user.getName()%><%}%></html>");
 		
 		String expected = "<html>joaoguilherme</html>";
 		assertEquals(expected, tryToRun(template, new Class[]{List.class}, Arrays.asList(new User("joao"),new User("guilherme"))));
