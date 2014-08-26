@@ -155,11 +155,6 @@ public class TemplateTest {
 		assertEquals(expected, result);
 	}
 
-	@Test(expected=RuntimeException.class)
-	public void shouldDieInInvalidSyntax() {
-		new Template("(@)").renderType();
-	}
-	
 	@Test
 	public void shouldAddVariablesWithoutSpace() {
 		String expected = "public void render(String mensagem) {\nwrite(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
