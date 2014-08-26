@@ -131,6 +131,10 @@ public class TemplateTest {
 		return "public void render() {\n" + msg+"}\n";
 	}
 
+	private String emptyRun(String prefix, String msg) {
+		return prefix + "public void render() {\n" + msg+"}\n";
+	}
+
 	@Test
 	public void shouldInterpolateObject() {
 		String expected = emptyRun("write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n");
@@ -147,7 +151,7 @@ public class TemplateTest {
 	@Test
 	public void shouldAddVariablesEvenWithLaterAts() {
 		String expected = "public void render(String mensagem) {\nwrite(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
-		String result = new Template("@( String mensagem )\n<html>@mensagem</html>").renderType();
+		String result = new Template("(@ String mensagem )\n<html>@mensagem</html>").renderType();
 		assertEquals(expected, result);
 	}
 
@@ -155,6 +159,7 @@ public class TemplateTest {
 	public void shouldDieInInvalidSyntax() {
 		new Template("(@)").renderType();
 	}
+	
 	@Test
 	public void shouldAddVariablesWithoutSpace() {
 		String expected = "public void render(String mensagem) {\nwrite(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
@@ -178,16 +183,18 @@ public class TemplateTest {
 	
 	@Test
 	public void shouldSupportMethodInvocationWithPackage() {
-		String expected = emptyRun("write(\"<html>\");\nwrite(user.getName());\nwrite(\"</html>\");\n");
-		String result = new Template("@(inject br.com.caelum.vraptor.panettone.User user)\n"
+		String expected = emptyRun("@javax.inject.Inject private br.com.caelum.vraptor.panettone.User user;\n",
+				"write(\"<html>\");\nwrite(user.getName());\nwrite(\"</html>\");\n");
+		String result = new Template("(@inject br.com.caelum.vraptor.panettone.User user)\n"
 				+ "<html><%=user.getName()%></html>").renderType();
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldSupportMethodInvocationWithMember() {
-		String expected = emptyRun("write(\"<html>\");\nwrite(user.getName());\nwrite(\"</html>\");\n");
-		String result = new Template("@(inject User user)\n"
+		String expected = emptyRun("@javax.inject.Inject private User user;\n", 
+				"write(\"<html>\");\nwrite(user.getName());\nwrite(\"</html>\");\n");
+		String result = new Template("(@inject User user)\n"
 				+ "<html><%=user.getName()%></html>").renderType();
 		assertEquals(expected, result);
 	}
