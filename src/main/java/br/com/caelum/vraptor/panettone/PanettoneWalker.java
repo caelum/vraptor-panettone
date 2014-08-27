@@ -3,6 +3,7 @@ package br.com.caelum.vraptor.panettone;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.caelum.vraptor.panettone.parser.PanettoneParser;
 import br.com.caelum.vraptor.panettone.parser.ast.ASTWalker;
 import br.com.caelum.vraptor.panettone.parser.ast.CommentNode;
 import br.com.caelum.vraptor.panettone.parser.ast.ExpressionNode;
@@ -87,14 +88,19 @@ public class PanettoneWalker implements ASTWalker {
 
 	@Override
 	public void visitReusableVariable(ReusableVariableNode node) {
-		// TODO Auto-generated method stub
-		
+		String name = node.getName();
+		code.append(String.format("Runnable %s = () -> {\n", name));
+		String content = node.getContent();
+		new PanettoneParser().parse(content).walk(this);
+		code.append("};\n");
 	}
 
+	/**
+	 * Outputs the comment for debugging purposes
+	 */
 	@Override
 	public void visitComment(CommentNode node) {
-		// TODO Auto-generated method stub
-		
+		code.append("/* " + node.getComment() + " */ \n");
 	}
 
 }

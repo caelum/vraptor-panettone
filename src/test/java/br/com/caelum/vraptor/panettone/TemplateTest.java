@@ -23,6 +23,14 @@ public class TemplateTest {
 	}
 
 	@Test
+	public void shouldSupportExpressionLanguageWithinAnotherCode() {
+		String expected = emptyRun("write(\"<script>var x = '\");\nwrite(mensagem);\nwrite(\"'; var y = '\");\nwrite(mensagem);\nwrite(\"';</script>\");\n");
+		String result = new Template("<script>var x = '@mensagem'; var y = '@mensagem';</script>").renderType();
+		assertEquals(expected, result);
+		fail("it can also be a ], or any other character, what to do on those cases? do you want to keep track of open and close parenthesis? seems too much right now, can i simply tell the user to do <%=%> in those cases?");
+	}
+
+	@Test
 	public void shouldSupportExpressionLanguageGetterInvocation() {
 		String expected = emptyRun("write(\"<html>\");\nwrite(message.getBytes());\nwrite(\"</html>\");\n");
 		String result = new Template("<html>@message.bytes</html>").renderType();
@@ -209,6 +217,7 @@ public class TemplateTest {
 	@Test
 	public void shouldSupportComments() {
 		String expected = emptyRun("write(\"<html>\");\n"
+				+ "/* comments here */"
 				+ "write(\"</html>\");\n");
 		String result = new Template("<html>@-- comments here --@</html>").renderType();
 		assertEquals(expected, result);
@@ -225,6 +234,7 @@ public class TemplateTest {
 		String result = new Template("(@inject String mensagem)\n<html><%= mensagem %></html>").renderType();
 		assertEquals(expected, result);
 	}
+	
 	@Test
 	public void shouldSupportSingleMember() {
 		String expected = "@javax.inject.Inject private String mensagem;\n"
@@ -234,6 +244,21 @@ public class TemplateTest {
 				+ "write(\"</html>\");\n"
 				+ "}\n";
 		String result = new Template("(@inject String mensagem )\n<html><%= mensagem %></html>").renderType();
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void shouldSupportSingleMemberWithExtraCodeNearby() {
+		String expected = "@javax.inject.Inject private i18n.Messages m;\n"
+				+ "public void render(User user,List<News> newses) {\n"
+				+ " use(header.class).render(\"Welcome\"); \n"
+				+ "}\n";
+		String result = new Template(
+				"(@ User user)\n" +
+				"(@ List<News> newses)\n" +
+				"(@inject i18n.Messages m )\n" +
+				"<% use(header.class).render(\"Welcome\"); %>"
+				).renderType();
 		assertEquals(expected, result);
 	}
 	@Test
@@ -250,17 +275,17 @@ public class TemplateTest {
 	}
 
 	@Test
-	// GUI: tem o metodo no visitor agora la pra vc implementar, mas ele retorna codigo cru, precisa parsear de novo
-	// vamos falar sobre isso?
 	public void shouldSupportBodies() {
 		String expected = "public void render() {\n"
 				+ "Runnable body = () -> {\n"
 				+ "write(\"Guilherme \");\n"
 				+ "write(mensagem);\n"
 				+ "};\n"
-				+ "write(\"<html>\");\nbody.run();\nwrite(\"</html>\");\n}\n";
+				+ "write(\"<html>\");\n"
+				+ "body.run();\n"
+				+ "write(\"</html>\");\n}\n";
 		String result = new Template("@{{body\nGuilherme @mensagem @}}<html>@body.run()</html>").renderType();
 		assertEquals(expected, result);
 	}
-
+	
 }
