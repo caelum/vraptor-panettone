@@ -1,6 +1,7 @@
 package br.com.caelum.vraptor.panettone;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,10 @@ public class VRaptorCompiler {
 	
 	public VRaptorCompiler(File baseDir, List<String> imports) {
 		this.compiler = new Compiler(new File(baseDir, VIEW_INPUT), new File(baseDir, VIEW_OUTPUT), imports, new VRaptorCompilationListener());
+	}
+	
+	public VRaptorCompiler(File baseDir) {
+		this(baseDir, new ArrayList<>());
 	}
 	
 	public void start() {

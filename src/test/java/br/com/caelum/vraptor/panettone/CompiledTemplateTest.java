@@ -54,20 +54,20 @@ public class CompiledTemplateTest {
 	public void shouldSupportMethodInvocation() {
 		CompiledTemplate template = compile("interpolateObject",
 				"(@inject br.com.caelum.vraptor.panettone.User user)\n"
-				+ "<html><%=user.getName()%></html>");
+				+ "<html>@user</html>");
 		
-		String expected = "<html>guilherme</html>";
-		assertEquals(expected, tryToRun(template, new Class[]{User.class}, new User("guilherme")));
+		String expected = "<html></html>";
+		assertEquals(expected, tryToRun(template, new Class[]{}));
 	}
 
 	@Test
 	public void shouldSupportImports() {
 		CompiledTemplate template = compile("interpolateObject", asList("br.com.caelum.vraptor.panettone.*"),
 				"(@inject User user)\n"
-				+ "<html><%=user.getName()%></html>");
+				+ "<html>@user</html>");
 		
-		String expected = "<html>guilherme</html>";
-		assertEquals(expected, tryToRun(template, new Class[]{User.class}, new User("guilherme")));
+		String expected = "<html></html>";
+		assertEquals(expected, tryToRun(template, new Class[]{}));
 	}
 
 	@Test

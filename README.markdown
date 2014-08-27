@@ -27,27 +27,27 @@ So we will try avoiding quick awesome expressive compact fluid adjective sentenc
 
 # First example: 
 
-hello.tone.html:
+Write your `hello.tone.html`:
 
 ```
-<%@ List<User> users %>
+@(List<User> users)
 <html>
 <% for(User user : users) { %>
-<h1>Hi ${user.name}</h1>
-<% }; %>
+<h1>Hi @user</h1>
+<% } %>
 </html>
 ```
 
-Hello.java (VRaptor):
-
-```
-result.use(hello.class).render(users);
-```
-
-Hello.java (standalone):
+Write your `HelloWorld.java` and you are ready to type safe and debug your views:
 
 ```
 new hello(out).render(users);
+```
+
+If you use VRaptor:
+
+```
+result.use(hello.class).render(users);
 ```
 
 # Eclipse
@@ -58,75 +58,6 @@ and add the project nature:
 ```
 ``` 
 
-# Command line high level api download
-
-0. Download
-```
-```
-1. Start the compiler:
-```
-java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar --watch br.com.caelum.vraptor.mymodelpackage 
-```
-2. Create your source panettone file at `src/main/views`, such as `hello.tone.html`, yummy.
-```
-<%@ String message %>
-<html>
-<h1><%= message %></h1>
-</html>
-```
-3. Save it. Look now for `templates/hello.java` at `target/view-classes`. Add this path to your classpath!
-
-# Keep watching or compile once?
-
-Compile your templates once:
-
-```
-java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar br.com.caelum.vraptor.mymodelpackage 
-```
-
-Keep watching for changes:
-
-```
-java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar --watch br.com.caelum.vraptor.mymodelpackage 
-```
-
-# ANT example
-
-Copy and paste ready
-
-```
-<project name="myproject" default="compile-views">
-
-	<path id="running.path.id">
-		<fileset dir="src/main/webapp/WEB-INF/lib" />
-		<pathelement location="src/main/webapp/WEB-INF/classes" />
-	</path>
-	<target name="compile-views">
-		<java jar="lib/local/vraptor-panettone-0.9.0-SNAPSHOT.jar" classpathref="running.path.id">
-			<arg>br.com.caelum.myproject.model.*</arg>
-			<arg>br.com.caelum.myproject.model.course.*</arg>
-		</java>
-	</target>
-	<target name="~compile-views">
-		<java jar="lib/local/vraptor-panettone-1.0.1.jar" classpathref="running.path.id">
-			<arg>--watch</arg>
-			<arg>br.com.caelum.myproject.model.*</arg>
-			<arg>br.com.caelum.myproject.model.course.*</arg>
-		</java>
-	</target>
-</project>
-```
-
-Then just run the following to compile once:
-```
-ant compile-views
-```
-
-Or to keep watching:
-
-```
-ant ~compile-views
-```
 
 # Imports
 
@@ -317,7 +248,77 @@ Because we are playing hard.
 ## Rendering strings to be compiled
 
 Use the Template Class to instantiate and render the string of a compatible Java method to what you want to render.
-Use this String as you wish. You can print and memorize it, for instance. Or you can use it to compile it using Java's Compiler API. 
+Use this String as you wish. You can print and memorize it, for instance. Or you can use it to compile it using Java's Compiler API.
+
+# Eclipse haters: command line high level api download
+
+0. Download from maven central repository
+
+1. Start the compiler with a default import package:
+```
+java -jar vraptor-panettone-1.0.0.jar --watch br.com.caelum.vraptor.mymodelpackage 
+```
+2. Create your source panettone file at `src/main/views`, such as `hello.tone.html`, yummy.
+```
+@(String message)
+<html>
+<h1>@message</h1>
+</html>
+```
+3. Look now for `templates/hello.java` at `target/view-classes`. Add this path to your classpath!
+
+# Keep watching or compile once?
+
+Compile your templates once:
+
+```
+java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar br.com.caelum.vraptor.mymodelpackage 
+```
+
+Keep watching for changes:
+
+```
+java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar --watch br.com.caelum.vraptor.mymodelpackage 
+```
+
+# During your build
+
+ANT: Copy and paste ready
+
+```
+<project name="myproject" default="compile-views">
+
+	<path id="running.path.id">
+		<fileset dir="src/main/webapp/WEB-INF/lib" />
+		<pathelement location="src/main/webapp/WEB-INF/classes" />
+	</path>
+	<target name="compile-views">
+		<java jar="lib/local/vraptor-panettone-0.9.0-SNAPSHOT.jar" classpathref="running.path.id">
+			<arg>br.com.caelum.myproject.model.*</arg>
+			<arg>br.com.caelum.myproject.model.course.*</arg>
+		</java>
+	</target>
+	<target name="~compile-views">
+		<java jar="lib/local/vraptor-panettone-1.0.1.jar" classpathref="running.path.id">
+			<arg>--watch</arg>
+			<arg>br.com.caelum.myproject.model.*</arg>
+			<arg>br.com.caelum.myproject.model.course.*</arg>
+		</java>
+	</target>
+</project>
+```
+
+Then just run the following to compile once:
+```
+ant compile-views
+```
+
+Or to keep watching:
+
+```
+ant ~compile-views
+```
+ 
 
 # Why shouldn't I use this other template engine?
 
