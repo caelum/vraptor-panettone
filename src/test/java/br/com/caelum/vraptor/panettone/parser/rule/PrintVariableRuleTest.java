@@ -47,14 +47,15 @@ public class PrintVariableRuleTest {
 	}
 
 	@Test
-	public void shouldAcceptQuotes() {
-		SourceCode sc = new SourceCode("@v1[\"bla\"] @v1.v2[\"bla\"]");
+	public void shouldAcceptQuotesWhenOpeningBracketsOrParenthesis() {
+		SourceCode sc = new SourceCode("@v1[\"bla\"] @v1.v2[\"bla\"] '@mensagem'");
 		
 		List<TextChunk> chunks = rule.getChunks(sc);
 		Assert.assertEquals("@v1[\"bla\"]", chunks.get(0).getText());
 		Assert.assertEquals("@v1.v2[\"bla\"]", chunks.get(1).getText());
+		Assert.assertEquals("@mensagem", chunks.get(2).getText());
 	}
-	
+
 	@Test
 	public void shouldAcceptSimpleQuotes() {
 		SourceCode sc = new SourceCode("@v1['bla'] @v1.v2['bla']");

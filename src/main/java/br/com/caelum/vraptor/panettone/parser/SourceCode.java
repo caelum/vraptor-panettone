@@ -43,22 +43,21 @@ public class SourceCode {
 		String[] lines = source.split(RULECHUNK_START_REGEX);
 		
 		for(String line : lines) {
-			String trimmedLine = line.trim();
-			if(trimmedLine.isEmpty()) continue;
+			if(line.trim().isEmpty()) continue;
 			
-			if(trimmedLine.endsWith(RULECHUNK_END)) {
-				newSourceCode.append(RULECHUNK_START + " " + trimmedLine);
+			if(line.trim().endsWith(RULECHUNK_END)) {
+				newSourceCode.append(RULECHUNK_START + " " + line.trim());
 			} 
-			else if(trimmedLine.contains(RULECHUNK_END)) {
-				String firstPart = trimmedLine.substring(0, trimmedLine.indexOf(RULECHUNK_END)).trim();
+			else if(line.trim().contains(RULECHUNK_END)) {
+				String firstPart = line.substring(0, line.indexOf(RULECHUNK_END)).trim();
 				newSourceCode.append(RULECHUNK_START + " " + firstPart + " " + RULECHUNK_END);
 
-				String secondPart = trimmedLine.substring(trimmedLine.indexOf(RULECHUNK_END)+4);
+				String secondPart = line.substring(line.indexOf(RULECHUNK_END)+4);
 				htmlOrScriptlet(newSourceCode, secondPart);
 
 			}
 			else {
-				htmlOrScriptlet(newSourceCode, trimmedLine);
+				htmlOrScriptlet(newSourceCode, line);
 			}
 		}
 
@@ -67,23 +66,22 @@ public class SourceCode {
 
 	private void htmlOrScriptlet(StringBuilder newSourceCode, String chunk) {
 		
-		String trimmedChunk = chunk;
 		if(chunk.trim().startsWith(SCRIPTLET_START)) {
 			
-			String justScriptlet = trimmedChunk.substring(2);
+			String justScriptlet = chunk.trim().substring(2);
 			int endOfTheScriptlet = justScriptlet.indexOf(SCRIPTLET_END); // be careful, an "%>" would break it
 			justScriptlet = justScriptlet.substring(0, endOfTheScriptlet);
 
 			addChunk(new TextChunk(justScriptlet));
 			newSourceCode.append(RULECHUNK_START + " " + Rules.scriptletRuleName() + " " + counter + " " + RULECHUNK_END);
 			
-			if(trimmedChunk.length() > trimmedChunk.indexOf(SCRIPTLET_END) +2) {
-				String theRestOfTheChunk = trimmedChunk.substring(trimmedChunk.indexOf(SCRIPTLET_END)+2);
+			if(chunk.length() > chunk.indexOf(SCRIPTLET_END) +2) {
+				String theRestOfTheChunk = chunk.substring(chunk.indexOf(SCRIPTLET_END)+2);
 				htmlOrScriptlet(newSourceCode, theRestOfTheChunk);
 			}
 		} else {
 
-			String justHTML = trimmedChunk;
+			String justHTML = chunk;
 			int startOfScriptlet = justHTML.indexOf(SCRIPTLET_START);
 			justHTML = justHTML.substring(0, startOfScriptlet == -1 ? justHTML.length() : startOfScriptlet);
 			
@@ -91,7 +89,7 @@ public class SourceCode {
 			newSourceCode.append(RULECHUNK_START + " " + Rules.htmlRuleName() + " " + counter + " " + RULECHUNK_END);
 			
 			if(startOfScriptlet > -1) {
-				String theRestOfTheChunk = trimmedChunk.substring(trimmedChunk.indexOf(SCRIPTLET_START));
+				String theRestOfTheChunk = chunk.substring(chunk.indexOf(SCRIPTLET_START));
 				htmlOrScriptlet(newSourceCode, theRestOfTheChunk);
 			}
 			

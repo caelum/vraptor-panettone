@@ -27,7 +27,6 @@ public class TemplateTest {
 		String expected = emptyRun("write(\"<script>var x = '\");\nwrite(mensagem);\nwrite(\"'; var y = '\");\nwrite(mensagem);\nwrite(\"';</script>\");\n");
 		String result = new Template("<script>var x = '@mensagem'; var y = '@mensagem';</script>").renderType();
 		assertEquals(expected, result);
-		fail("it can also be a ], or any other character, what to do on those cases? do you want to keep track of open and close parenthesis? seems too much right now, can i simply tell the user to do <%=%> in those cases?");
 	}
 
 	@Test
@@ -76,7 +75,7 @@ public class TemplateTest {
 		String expected = emptyRun("write(\"<html>\");\n"
 				+ "write(\"a.b\");\n"
 				+ "write(\"</html>\");\n");
-		String result = new Template("<html>@'a.b'</html>").renderType();
+		String result = new Template("<html>@{a.b}</html>").renderType();
 		assertEquals(expected, result);
 	}
 
@@ -284,7 +283,7 @@ public class TemplateTest {
 				+ "write(\"<html>\");\n"
 				+ "body.run();\n"
 				+ "write(\"</html>\");\n}\n";
-		String result = new Template("@{{body\nGuilherme @mensagem @}}<html>@body.run()</html>").renderType();
+		String result = new Template("@{{body\nGuilherme @mensagem @}}<html><%body.run();%></html>").renderType();
 		assertEquals(expected, result);
 	}
 	

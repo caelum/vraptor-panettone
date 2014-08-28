@@ -23,6 +23,10 @@ public class PannetoneAST {
 			node.accept(walker);
 		}
 	}
-	
+
+	@Override
+	public String toString() {
+		return nodes.toString();
+	}
 
 }

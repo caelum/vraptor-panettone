@@ -16,11 +16,14 @@ public class PrintVariableRule implements Rule {
 	public List<TextChunk> getChunks(SourceCode sc) {
 		List<TextChunk> chunks = new ArrayList<TextChunk>();
 
-		String variableName = "[\\w\\[\\]\"'\\_]+";
-		String parameters = "(\\([\\w'\",\\s\\.]*\\))?";
-		String dot = "(\\.)";
-		Pattern p = Pattern.compile("@((" + variableName + parameters + ")" + dot + "?)+");
+		// complicated, uh?!
+		// basically: @(word exception)+
+		// just notice the "ORs |", they match cases like (, (', (", [", and so on
+		String x = "@((\\w)+((\\.)|(\\['?\"?)|('?\"?\\]\\.?)|(\\('?\"?\\)?)|(\\s*,\\s*)|('?\"?\\)\\.?))?)+";
+		
+		Pattern p = Pattern.compile(x);
 		Matcher matcher = p.matcher(sc.getSource());
+		
 		
 		while(matcher.find()) {
 			chunks.add(new TextChunk(matcher.group().trim()));

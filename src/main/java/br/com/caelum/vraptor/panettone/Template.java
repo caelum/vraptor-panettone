@@ -3,6 +3,7 @@ package br.com.caelum.vraptor.panettone;
 import java.io.Reader;
 
 import br.com.caelum.vraptor.panettone.parser.PanettoneParser;
+import br.com.caelum.vraptor.panettone.parser.ast.PannetoneAST;
 
 public class Template {
 
@@ -17,7 +18,8 @@ public class Template {
 	
 	public String renderType() {
 		PanettoneWalker walker = new PanettoneWalker();
-		new PanettoneParser().parse(content).walk(walker);
+		PannetoneAST ast = new PanettoneParser().parse(content);
+		ast.walk(walker);
 		return walker.getJavaCode();
 	}
 

@@ -16,7 +16,7 @@ public class SourceCodeTest {
 				+ "<%\n"
 				+ "fazAlgo();\n"
 				+ "bla.b();\n"
-				+ "%>\n"
+				+ "%>"
 				+ "(### CODIGO3 50 ###)\n"
 			);
 		
@@ -29,6 +29,7 @@ public class SourceCodeTest {
 				+ "(### CODIGO3 50 ###)";
 		
 		Assert.assertEquals(expected, sc.getSource());
+		Assert.assertEquals("\nfazAlgo();\nbla.b();\n", sc.getTextChunk(1).getText());
 
 	}
 
@@ -62,7 +63,7 @@ public class SourceCodeTest {
 		Assert.assertEquals("\nfazAlgo();\nbla.b();\n", sc.getTextChunk(2).getText());
 		Assert.assertEquals(" bla ", sc.getTextChunk(3).getText());
 		Assert.assertEquals(" x() ", sc.getTextChunk(4).getText());
-		Assert.assertEquals(" ble", sc.getTextChunk(5).getText());
+		Assert.assertEquals(" ble\n", sc.getTextChunk(5).getText());
 		
 	}
 	

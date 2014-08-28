@@ -23,27 +23,22 @@ public class ExpressionRuleTest {
 	public void shouldAcceptExpressions() {
 		SourceCode sc = new SourceCode(
 				"@{v1}\n"+
-				"@{v1 + v2}\n" +
-				"@{ v3 - v4}\n" +
-				"@{v1 * v2}\n" +
-				"@{v1 / v2}\n"
+				"@{v1.v2}\n"+
+				"@{v1.v2.v3}\n"
 		);
 		
 		List<TextChunk> chunks = rule.getChunks(sc);
 		Assert.assertEquals("@{v1}", chunks.get(0).getText());
-		Assert.assertEquals("@{v1 + v2}", chunks.get(1).getText());
-		Assert.assertEquals("@{ v3 - v4}", chunks.get(2).getText());
-		Assert.assertEquals("@{v1 * v2}", chunks.get(3).getText());
-		Assert.assertEquals("@{v1 / v2}", chunks.get(4).getText());
+		Assert.assertEquals("@{v1.v2}", chunks.get(1).getText());
+		Assert.assertEquals("@{v1.v2.v3}", chunks.get(2).getText());
 	}
-
-
+	
 	@Test
 	public void shouldCreateNode() {
 		
-		ExpressionNode node = (ExpressionNode) rule.getNode(new TextChunk(" @{v1+v2 } "));
+		ExpressionNode node = (ExpressionNode) rule.getNode(new TextChunk(" @{v1.v2} "));
 		
-		Assert.assertEquals("v1+v2", node.getExpr());
+		Assert.assertEquals("v1.v2", node.getExpr());
 		
 	}
 }
