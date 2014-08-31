@@ -25,7 +25,12 @@ public class PanettoneWalker implements ASTWalker {
 
 	@Override
 	public void visitPrintVariable(PrintVariableNode node) {
-		String expression = el.evaluate(node.getExpr());
+		String value = node.getExpr();
+		elValue(value);
+	}
+
+	private void elValue(String value) {
+		String expression = el.evaluate(value);
 		code.append("write(" + expression +");\n");
 	}
 
@@ -62,7 +67,7 @@ public class PanettoneWalker implements ASTWalker {
 
 	@Override
 	public void visitExpression(ExpressionNode node) {
-		System.out.println("dsadsadas");
+		elValue(node.getExpr());
 	}
 
 	@Override
@@ -101,7 +106,7 @@ public class PanettoneWalker implements ASTWalker {
 	 */
 	@Override
 	public void visitComment(CommentNode node) {
-		code.append("/* " + node.getComment() + " */ \n");
+		code.append("/*" + node.getComment() + "*/");
 	}
 
 }

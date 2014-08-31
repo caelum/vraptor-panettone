@@ -73,7 +73,7 @@ public class TemplateTest {
 	@Test
 	public void shouldSupportExpressionLanguageString() {
 		String expected = emptyRun("write(\"<html>\");\n"
-				+ "write(\"a.b\");\n"
+				+ "write(a.getB());\n"
 				+ "write(\"</html>\");\n");
 		String result = new Template("<html>@{a.b}</html>").renderType();
 		assertEquals(expected, result);
