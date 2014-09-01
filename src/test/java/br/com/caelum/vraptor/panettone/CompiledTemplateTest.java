@@ -10,18 +10,16 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.caelum.vraptor.panettone.CompilationIOException;
-import br.com.caelum.vraptor.panettone.CompiledTemplate;
-import br.com.caelum.vraptor.panettone.Template;
-
 public class CompiledTemplateTest {
 	
 	private File dir;
+	private SimpleJavaCompiler typeCompiler;
 
 	@Before
 	public void before() {
 		dir = new File("target/tmp");
 		dir.mkdirs();
+		this.typeCompiler = new SimpleJavaCompiler(dir);
 	}
 	
 	@Test
@@ -34,12 +32,16 @@ public class CompiledTemplateTest {
 	}
 	
 	private CompiledTemplate compile(String name, List<String> imports, String content) {
-		return new CompiledTemplate(dir, name, imports, new Template(content).renderType()).compile();
+		CompiledTemplate ct = new CompiledTemplate(dir, name, imports, new Template(content).renderType());
+		typeCompiler.compileToBytecode(ct.getFile());
+		return ct;
 	}
 	
 	private CompiledTemplate compile(String name, String content) {
 		String template = new Template(content).renderType();
-		return new CompiledTemplate(dir, name, template).compile();
+		CompiledTemplate ct = new CompiledTemplate(dir, name, template);
+		typeCompiler.compileToBytecode(ct.getFile());
+		return ct;
 	}
 	
 	@Test
@@ -96,7 +98,8 @@ public class CompiledTemplateTest {
 	}
 
 	private String tryToRun(CompiledTemplate template, Class<?>[] types, Object ... params) {
-		Class<?> type = template.getTypeFromNewClassLoader();
+		typeCompiler.compileToBytecode(template.getFile());
+		Class<?> type = typeCompiler.getTypeFromNewClassLoader(template);
 		return ReflectionHelper.run(type, types, params);
 	}
 	

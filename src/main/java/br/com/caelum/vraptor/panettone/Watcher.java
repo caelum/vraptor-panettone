@@ -1,14 +1,16 @@
 package br.com.caelum.vraptor.panettone;
 
+import static java.nio.file.Files.isDirectory;
+import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.WatchEvent;
@@ -27,6 +29,8 @@ public class Watcher implements Runnable {
 	private final Compiler compiler;
 	private final Map<WatchKey,Path> keys = new HashMap<>();
 	private boolean trace = false;
+	private final PrintStream out = System.out;
+	private final PrintStream err = System.err;
 
 	Watcher(Path folder, Compiler compiler) {
 		this.compiler = compiler;
@@ -60,15 +64,16 @@ public class Watcher implements Runnable {
        if (trace) {
            Path prev = keys.get(key);
            if (prev == null) {
-               System.out.format("Registering new path: %s\n", dir);
+               out.format("Registering new path: %s\n", dir);
            } else if (!dir.equals(prev)) {
-               System.out.format("update: %s -> %s\n", prev, dir);
+               out.format("update: %s -> %s\n", prev, dir);
            }
        }
        keys.put(key, dir);
    }
  
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void run() {
 		while (running) {
@@ -77,7 +82,7 @@ public class Watcher implements Runnable {
 				continue;
 			Path dir = keys.get(key);
 			if (dir == null) {
-				System.err.println("WatchKey not recognized: " + key);
+				err.println("WatchKey not recognized: " + key);
 				continue;
 			}
 
@@ -87,11 +92,11 @@ public class Watcher implements Runnable {
 				.anyMatch(ENTRY_DELETE::equals);
 			events.stream()
 				.map(e -> (WatchEvent<Path>) e)
-				.peek(e -> System.out.println("> " + dir.resolve(e.context()).getFileName()))
+				.peek(e -> out.println("> " + dir.resolve(e.context()).getFileName()))
 				.filter(e -> e.kind()==ENTRY_CREATE)
 				.map(e -> e.context())
 				.map(name -> dir.resolve(name))
-				.filter(path ->Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS))
+				.filter(path -> isDirectory(path, NOFOLLOW_LINKS))
 				.forEach(this::registerAll);
 
 			if(shouldDelete) compiler.clear();
@@ -111,9 +116,9 @@ public class Watcher implements Runnable {
 	void stop() {
 		try {
 			this.running = false;
-			System.out.println("Stopping compilation service");
+			out.println("Stopping compilation service");
 			service.close();
-			System.out.println("Stopped compilation service");
+			out.println("Stopped compilation service");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

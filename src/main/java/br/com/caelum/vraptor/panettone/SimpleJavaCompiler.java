@@ -1,11 +1,14 @@
 package br.com.caelum.vraptor.panettone;
 
+import static java.net.URLClassLoader.newInstance;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -69,8 +72,26 @@ public class SimpleJavaCompiler {
 		compile(files.collect(toList()));
 	}
 
-	public Class<?> load(CompiledTemplate template) {
-		return template.loadType(classPath);
+	public void compileToBytecode(File file) {
+		new SimpleJavaCompiler(classPath).compile(file);
 	}
 
+	public Class<?> getTypeFromNewClassLoader(CompiledTemplate template) {
+		return loadType(this.classPath, template);
+	}
+
+	@SuppressWarnings("deprecation")
+	Class<?> loadType(File classPath, CompiledTemplate template) {
+		try {
+			ClassLoader parent = getClass().getClassLoader();
+			URL[] url = new URL[]{classPath.toURL()};
+			URLClassLoader loader = newInstance(url, parent);
+			return loader.loadClass(template.getFullName());
+		} catch (IOException e) {
+			throw new CompilationLoadException("Unable to compile", e);
+		} catch (ClassNotFoundException e) {
+			throw new CompilationLoadException("Unable to find class " + template.getFullName() + " at " + classPath, e);
+		}
+	}
+	
 }

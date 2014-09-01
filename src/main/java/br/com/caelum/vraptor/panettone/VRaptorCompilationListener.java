@@ -1,5 +1,7 @@
 package br.com.caelum.vraptor.panettone;
 
+import java.io.File;
+
 public class VRaptorCompilationListener implements CompilationListener {
 
 	@Override
@@ -23,6 +25,18 @@ public class VRaptorCompilationListener implements CompilationListener {
 				+ "}\n"
 				+ "}\n"
 				+ "private <T extends br.com.caelum.vraptor.View> T use(Class<T> type) { return result.use(type); }\n";
+	}
+
+	@Override
+	public void finished(File file, CompiledTemplate template) {
+	}
+
+	@Override
+	public void finished(File f, Exception e) {
+	}
+
+	@Override
+	public void clear() {
 	}
 
 }
