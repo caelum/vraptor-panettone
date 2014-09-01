@@ -19,6 +19,7 @@ public class InjectDeclarationRule implements Rule {
 				
 		Pattern p = Pattern.compile(
 				"\\(@inject " + 
+				Regexes.SPACE + 
 				Regexes.CLASS_NAME + 
 				Regexes.SPACE + 
 				Regexes.GENERICS +
