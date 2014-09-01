@@ -354,6 +354,8 @@ To build a jar SNAPSHOT run `mvn package`.
 
 Fork, write code, write test, send pull request :)
 
+[![Build Status](https://travis-ci.org/caelum/vraptor-panettone.svg?branch=master)](https://travis-ci.org/caelum/vraptor-panettone)
+
 Register issues in our github tracker
 
 Talk to us at www.guj.com.br or twitter @guilhermecaelum
