@@ -56,6 +56,7 @@ Why would you use the command line if you have an IDE? Just add the plugin from 
 and add the project nature:
 
 ```
+http://panettone-eclipse.herokuapp.com
 ``` 
 
 
