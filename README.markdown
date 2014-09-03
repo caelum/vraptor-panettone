@@ -336,7 +336,9 @@ Thanks Java.
 
 # Development
 
-To build a jar SNAPSHOT run `mvn package`.
+To build a jar SNAPSHOT: `mvn package`.
+
+To release: `mvn release:prepare && mvn release:perform`
 
 # Issues, help, contributing
 

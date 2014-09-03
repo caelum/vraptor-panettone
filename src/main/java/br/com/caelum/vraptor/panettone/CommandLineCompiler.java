@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class CommandLineCompiler {
@@ -26,7 +27,7 @@ public class CommandLineCompiler {
 	}
 
 	private static void validate(String[] args) {
-		if(args.length == 0) {
+		if(Arrays.asList(args).contains("-h")) {
 			System.err.println("Usage: java -jar vraptor-panettone-version.jar [--watch] DEFAULT_IMPORT1 DEFAULT_IMPORT2");
 			System.err.println("--watch means keep watching the folder");
 			System.exit(1);
