@@ -75,7 +75,7 @@ import java.function.*
 Simply define injected variables in your template:
 
 ```
-<%$ @Inject Localizer l %>
+<%@ Localizer l %>
 ```
 
 And compile:
@@ -87,20 +87,6 @@ java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar javax.inject.* br.com.caelum.vrap
 # Methods and lambdas
 
 Yeah, we all love methods, and we know we should be careful with logic in the view layer, right?
-Methods *do not* have access to the local variables defined in the templates, you need to receive them if you want.
-
-<%$
-public void love(User user) {
-	out.write("yes, " + user.getName() + ", I do.");
-}
-%>
-
-And invoke it:
-
-<%
-love(user);
-%>
-
 Want a method that is cheap and access the variables? Define a lambda:
 
 <%
@@ -126,7 +112,7 @@ partial.tone.html:
 
 full.tone.html:
 ```
-<html><% new templates.partial(out).render(); %></html>
+<html><% new partial(out).render(); %></html>
 ```
 
 VRaptor version:
@@ -139,15 +125,15 @@ VRaptor version:
 partial.tone.html:
 ```
 <%@ Runnable body %>
-<body>${body.run()}</body>
+<body>@{body.run()}</body>
 ```
 
 VRaptor version:
 ```
 <html>
-<%&body%>
+@{{body
 	Custom code here
-<%&/body%>
+@}}
 <% use(partial.class).render(body); %>
 </html>
 ```
@@ -157,21 +143,21 @@ that the parent template has (and none to its children template).
 
 If you want to make it optional:
 
-<%@ Runnable body = () -> {} %>
+(@ Runnable body = () -> {} )
 
 # Parameter defaults (to be implemented)
 
 You can define a object reference variable (no primitive, sorry) with a default value by simply initializing it:
 
 ```
-<%@ String message = "hello" %>
+(@ String message = "hello" )
 ```
 
 Each default variable must be defined in its own context:
 
 ```
-<%@ User user %>
-<%@ String message = "hello" %>
+(@ User user )
+(@ String message = "hello" )
 ```
 
 Only one method will be generated: `render(User user, String message)` and within its body there will be a default check:
@@ -184,24 +170,25 @@ Be careful with default variables hell, as with any other language. This is a be
 
 # Expression language
 
-Current simple support to make it easier to migrate JSP files.
+Current simple support to make it easier to migrate JSP files. Basically replace all `${` with `@{`. That should work in `90+random()*10`% of the cases.
 We do not recommend sticking to this one on the long run as we do not intend to make it more complex,
 unless the code is contributed by someone like you, thanks :)
 
 ```
-${message} ==> write(message);
-${message()} ==> write(message());
-${message(x)} ==> write(message(x));
-${message(a.b)} ==> write(message(a.getB()));
-${message.bytes} ==> write(message.getBytes());
-${message.bytes.length} ==> write(message.getBytes().getLength());
-${message[15]} ==> write(message.get(15));
-${message[a.b]} ==> write(message.get(a.getB()));
-${message['15']} ==> write(message.get("15"));
-${messages.size[bytes]==> write(messages.getSize().get(bytes);
-${'xpto'} ==> write("xpto");
+@message ==> write(message);
+@message.a() ==> write(message.a());
+@message.a(x) ==> write(message.a(x));
+@{message(a.b)} ==> write(message(a.getB()));
+@{message.bytes} ==> write(message.getBytes());
+@{message.bytes.length} ==> write(message.getBytes().getLength());
+@{message[15]} ==> write(message.get(15));
+@{message[a.b]} ==> write(message.get(a.getB()));
+@{message['15']} ==> write(message.get("15"));
+@{messages.size[bytes]==> write(messages.getSize().get(bytes);
+@{'xpto'} ==> write("xpto");
 ```
 
+The {} are optional in most situations, even in some of the ones where it is seen above, but if the parser gets crazy during compilation time, it means they are required :).
 We currently support some level of nested invocations. Do not abuse.
 We currently **DO NOT** support *is* methods.
 Take care of your NULLs, please. If you are nullable, it is up to you to be careful with what you did. Don't play nullable, play safe.
@@ -211,9 +198,9 @@ Take care of your NULLs, please. If you are nullable, it is up to you to be care
 Write your template:
 
 ```
-<%@String mensagem %>
+(@String mensagem )
 <html>
-<%= mensagem %>
+@mensagem
 </html>
 ```
 
