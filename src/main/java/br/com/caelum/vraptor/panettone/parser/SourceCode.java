@@ -19,7 +19,7 @@ public class SourceCode {
 
 	public SourceCode(String source) {
 		this.source = source;
-		extractedChunks = new HashMap<Integer, TextChunk>();
+		extractedChunks = new HashMap<>();
 	}
 	
 	public String getSource() {
