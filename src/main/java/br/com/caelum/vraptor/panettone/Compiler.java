@@ -1,5 +1,6 @@
 package br.com.caelum.vraptor.panettone;
 
+import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
@@ -36,28 +37,10 @@ public class Compiler {
 		from.mkdirs();
 		to.mkdirs();
 		this.watcher = new Watcher(from.toPath(), this);
-		File defaults = new File(from, "tone.defaults");
-		if(defaults.exists()) {
-			parse(defaults);
-		}
-	}
-
-	private void parse(File defaults) {
-		try {
-			Files.lines(defaults.toPath())
-				.filter(l -> l.startsWith("import "))
-				.map(l -> l.substring("import ".length()).trim())
-				.forEach(l -> this.imports.add(l));
-		} catch (IOException e) {
-			throw new RuntimeException("Unable to read defaults "+ defaults.getAbsolutePath());
-		}
+		imports.addAll(new DefaultImportFile(from).getImports());
 	}
 
 	public List<Exception> compileAll() {
-		return precompile();
-	}
-
-	private List<Exception> precompile() {
 		List<File> files = tonesAt(from);
 		long start = System.currentTimeMillis();
 		out.println("Compiling " + files.size() + " files...");
@@ -71,7 +54,7 @@ public class Compiler {
 		if(!exceptions.isEmpty()) {
 			err.println("Precompilation failed");
 		}
-		out.println(String.format("Finished in %.2f secs", delta));
+		out.println(format("Finished in %.2f secs", delta));
 		return exceptions;
 	}
 

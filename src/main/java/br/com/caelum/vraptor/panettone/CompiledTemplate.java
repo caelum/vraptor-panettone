@@ -79,16 +79,15 @@ public class CompiledTemplate {
 	}
 	
 	private String importStatementsFor(List<String> imports) {
-		String base = "import java.util.*;\n";
-		if (imports.isEmpty())
-			return base;
-		return base + imports.stream().map(s -> "import " + s + ";\n").collect(joining()) + "\n";
+		String base = "import java.util.*;\n" +
+					  "import templates.*;\n";
+		String customImports = imports.stream().map(s -> "import " + s + ";\n").collect(joining());
+		return base + customImports + "\n";
 	}
 
 	private String getTypeName() {
 		return file.getName().replaceAll("\\.java.*", "");
 	}
-	
 
 	public static String toString(Reader reader) {
 		try(Scanner scanner = new Scanner(reader)) {

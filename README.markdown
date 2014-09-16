@@ -325,11 +325,6 @@ For those reasons we choose to stick to a Java type safe one.
 
 Go through the test cases, there are plenty of working examples.
 
-# What is that crazy parser I saw?
-
-Good question. The parser was not intended to be a complex one. It should run in a linear time, and preferably just
-do a one step read so it precompiles to Java. So far, so good. Help refactoring the parser is appreciated.  
-
 # Who do I thank for being 100% sure I won't get a crappy message in my production code?
 
 Thanks Java.

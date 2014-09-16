@@ -10,6 +10,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import templates.AutoImported;
+
 public class CompiledTemplateTest {
 	
 	private File dir;
@@ -70,6 +72,15 @@ public class CompiledTemplateTest {
 		
 		String expected = "<html></html>";
 		assertEquals(expected, tryToRun(template, new Class[]{}));
+	}
+
+	@Test
+	public void shouldSupportDefaultImportsJavaUtilAndTemplates() {
+		CompiledTemplate template = compile("interpolateObject", 	"(@List<br.com.caelum.vraptor.panettone.User> users)\n(@AutoImported auto)\n"
+				+ "<html><%= auto.render(users) %></html>");
+		
+		String expected = "<html>empty</html>";
+		assertEquals(expected, tryToRun(template, new Class[]{List.class, AutoImported.class}, null, new AutoImported()));
 	}
 
 	@Test

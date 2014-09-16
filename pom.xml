@@ -64,7 +64,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>br.com.caelum.vraptor.panettone.CommandLineCompiler</mainClass>
+							<mainClass>br.com.caelum.vraptor.panettone.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
