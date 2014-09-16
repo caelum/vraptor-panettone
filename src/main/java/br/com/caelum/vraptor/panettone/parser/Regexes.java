@@ -6,8 +6,11 @@ public class Regexes {
 
 	public static final String SPACE = "\\s*";
 	public static final String CLASS_NAME = "[\\w\\.\\_]+";
-	public static final String GENERICS = "(<\\s*" + CLASS_NAME + "\\s*>)?";
+
+	public static final String GENERICS_CONTENT = "[\\w\\.\\_,\\s<>]+";
+	public static final String GENERICS = "(<\\s*" + GENERICS_CONTENT + "\\s*>)?";
 	
+//	public static final String CLASS_NAME_WITH_GENERICS = "[' '\\w\\.\\_<>]+";
 	
 	public static final String DOT = "\\.";
 	public static final String BRACKETS = "\\[\\]";

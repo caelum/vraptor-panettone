@@ -58,13 +58,15 @@ public class InjectDeclarationRuleTest {
 	public void shouldUnderstandGenericDeclaration() {
 		SourceCode sc = new SourceCode(
 						"(@inject List<X> var1)"+
-						"(@inject List< a.b.Bla > var2)"
+						"(@inject List< a.b.Bla > var2)"+
+						"(@inject List<X<Y>> var1)"
 				);
 		
 		List<TextChunk> chunks = rule.getChunks(sc);
-		Assert.assertEquals(2, chunks.size());
+		Assert.assertEquals(3, chunks.size());
 		Assert.assertEquals("(@inject List<X> var1)", chunks.get(0).getText());
 		Assert.assertEquals("(@inject List< a.b.Bla > var2)", chunks.get(1).getText());
+		Assert.assertEquals("(@inject List<X<Y>> var1)", chunks.get(2).getText());
 	}
 	
 	@Test

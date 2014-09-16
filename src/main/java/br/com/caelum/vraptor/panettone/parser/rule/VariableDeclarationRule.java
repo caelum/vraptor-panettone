@@ -31,6 +31,7 @@ public class VariableDeclarationRule implements Rule {
 				"\\)" + Regexes.SPACE + 
 				"\\n";
 		
+		System.out.println(pattern);
 		Pattern p = Pattern.compile(pattern, Pattern.MULTILINE);
 		
 		Matcher matcher = p.matcher(sc.getSource());

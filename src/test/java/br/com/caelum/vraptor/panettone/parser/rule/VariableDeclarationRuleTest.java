@@ -41,6 +41,16 @@ public class VariableDeclarationRuleTest {
 		Assert.assertEquals("(@ java.util.List<br.com.Entity> var1)", chunks.get(0).getText());
 		Assert.assertEquals("(@ java.util.List < br.com.Entity > var2)", chunks.get(1).getText());
 	}
+
+	@Test
+	public void shouldUnderstandVariablesWithNestedGenerics() {
+		SourceCode sc = new SourceCode(
+				"(@ java.util.List<br.com.Entity<OtherType, X>> var1)\n"
+		);
+		
+		List<TextChunk> chunks = rule.getChunks(sc);
+		Assert.assertEquals("(@ java.util.List<br.com.Entity<OtherType, X>> var1)", chunks.get(0).getText());
+	}
 	
 	
 	@Test
