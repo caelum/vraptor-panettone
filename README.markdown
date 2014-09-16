@@ -62,7 +62,7 @@ http://panettone-eclipse.herokuapp.com
 
 # Imports
 
-`java.util.*` is imported by default to all your templates.
+`java.util.*` and `templates.*` are imported by default to all your templates.
 
 You can add extra imports by creating a file `src/main/views/tone.defaults` such as:
 
