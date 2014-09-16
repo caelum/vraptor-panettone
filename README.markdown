@@ -194,6 +194,22 @@ We currently support some level of nested invocations. Do not abuse.
 We currently **DO NOT** support *is* methods.
 Take care of your NULLs, please. If you are nullable, it is up to you to be careful with what you did. Don't play nullable, play safe.
 
+# Comments
+
+You can add comments to your code with:
+
+```
+@-- my comment --@
+<%= user.getName() %>
+```
+
+And it will be debug friendly:
+
+```
+// my comment
+write(user.getName());
+```
+
 # Debugging
 
 Write your template:

@@ -1,7 +1,9 @@
 package br.com.caelum.vraptor.panettone.parser.rule;
 
-import java.util.ArrayList;
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
+import java.util.stream.Stream;
 
 public enum Rules {
 
@@ -32,13 +34,9 @@ public enum Rules {
 	}
 	
 	public static List<Rules> rulesToExecute() {
-		List<Rules> rules = new ArrayList<Rules>();
-		for(Rules rule : Rules.values()){
-			if(rule.shouldExecute()) {
-				rules.add(rule);
-			}
-		}
-		return rules;
+		return Stream.of(values())
+					.filter(Rules::shouldExecute)
+					.collect(toList());
 	}
 
 	private boolean shouldExecute() {
@@ -46,8 +44,9 @@ public enum Rules {
 	}
 
 	public static Rule byName(String ruleName) {
-		for(Rules rule : Rules.values()) {
-			if(rule.name().equals(ruleName)) return rule.getRule();
+		for (Rules rule : Rules.values()) {
+			if (rule.name().equals(ruleName))
+				return rule.getRule();
 		}
 		
 		throw new RuntimeException("rule doesnt exist: " + ruleName);
