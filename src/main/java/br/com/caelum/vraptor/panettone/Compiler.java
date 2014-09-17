@@ -37,7 +37,7 @@ public class Compiler {
 		from.mkdirs();
 		to.mkdirs();
 		this.watcher = new Watcher(from.toPath(), this);
-		imports.addAll(new DefaultImportFile(from).getImports());
+		this.imports.addAll(new DefaultImportFile(from).getImports());
 	}
 
 	public List<Exception> compileAll() {
