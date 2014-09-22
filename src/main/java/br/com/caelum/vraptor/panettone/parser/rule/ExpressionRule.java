@@ -16,7 +16,9 @@ public class ExpressionRule implements Rule {
 	public List<TextChunk> getChunks(SourceCode sc) {
 		List<TextChunk> chunks = new ArrayList<TextChunk>();
 		
-		Pattern p = Pattern.compile("@\\{((\\w)+((\\.)|(\\['?\"?)|('?\"?\\]\\.?)|(\\('?\"?\\)?)|(\\s*,\\s*)|('?\"?\\)\\.?))?)+\\}");
+		// complicated? 
+		// read comments on PrintVariableRule (same regex)
+		Pattern p = Pattern.compile("@\\{\\s*((\\w)+((\\.)|(\\['?\"?)|('?\"?\\]\\.?)|(\\('?\"?\\)?)|(\\s*,\\s*)|('?\"?\\)\\.?))?)+\\s*\\}");
 		Matcher matcher = p.matcher(sc.getSource());
 		
 		while(matcher.find()) {

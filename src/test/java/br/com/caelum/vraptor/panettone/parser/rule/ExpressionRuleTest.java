@@ -32,6 +32,20 @@ public class ExpressionRuleTest {
 		Assert.assertEquals("@{v1.v2}", chunks.get(1).getText());
 		Assert.assertEquals("@{v1.v2.v3}", chunks.get(2).getText());
 	}
+
+	@Test
+	public void shouldSupportSpaces() {
+		SourceCode sc = new SourceCode(
+				"@{ v1}\n"+
+						"@{v2 }\n"+
+						"@{ v3 }\n"
+				);
+		
+		List<TextChunk> chunks = rule.getChunks(sc);
+		Assert.assertEquals("@{ v1}", chunks.get(0).getText());
+		Assert.assertEquals("@{v2 }", chunks.get(1).getText());
+		Assert.assertEquals("@{ v3 }", chunks.get(2).getText());
+	}
 	
 	@Test
 	public void shouldCreateNode() {
