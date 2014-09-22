@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import br.com.caelum.vraptor.panettone.parser.SourceCode;
 import br.com.caelum.vraptor.panettone.parser.TextChunk;
+import br.com.caelum.vraptor.panettone.parser.TextChunkBuilder;
 import br.com.caelum.vraptor.panettone.parser.ast.ExpressionNode;
 
 public class ExpressionRuleTest {
@@ -50,7 +51,7 @@ public class ExpressionRuleTest {
 	@Test
 	public void shouldCreateNode() {
 		
-		ExpressionNode node = (ExpressionNode) rule.getNode(new TextChunk(" @{v1.v2} "));
+		ExpressionNode node = (ExpressionNode) rule.getNode(TextChunkBuilder.to(" @{v1.v2} "));
 		
 		Assert.assertEquals("v1.v2", node.getExpr());
 		

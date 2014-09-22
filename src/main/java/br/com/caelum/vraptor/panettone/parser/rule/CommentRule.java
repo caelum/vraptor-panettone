@@ -20,7 +20,8 @@ public class CommentRule implements Rule {
 		Matcher matcher = p.matcher(sc.getSource());
 		
 		while(matcher.find()) {
-			chunks.add(new TextChunk(matcher.group()));
+			String matched = matcher.group();
+			chunks.add(new TextChunk(matched, sc.lineBegin(matched)));
 		}
 		
 		return chunks;
@@ -31,7 +32,7 @@ public class CommentRule implements Rule {
 		String comment = chunk.getText().substring(3);
 		comment = comment.substring(0, comment.length()-3);
 		
-		return new CommentNode(comment);
+		return new CommentNode(comment, chunk.getBeginLine());
 	}
 
 }

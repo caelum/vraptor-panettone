@@ -16,7 +16,7 @@ public class ScriptletRule implements Rule {
 
 	@Override
 	public Node getNode(TextChunk chunk) {
-		return new ScriptletNode(chunk.getText());
+		return new ScriptletNode(chunk.getText(), chunk.getBeginLine());
 	}
 
 }

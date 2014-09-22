@@ -25,8 +25,9 @@ public class PanettoneParser {
 	}
 	
 	private PannetoneAST createAST(SourceCode sc) {
-		PannetoneAST ast = new PannetoneAST();
 		List<RuleChunk> rules = ruleExtractor.extract(sc); 
+
+		PannetoneAST ast = new PannetoneAST();
 		for(RuleChunk ruleChunk : rules) {
 			ast.createNode(ruleChunk, sc.getTextChunk(ruleChunk.number()));
 		}

@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import br.com.caelum.vraptor.panettone.parser.SourceCode;
 import br.com.caelum.vraptor.panettone.parser.TextChunk;
+import br.com.caelum.vraptor.panettone.parser.TextChunkBuilder;
 import br.com.caelum.vraptor.panettone.parser.ast.PrintVariableNode;
 
 public class PrintVariableRuleTest {
@@ -89,7 +90,7 @@ public class PrintVariableRuleTest {
 	@Test
 	public void shouldCreateNode() {
 		
-		PrintVariableNode node = (PrintVariableNode) rule.getNode(new TextChunk("@v2.texto"));
+		PrintVariableNode node = (PrintVariableNode) rule.getNode(TextChunkBuilder.to("@v2.texto"));
 		
 		Assert.assertEquals("v2.texto", node.getExpr());
 		

@@ -23,7 +23,8 @@ public class ReusableVariableRule implements Rule {
 		Matcher matcher = p.matcher(sc.getSource());
 		
 		while(matcher.find()) {
-			chunks.add(new TextChunk(matcher.group()));
+			String matched = matcher.group();
+			chunks.add(new TextChunk(matched, sc.lineBegin(matched)));
 		}
 		
 		return chunks;
@@ -37,7 +38,7 @@ public class ReusableVariableRule implements Rule {
 		String varContent = chunk.getText().substring(firstLine);
 		varContent = varContent.substring(1, varContent.length()-3);
 		
-		return new ReusableVariableNode(varName, varContent);
+		return new ReusableVariableNode(varName, varContent, chunk.getBeginLine());
 	}
 
 }

@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import br.com.caelum.vraptor.panettone.parser.SourceCode;
 import br.com.caelum.vraptor.panettone.parser.TextChunk;
+import br.com.caelum.vraptor.panettone.parser.TextChunkBuilder;
 import br.com.caelum.vraptor.panettone.parser.ast.ReusableVariableNode;
 
 public class ReusableVariableRuleTest {
@@ -43,7 +44,7 @@ public class ReusableVariableRuleTest {
 	@Test
 	public void shouldCreateNode() {
 		
-		ReusableVariableNode node = (ReusableVariableNode) rule.getNode(new TextChunk("@{{body\nbla();@}}"));
+		ReusableVariableNode node = (ReusableVariableNode) rule.getNode(TextChunkBuilder.to("@{{body\nbla();@}}"));
 		
 		Assert.assertEquals("body", node.getName());
 		Assert.assertEquals("bla();", node.getContent());

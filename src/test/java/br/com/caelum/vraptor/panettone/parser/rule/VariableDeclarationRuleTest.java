@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import br.com.caelum.vraptor.panettone.parser.SourceCode;
 import br.com.caelum.vraptor.panettone.parser.TextChunk;
+import br.com.caelum.vraptor.panettone.parser.TextChunkBuilder;
 import br.com.caelum.vraptor.panettone.parser.ast.VariableDeclarationNode;
 
 public class VariableDeclarationRuleTest {
@@ -99,9 +100,9 @@ public class VariableDeclarationRuleTest {
 	@Test
 	public void shouldCreateNode() {
 		
-		VariableDeclarationNode node = (VariableDeclarationNode) rule.getNode(new TextChunk("(@String nome)"));
-		VariableDeclarationNode node2 = (VariableDeclarationNode) rule.getNode(new TextChunk("(@ int x = 10)"));
-		VariableDeclarationNode node3 = (VariableDeclarationNode) rule.getNode(new TextChunk("(@ String email = \"bla@bla.com\")"));
+		VariableDeclarationNode node = (VariableDeclarationNode) rule.getNode(TextChunkBuilder.to("(@String nome)"));
+		VariableDeclarationNode node2 = (VariableDeclarationNode) rule.getNode(TextChunkBuilder.to("(@ int x = 10)"));
+		VariableDeclarationNode node3 = (VariableDeclarationNode) rule.getNode(TextChunkBuilder.to("(@ String email = \"bla@bla.com\")"));
 		
 		Assert.assertEquals("String", node.getType());
 		Assert.assertEquals("nome", node.getName());

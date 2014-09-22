@@ -22,7 +22,8 @@ public class ExpressionRule implements Rule {
 		Matcher matcher = p.matcher(sc.getSource());
 		
 		while(matcher.find()) {
-			chunks.add(new TextChunk(matcher.group()));
+			String matched = matcher.group();
+			chunks.add(new TextChunk(matched, sc.lineBegin(matched)));
 		}
 		
 		return chunks;
@@ -32,7 +33,7 @@ public class ExpressionRule implements Rule {
 	public Node getNode(TextChunk chunk) {
 		String chunkWithNoBegin = chunk.getText().trim().substring(2);
 		String finalChunk = chunkWithNoBegin.substring(0, chunkWithNoBegin.length()-1);
-		return new ExpressionNode(finalChunk.trim());
+		return new ExpressionNode(finalChunk.trim(), chunk.getBeginLine());
 	}
 
 }

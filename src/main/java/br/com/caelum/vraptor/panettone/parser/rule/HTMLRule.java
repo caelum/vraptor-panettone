@@ -16,7 +16,7 @@ public class HTMLRule implements Rule {
 
 	@Override
 	public Node getNode(TextChunk chunk) {
-		return new HTMLNode(chunk.getText());
+		return new HTMLNode(chunk.getText(), chunk.getBeginLine());
 	}
 
 }

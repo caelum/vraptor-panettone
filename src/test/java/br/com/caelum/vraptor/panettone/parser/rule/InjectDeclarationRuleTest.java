@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import br.com.caelum.vraptor.panettone.parser.SourceCode;
 import br.com.caelum.vraptor.panettone.parser.TextChunk;
+import br.com.caelum.vraptor.panettone.parser.TextChunkBuilder;
 import br.com.caelum.vraptor.panettone.parser.ast.InjectDeclarationNode;
 
 public class InjectDeclarationRuleTest {
@@ -72,7 +73,7 @@ public class InjectDeclarationRuleTest {
 	@Test
 	public void shouldCreateNode() {
 		
-		InjectDeclarationNode node = (InjectDeclarationNode) rule.getNode(new TextChunk("(@inject a.b.C nome)"));
+		InjectDeclarationNode node = (InjectDeclarationNode) rule.getNode(TextChunkBuilder.to("(@inject a.b.C nome)"));
 		
 		Assert.assertEquals("a.b.C", node.getType());
 		Assert.assertEquals("nome", node.getName());

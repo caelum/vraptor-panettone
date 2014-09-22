@@ -36,7 +36,8 @@ public class VariableDeclarationRule implements Rule {
 		Matcher matcher = p.matcher(sc.getSource());
 		
 		while(matcher.find()) {
-			chunks.add(new TextChunk(matcher.group().trim()));
+			String matched = matcher.group();
+			chunks.add(new TextChunk(matched, sc.lineBegin(matched)));
 		}
 		
 		return chunks;
@@ -55,7 +56,7 @@ public class VariableDeclarationRule implements Rule {
 			value = value.substring(0, value.length()-1);
 		}
 		
-		return new VariableDeclarationNode(type, name, value);
+		return new VariableDeclarationNode(type, name, value, chunk.getBeginLine());
 	}
 
 }

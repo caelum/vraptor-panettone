@@ -32,7 +32,8 @@ public class ScriptletPrintRule implements Rule {
 		Matcher matcher = p.matcher(sc.getSource());
 		
 		while(matcher.find()) {
-			chunks.add(new TextChunk(matcher.group()));
+			String matched = matcher.group();
+			chunks.add(new TextChunk(matched, sc.lineBegin(matched)));
 		}
 		
 		return chunks;
@@ -40,7 +41,7 @@ public class ScriptletPrintRule implements Rule {
 
 	@Override
 	public Node getNode(TextChunk chunk) {
-		return new ScriptletPrintNode(chunk.getText().replace("<%=", "").replace("%>", "").trim());
+		return new ScriptletPrintNode(chunk.getText().replace("<%=", "").replace("%>", "").trim(), chunk.getBeginLine());
 	}
 
 }

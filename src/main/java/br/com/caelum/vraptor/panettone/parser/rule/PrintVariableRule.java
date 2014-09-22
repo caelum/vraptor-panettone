@@ -26,7 +26,8 @@ public class PrintVariableRule implements Rule {
 		
 		
 		while(matcher.find()) {
-			chunks.add(new TextChunk(matcher.group().trim()));
+			String matched = matcher.group();
+			chunks.add(new TextChunk(matched, sc.lineBegin(matched)));
 		}
 		
 		return chunks;
@@ -34,7 +35,7 @@ public class PrintVariableRule implements Rule {
 
 	@Override
 	public Node getNode(TextChunk chunk) {
-		return new PrintVariableNode(chunk.getText().replace("@", "").trim());
+		return new PrintVariableNode(chunk.getText().replace("@", "").trim(), chunk.getBeginLine());
 	}
 
 }

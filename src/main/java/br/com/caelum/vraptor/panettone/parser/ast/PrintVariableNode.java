@@ -1,11 +1,12 @@
 package br.com.caelum.vraptor.panettone.parser.ast;
 
 
-public class PrintVariableNode implements Node {
+public class PrintVariableNode extends Node {
 
 	private String expr;
 
-	public PrintVariableNode(String expr) {
+	public PrintVariableNode(String expr, int beginLine) {
+		super(beginLine);
 		this.expr = expr;
 	}
 	

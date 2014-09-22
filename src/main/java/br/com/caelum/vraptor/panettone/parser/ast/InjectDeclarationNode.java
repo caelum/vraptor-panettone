@@ -1,12 +1,13 @@
 package br.com.caelum.vraptor.panettone.parser.ast;
 
 
-public class InjectDeclarationNode implements Node {
+public class InjectDeclarationNode extends Node {
 
 	private String type;
 	private String name;
 
-	public InjectDeclarationNode(String type, String name) {
+	public InjectDeclarationNode(String type, String name, int beginLine) {
+		super(beginLine);
 		this.type = type;
 		this.name = name;
 	}

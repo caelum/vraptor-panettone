@@ -1,17 +1,18 @@
 package br.com.caelum.vraptor.panettone.parser.ast;
 
 
-public class VariableDeclarationNode implements Node {
+public class VariableDeclarationNode extends Node {
 
 	private String type;
 	private String name;
 	private String defaultValue;
 
-	public VariableDeclarationNode(String type, String name) {
-		this(type, name, null);
+	public VariableDeclarationNode(String type, String name, int beginLine) {
+		this(type, name, null, beginLine);
 	}
 	
-	public VariableDeclarationNode(String type, String name, String defaultValue) {
+	public VariableDeclarationNode(String type, String name, String defaultValue, int beginLine) {
+		super(beginLine);
 		this.type = type;
 		this.name = name;
 		this.defaultValue = defaultValue;

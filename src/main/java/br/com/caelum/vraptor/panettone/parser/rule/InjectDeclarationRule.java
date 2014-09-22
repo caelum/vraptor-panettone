@@ -30,7 +30,8 @@ public class InjectDeclarationRule implements Rule {
 		Matcher matcher = p.matcher(sc.getSource());
 		
 		while(matcher.find()) {
-			chunks.add(new TextChunk(matcher.group()));
+			String matched = matcher.group();
+			chunks.add(new TextChunk(matched, sc.lineBegin(matched)));
 		}
 		
 		return chunks;
@@ -41,7 +42,7 @@ public class InjectDeclarationRule implements Rule {
 		String type = chunk.getText().split(" ")[1].trim();
 		String name = chunk.getText().split(" ")[2].replace(")", "").trim();
 		
-		return new InjectDeclarationNode(type, name);
+		return new InjectDeclarationNode(type, name, chunk.getBeginLine());
 	}
 
 }

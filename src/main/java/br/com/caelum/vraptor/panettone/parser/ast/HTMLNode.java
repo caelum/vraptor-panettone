@@ -1,10 +1,11 @@
 package br.com.caelum.vraptor.panettone.parser.ast;
 
 
-public class HTMLNode implements Node {
+public class HTMLNode extends Node {
 
 	private String html;
-	public HTMLNode(String html) {
+	public HTMLNode(String html, int beginLine) {
+		super(beginLine);
 		this.html = html;
 	}
 	

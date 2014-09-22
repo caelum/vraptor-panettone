@@ -1,24 +1,28 @@
 package br.com.caelum.vraptor.panettone.parser;
 
-import java.util.HashMap;
-
-import java.util.Map;
-
-import br.com.caelum.vraptor.panettone.parser.rule.Rules;
+import static br.com.caelum.vraptor.panettone.parser.Regexes.RULECHUNK_START_REGEX;
 import static br.com.caelum.vraptor.panettone.parser.Tokens.RULECHUNK_END;
 import static br.com.caelum.vraptor.panettone.parser.Tokens.RULECHUNK_START;
-import static br.com.caelum.vraptor.panettone.parser.Regexes.RULECHUNK_START_REGEX;
 import static br.com.caelum.vraptor.panettone.parser.Tokens.SCRIPTLET_END;
 import static br.com.caelum.vraptor.panettone.parser.Tokens.SCRIPTLET_START;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import br.com.caelum.vraptor.panettone.parser.rule.Rules;
+
 public class SourceCode {
 
+	private List<String> originalLines;
 	private String source;
 	private Map<Integer, TextChunk> extractedChunks;
 	private int counter = 0;
 
 	public SourceCode(String source) {
 		this.source = source;
+		originalLines = Arrays.asList(source.split("\n"));
 		extractedChunks = new HashMap<>();
 	}
 	
@@ -72,7 +76,7 @@ public class SourceCode {
 			int endOfTheScriptlet = justScriptlet.indexOf(SCRIPTLET_END); // be careful, an "%>" would break it
 			justScriptlet = justScriptlet.substring(0, endOfTheScriptlet);
 
-			addChunk(new TextChunk(justScriptlet));
+			addChunk(new TextChunk(justScriptlet, lineBegin(justScriptlet)));
 			newSourceCode.append(RULECHUNK_START + " " + Rules.scriptletRuleName() + " " + counter + " " + RULECHUNK_END);
 			
 			if(chunk.length() > chunk.indexOf(SCRIPTLET_END) +2) {
@@ -85,7 +89,7 @@ public class SourceCode {
 			int startOfScriptlet = justHTML.indexOf(SCRIPTLET_START);
 			justHTML = justHTML.substring(0, startOfScriptlet == -1 ? justHTML.length() : startOfScriptlet);
 			
-			addChunk(new TextChunk(justHTML));
+			addChunk(new TextChunk(justHTML, lineBegin(justHTML)));
 			newSourceCode.append(RULECHUNK_START + " " + Rules.htmlRuleName() + " " + counter + " " + RULECHUNK_END);
 			
 			if(startOfScriptlet > -1) {
@@ -99,5 +103,14 @@ public class SourceCode {
 	private void addChunk(TextChunk chunk) {
 		counter++;
 		extractedChunks.put(counter, chunk);
+	}
+
+	public int lineBegin(String matched) {
+		matched = matched.trim();
+		if(matched.contains("\n")) {
+			matched = matched.split("\n")[0];
+		}
+		
+		return originalLines.indexOf(matched) + 1;
 	}
 }
