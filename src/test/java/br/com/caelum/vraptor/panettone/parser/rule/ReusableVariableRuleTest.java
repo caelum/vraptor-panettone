@@ -22,13 +22,24 @@ public class ReusableVariableRuleTest {
 	@Test
 	public void shouldExtractNameAndCode() {
 		SourceCode sc = new SourceCode(
-				"@{{body\nbla();ble();\n\nbli();\n@}}"
+				"@{{body\nbla();ble();\n\nbli();\n@}}\n"
 				);
 		
 		List<TextChunk> chunks = rule.getChunks(sc);
-		Assert.assertEquals("@{{body\nbla();ble();\n\nbli();\n@}}", chunks.get(0).getText());
+		Assert.assertEquals("@{{body\nbla();ble();\n\nbli();\n@}}\n", chunks.get(0).getText());
 	}
 
+	@Test
+	public void shouldSupportManyBodies() {
+		SourceCode sc = new SourceCode(
+				"@{{a\nbla();ble();\n\nbli();\n@}}\n@{{b\nbla();ble();\n\nbli();\n@}}\n"
+				);
+		
+		List<TextChunk> chunks = rule.getChunks(sc);
+		Assert.assertEquals("@{{a\nbla();ble();\n\nbli();\n@}}\n", chunks.get(0).getText());
+		Assert.assertEquals("@{{b\nbla();ble();\n\nbli();\n@}}\n", chunks.get(1).getText());
+	}
+	
 	@Test
 	public void shouldCreateNode() {
 		

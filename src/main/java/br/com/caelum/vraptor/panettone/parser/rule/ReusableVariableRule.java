@@ -17,7 +17,9 @@ public class ReusableVariableRule implements Rule {
 	public List<TextChunk> getChunks(SourceCode sc) {
 		List<TextChunk> chunks = new ArrayList<TextChunk>();
 		
-		Pattern p = Pattern.compile("@\\{\\{" + Regexes.CLASS_NAME + "\\n(.)*@\\}\\}", Pattern.DOTALL);
+		String pattern = "@\\{\\{" + Regexes.CLASS_NAME + "\\n([^@\\}\\}])*\\n@\\}\\}\\n";
+		
+		Pattern p = Pattern.compile(pattern, Pattern.DOTALL);
 		Matcher matcher = p.matcher(sc.getSource());
 		
 		while(matcher.find()) {
