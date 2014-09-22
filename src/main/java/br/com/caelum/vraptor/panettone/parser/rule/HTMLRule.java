@@ -1,16 +1,14 @@
 package br.com.caelum.vraptor.panettone.parser.rule;
 
-import java.util.List;
+import java.util.regex.Pattern;
 
-import br.com.caelum.vraptor.panettone.parser.SourceCode;
 import br.com.caelum.vraptor.panettone.parser.TextChunk;
 import br.com.caelum.vraptor.panettone.parser.ast.HTMLNode;
 import br.com.caelum.vraptor.panettone.parser.ast.Node;
 
-public class HTMLRule implements Rule {
+public class HTMLRule extends Rule {
 
-	@Override
-	public List<TextChunk> getChunks(SourceCode sc) {
+	protected Pattern pattern() {
 		throw new RuntimeException("HTMLRule should not be executed");
 	}
 
