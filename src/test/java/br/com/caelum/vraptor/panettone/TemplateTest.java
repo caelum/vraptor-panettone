@@ -283,7 +283,10 @@ public class TemplateTest {
 				+ "write(\"<html>\");\n"
 				+ "body.run();\n"
 				+ "write(\"</html>\");\n}\n";
-		String result = new Template("@{{body\nGuilherme @mensagem @}}<html><%body.run();%></html>").renderType();
+		String result = new Template("@{{body\n"
+				+ "Guilherme @mensagem\n"
+				+ "@}}\n"
+				+ "<html><%body.run();%></html>").renderType();
 		assertEquals(expected, result);
 	}
 	

@@ -9,7 +9,7 @@ import br.com.caelum.vraptor.panettone.parser.rule.Rules;
 
 public class PanettoneParser {
 
-	private RuleExtractor ruleExtractor;
+	private final RuleExtractor ruleExtractor;
 
 	public PanettoneParser() {
 		ruleExtractor = new RuleExtractor();
