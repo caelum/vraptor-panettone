@@ -35,9 +35,8 @@ public class VRaptorCompiler {
 	}
 
 	public void compileAll() {
-		for(Exception ex : compileAndRetrieveErrors()) {
-			err.println(ex.getMessage());
-		}
+		compileAndRetrieveErrors().stream()
+			.map(Exception::getMessage).forEach(err::println);
 	}
 
 	public List<Exception> compileAndRetrieveErrors() {

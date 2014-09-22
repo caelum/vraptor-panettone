@@ -4,8 +4,14 @@ import java.io.File;
 
 public interface CompilationListener {
 	
+	/**
+	 * Returns any interfaces that the view should implement
+	 */
 	String[] getInterfaces();
 	
+	/**
+	 * Overrides the default constructor
+	 */
 	String overrideConstructor(String typeName);
 
 	/**

@@ -33,11 +33,12 @@ public class Compiler {
 		this.from = from;
 		this.to = to;
 		this.imports = new ArrayList<>(imports);
-		this.listeners = listeners;
+		this.watcher = new Watcher(from.toPath(), this);
+		Config config = new Config(from);
+		this.imports.addAll(config.getImports());
+		this.listeners = config.getListenersOr(listeners);
 		from.mkdirs();
 		to.mkdirs();
-		this.watcher = new Watcher(from.toPath(), this);
-		this.imports.addAll(new DefaultImportFile(from).getImports());
 	}
 
 	public List<Exception> compileAll() {

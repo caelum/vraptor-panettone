@@ -52,6 +52,16 @@ public class VariableDeclarationRuleTest {
 		Assert.assertEquals("(@ java.util.List<br.com.Entity<OtherType, X>> var1)", chunks.get(0).getText());
 	}
 	
+	@Test
+	public void shouldUnderstandVariablesWithSimpleNestedGenerics() {
+		SourceCode sc = new SourceCode(
+				"(@ List<CountingSummary<Course>> mostFinalizedThisMonth )\n"
+		);
+		
+		List<TextChunk> chunks = rule.getChunks(sc);
+		Assert.assertEquals("(@ List<CountingSummary<Course>> mostFinalizedThisMonth )", chunks.get(0).getText());
+	}
+	
 	
 	@Test
 	public void shouldUnderstandVariablesWithSimpleTypes() {

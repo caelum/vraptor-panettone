@@ -82,7 +82,7 @@ Simply define injected variables in your template:
 And compile:
 
 ```
-java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar javax.inject.* br.com.caelum.vraptor.i18n.* 
+java -jar vraptor-panettone-*.jar br.com.caelum.vraptor.i18n.* 
 ```
 
 # Methods and lambdas
@@ -254,13 +254,13 @@ Because we are playing hard.
 Use the Template Class to instantiate and render the string of a compatible Java method to what you want to render.
 Use this String as you wish. You can print and memorize it, for instance. Or you can use it to compile it using Java's Compiler API.
 
-# Eclipse haters: command line high level api download
+# Command line high level api
 
 0. Download from maven central repository
 
 1. Start the compiler with a default import package:
 ```
-java -jar vraptor-panettone-1.0.0.jar --watch br.com.caelum.vraptor.mymodelpackage 
+java -jar vraptor-panettone-*.jar --watch br.com.caelum.vraptor.mymodelpackage 
 ```
 2. Create your source panettone file at `src/main/views`, such as `hello.tone.html`, yummy.
 ```
@@ -297,17 +297,10 @@ ANT: Copy and paste ready
 		<pathelement location="src/main/webapp/WEB-INF/classes" />
 	</path>
 	<target name="compile-views">
-		<java jar="lib/local/vraptor-panettone-0.9.0-SNAPSHOT.jar" classpathref="running.path.id">
-			<arg>br.com.caelum.myproject.model.*</arg>
-			<arg>br.com.caelum.myproject.model.course.*</arg>
-		</java>
-	</target>
-	<target name="~compile-views">
-		<java jar="lib/local/vraptor-panettone-1.0.1.jar" classpathref="running.path.id">
-			<arg>--watch</arg>
-			<arg>br.com.caelum.myproject.model.*</arg>
-			<arg>br.com.caelum.myproject.model.course.*</arg>
-		</java>
+		<java jar="lib/local/vraptor-panettone-0.9.0-SNAPSHOT.jar" classpathref="running.path.id" fork="true"/>
+		<javac destdir="src/main/webapp/WEB-INF/classes" classpathref="running.path.id" debug="on" includeantruntime="false" verbose="false" target="1.8" source="1.8" encoding="UTF-8">
+			<src path="target/view-classes" />
+		</javac>
 	</target>
 </project>
 ```
@@ -317,20 +310,12 @@ Then just run the following to compile once:
 ant compile-views
 ```
 
-Or to keep watching:
-
-```
-ant ~compile-views
-```
- 
-
 # Why shouldn't I use this other template engine?
 
 Compare your template engine options and check if it makes sense for you, your team, your project and your company's short and long term goals.
 The main issues we try to tackle in other Java world template engines:
 
-- freemarker creepy error messages
-- velocity old bugs
+- freemarker error messages
 - jsp jasper limitations or servlet container requirements
 - Twirl scala dependencies, hard to understand what you are debugging
 - other language template engines: the need to learn other languages
@@ -350,6 +335,14 @@ Thanks Java.
 To build a jar SNAPSHOT: `mvn package`.
 
 To release: `mvn release:prepare && mvn release:perform`
+
+# Contributors
+
+Guilherme Silveira
+Maurício Aniche
+Rodrigo Turini
+Fernanda Bernardo
+Felipe Oliveira
 
 # Issues, help, contributing
 
