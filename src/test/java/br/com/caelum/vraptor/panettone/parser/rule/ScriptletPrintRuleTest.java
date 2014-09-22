@@ -41,6 +41,16 @@ public class ScriptletPrintRuleTest {
 		List<TextChunk> chunks = rule.getChunks(sc);
 		Assert.assertEquals("<%= a_b %>", chunks.get(0).getText());
 	}
+
+	@Test
+	public void shouldAcceptTernaryIf() {
+		SourceCode sc = new SourceCode(
+				"<%= x.y() ? \"abc\" : \"\" %>"
+				);
+		
+		List<TextChunk> chunks = rule.getChunks(sc);
+		Assert.assertEquals("<%= x.y() ? \"abc\" : \"\" %>", chunks.get(0).getText());
+	}
 	
 	@Test
 	public void shouldAcceptScriptletPrintInMethodInvocation() {

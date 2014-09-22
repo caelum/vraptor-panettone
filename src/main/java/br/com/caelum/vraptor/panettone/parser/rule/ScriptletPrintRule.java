@@ -16,12 +16,18 @@ public class ScriptletPrintRule implements Rule {
 	public List<TextChunk> getChunks(SourceCode sc) {
 		List<TextChunk> chunks = new ArrayList<TextChunk>();
 		
+		String scriptletBegin = "(<%=)\\s*";
+		String scriptletEnd = "\\s*(%>)";
+		
 		String parameters = "(\\([\\w'\",\\.\\s]*\\))?";
 		String variableName = "[\\w\\[\\]\"']+";
 		String dot = "(\\.)?";
 		
-		Pattern p = Pattern.compile(
-				"(<%=)\\s*((" + variableName + parameters + ")" + dot + ")+\\s*(%>)");
+		String ifTernary = "(\\s*[\\?\\:]?\\s*)";
+		
+		String pattern = scriptletBegin + "(((" + variableName + parameters + ")" + dot + ")+" + ifTernary + ")+" + scriptletEnd;
+		
+		Pattern p = Pattern.compile(pattern);
 		
 		Matcher matcher = p.matcher(sc.getSource());
 		
