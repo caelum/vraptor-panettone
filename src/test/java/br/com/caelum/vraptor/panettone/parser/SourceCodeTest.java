@@ -122,6 +122,33 @@ public class SourceCodeTest {
 	}
 	
 	@Test
+	public void shouldFindBeginLine() {
+		SourceCode sc = new SourceCode(
+				   "<html>\n"
+				 + "<body>\n"
+				 + "@bla\n"
+				 + "</body>\n"
+				 + "</html>"
+			);	
+		
+		Assert.assertEquals(1, sc.lineBegin("<html>"));
+		Assert.assertEquals(5, sc.lineBegin("</html>"));
+	}
+
+	@Test
+	public void shouldFindBeginLineInMultipleLineChunks() {
+		SourceCode sc = new SourceCode(
+				"<html>\n"
+						+ "<body>\n"
+						+ "@bla\n"
+						+ "</body>\n"
+						+ "</html>"
+				);	
+		
+		Assert.assertEquals(1, sc.lineBegin("<html>\n<body>\n"));
+	}
+	
+	@Test
 	public void shouldSaveChunks() {
 		SourceCode sc = new SourceCode(
 				  "<html>"
@@ -130,8 +157,8 @@ public class SourceCodeTest {
 				+ "</html>"
 			);
 		
-		sc.transform(new TextChunk("** chunk 1 **"), Rules.PRINT_VARIABLE);
-		sc.transform(new TextChunk("** chunk 2 **"), Rules.VARIABLE_DECLARATION);
+		sc.transform(new TextChunk("** chunk 1 **", 10), Rules.PRINT_VARIABLE);
+		sc.transform(new TextChunk("** chunk 2 **", 20), Rules.VARIABLE_DECLARATION);
 		
 		Assert.assertEquals("** chunk 1 **", sc.getTextChunk(1).getText());
 		Assert.assertEquals("** chunk 2 **", sc.getTextChunk(2).getText());

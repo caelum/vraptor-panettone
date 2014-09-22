@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import br.com.caelum.vraptor.panettone.parser.SourceCode;
 import br.com.caelum.vraptor.panettone.parser.TextChunk;
+import br.com.caelum.vraptor.panettone.parser.TextChunkBuilder;
 import br.com.caelum.vraptor.panettone.parser.ast.ReusableVariableNode;
 
 public class ReusableVariableRuleTest {
@@ -22,17 +23,28 @@ public class ReusableVariableRuleTest {
 	@Test
 	public void shouldExtractNameAndCode() {
 		SourceCode sc = new SourceCode(
-				"@{{body\nbla();ble();\n\nbli();\n@}}"
+				"@{{body\nbla();ble();\n\nbli();\n@}}\n"
 				);
 		
 		List<TextChunk> chunks = rule.getChunks(sc);
-		Assert.assertEquals("@{{body\nbla();ble();\n\nbli();\n@}}", chunks.get(0).getText());
+		Assert.assertEquals("@{{body\nbla();ble();\n\nbli();\n@}}\n", chunks.get(0).getText());
 	}
 
 	@Test
+	public void shouldSupportManyBodies() {
+		SourceCode sc = new SourceCode(
+				"@{{a\nbla();ble();\n\nbli();\n@}}\n@{{b\nbla();ble();\n\nbli();\n@}}\n"
+				);
+		
+		List<TextChunk> chunks = rule.getChunks(sc);
+		Assert.assertEquals("@{{a\nbla();ble();\n\nbli();\n@}}\n", chunks.get(0).getText());
+		Assert.assertEquals("@{{b\nbla();ble();\n\nbli();\n@}}\n", chunks.get(1).getText());
+	}
+	
+	@Test
 	public void shouldCreateNode() {
 		
-		ReusableVariableNode node = (ReusableVariableNode) rule.getNode(new TextChunk("@{{body\nbla();@}}"));
+		ReusableVariableNode node = (ReusableVariableNode) rule.getNode(TextChunkBuilder.to("@{{body\nbla();@}}"));
 		
 		Assert.assertEquals("body", node.getName());
 		Assert.assertEquals("bla();", node.getContent());

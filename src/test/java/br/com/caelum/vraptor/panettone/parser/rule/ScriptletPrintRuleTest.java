@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import br.com.caelum.vraptor.panettone.parser.SourceCode;
 import br.com.caelum.vraptor.panettone.parser.TextChunk;
+import br.com.caelum.vraptor.panettone.parser.TextChunkBuilder;
 import br.com.caelum.vraptor.panettone.parser.ast.ScriptletPrintNode;
 
 public class ScriptletPrintRuleTest {
@@ -41,6 +42,16 @@ public class ScriptletPrintRuleTest {
 		List<TextChunk> chunks = rule.getChunks(sc);
 		Assert.assertEquals("<%= a_b %>", chunks.get(0).getText());
 	}
+
+	@Test
+	public void shouldAcceptTernaryIf() {
+		SourceCode sc = new SourceCode(
+				"<%= x.y() ? \"abc\" : \"\" %>"
+				);
+		
+		List<TextChunk> chunks = rule.getChunks(sc);
+		Assert.assertEquals("<%= x.y() ? \"abc\" : \"\" %>", chunks.get(0).getText());
+	}
 	
 	@Test
 	public void shouldAcceptScriptletPrintInMethodInvocation() {
@@ -57,7 +68,7 @@ public class ScriptletPrintRuleTest {
 	@Test
 	public void shouldCreateNode() {
 		
-		ScriptletPrintNode node = (ScriptletPrintNode) rule.getNode(new TextChunk("<%= v1.v2() %>"));
+		ScriptletPrintNode node = (ScriptletPrintNode) rule.getNode(TextChunkBuilder.to("<%= v1.v2() %>"));
 		
 		Assert.assertEquals("v1.v2()", node.getExpr());
 		

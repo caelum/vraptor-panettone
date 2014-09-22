@@ -1,22 +1,15 @@
 package br.com.caelum.vraptor.panettone.parser.rule;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import br.com.caelum.vraptor.panettone.parser.Regexes;
-import br.com.caelum.vraptor.panettone.parser.SourceCode;
 import br.com.caelum.vraptor.panettone.parser.TextChunk;
 import br.com.caelum.vraptor.panettone.parser.ast.Node;
 import br.com.caelum.vraptor.panettone.parser.ast.VariableDeclarationNode;
 
-public class VariableDeclarationRule implements Rule {
+public class VariableDeclarationRule extends Rule {
 
-	@Override
-	public List<TextChunk> getChunks(SourceCode sc) {
-		List<TextChunk> chunks = new ArrayList<TextChunk>();
-		
+	protected Pattern pattern() {
 		String possibleDefaultValue = "(\\s*=" + Regexes.SPACE + "\"?" + "(.*)" + "\"?)?";
 		String pattern = 
 				"\\(@" + 
@@ -32,14 +25,11 @@ public class VariableDeclarationRule implements Rule {
 				"\\n";
 		
 		Pattern p = Pattern.compile(pattern, Pattern.MULTILINE);
-		
-		Matcher matcher = p.matcher(sc.getSource());
-		
-		while(matcher.find()) {
-			chunks.add(new TextChunk(matcher.group().trim()));
-		}
-		
-		return chunks;
+		return p;
+	}
+	
+	protected String parseMatched(String matched) {
+		return matched.trim();
 	}
 
 	@Override
@@ -55,7 +45,7 @@ public class VariableDeclarationRule implements Rule {
 			value = value.substring(0, value.length()-1);
 		}
 		
-		return new VariableDeclarationNode(type, name, value);
+		return new VariableDeclarationNode(type, name, value, chunk.getBeginLine());
 	}
 
 }

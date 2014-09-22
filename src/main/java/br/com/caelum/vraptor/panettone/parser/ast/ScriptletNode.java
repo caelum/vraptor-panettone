@@ -1,10 +1,11 @@
 package br.com.caelum.vraptor.panettone.parser.ast;
 
 
-public class ScriptletNode implements Node {
+public class ScriptletNode extends Node {
 
 	private String scriptlet;
-	public ScriptletNode(String scriptlet) {
+	public ScriptletNode(String scriptlet, int beginLine) {
+		super(beginLine);
 		this.scriptlet = scriptlet;
 	}
 	

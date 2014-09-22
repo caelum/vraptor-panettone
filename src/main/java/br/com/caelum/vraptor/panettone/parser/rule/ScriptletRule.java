@@ -1,22 +1,21 @@
 package br.com.caelum.vraptor.panettone.parser.rule;
 
-import java.util.List;
+import java.util.regex.Pattern;
 
-import br.com.caelum.vraptor.panettone.parser.SourceCode;
 import br.com.caelum.vraptor.panettone.parser.TextChunk;
 import br.com.caelum.vraptor.panettone.parser.ast.Node;
 import br.com.caelum.vraptor.panettone.parser.ast.ScriptletNode;
 
-public class ScriptletRule implements Rule {
+public class ScriptletRule extends Rule {
 
 	@Override
-	public List<TextChunk> getChunks(SourceCode sc) {
+	public Pattern pattern() {
 		throw new RuntimeException("ScriptletRule should not be executed");
 	}
 
 	@Override
 	public Node getNode(TextChunk chunk) {
-		return new ScriptletNode(chunk.getText());
+		return new ScriptletNode(chunk.getText(), chunk.getBeginLine());
 	}
 
 }

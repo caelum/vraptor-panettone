@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import br.com.caelum.vraptor.panettone.parser.SourceCode;
 import br.com.caelum.vraptor.panettone.parser.TextChunk;
+import br.com.caelum.vraptor.panettone.parser.TextChunkBuilder;
 import br.com.caelum.vraptor.panettone.parser.ast.CommentNode;
 
 public class CommentRuleTest {
@@ -30,7 +31,7 @@ public class CommentRuleTest {
 	@Test
 	public void shouldCreateNode() {
 		
-		CommentNode node = (CommentNode) rule.getNode(new TextChunk("@-- comentario aqui --@"));
+		CommentNode node = (CommentNode) rule.getNode(TextChunkBuilder.to("@-- comentario aqui --@"));
 		
 		Assert.assertEquals(" comentario aqui ", node.getComment());
 		

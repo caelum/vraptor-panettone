@@ -1,40 +1,32 @@
 package br.com.caelum.vraptor.panettone.parser.rule;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import br.com.caelum.vraptor.panettone.parser.SourceCode;
 import br.com.caelum.vraptor.panettone.parser.TextChunk;
 import br.com.caelum.vraptor.panettone.parser.ast.Node;
 import br.com.caelum.vraptor.panettone.parser.ast.ScriptletPrintNode;
 
-public class ScriptletPrintRule implements Rule {
+public class ScriptletPrintRule extends Rule {
 
-	@Override
-	public List<TextChunk> getChunks(SourceCode sc) {
-		List<TextChunk> chunks = new ArrayList<TextChunk>();
+	protected Pattern pattern() {
+		String scriptletBegin = "(<%=)\\s*";
+		String scriptletEnd = "\\s*(%>)";
 		
 		String parameters = "(\\([\\w'\",\\.\\s]*\\))?";
 		String variableName = "[\\w\\[\\]\"']+";
 		String dot = "(\\.)?";
 		
-		Pattern p = Pattern.compile(
-				"(<%=)\\s*((" + variableName + parameters + ")" + dot + ")+\\s*(%>)");
+		String ifTernary = "(\\s*[\\?\\:]?\\s*)";
 		
-		Matcher matcher = p.matcher(sc.getSource());
+		String pattern = scriptletBegin + "(((" + variableName + parameters + ")" + dot + ")+" + ifTernary + ")+" + scriptletEnd;
 		
-		while(matcher.find()) {
-			chunks.add(new TextChunk(matcher.group()));
-		}
-		
-		return chunks;
+		Pattern p = Pattern.compile(pattern);
+		return p;
 	}
 
 	@Override
 	public Node getNode(TextChunk chunk) {
-		return new ScriptletPrintNode(chunk.getText().replace("<%=", "").replace("%>", "").trim());
+		return new ScriptletPrintNode(chunk.getText().replace("<%=", "").replace("%>", "").trim(), chunk.getBeginLine());
 	}
 
 }

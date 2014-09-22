@@ -1,8 +1,17 @@
 package br.com.caelum.vraptor.panettone.parser.ast;
 
 
-public interface Node {
+public abstract class Node {
 
-	void accept(ASTWalker walker);
+	private int beginLine;
 
+	public Node(int beginLine) {
+		this.beginLine = beginLine;
+	}
+	
+	public abstract void accept(ASTWalker walker);
+
+	public int getBeginLine() {
+		return beginLine;
+	}
 }
