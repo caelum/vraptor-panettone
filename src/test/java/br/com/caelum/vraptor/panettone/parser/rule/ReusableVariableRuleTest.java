@@ -31,6 +31,21 @@ public class ReusableVariableRuleTest {
 	}
 
 	@Test
+	public void shouldAcceptPrintRulesInsideReusableCode() {
+		SourceCode sc = new SourceCode(
+				"@{{body\n"
+				+ "Guilherme @mensagem\n"
+				+ "@}}\n"
+				+ "	"
+				);
+		
+		List<TextChunk> chunks = rule.getChunks(sc);
+		Assert.assertEquals("@{{body\n"
+				+ "Guilherme @mensagem\n"
+				+ "@}}\n", chunks.get(0).getText());
+	}
+
+	@Test
 	public void shouldSupportManyBodies() {
 		SourceCode sc = new SourceCode(
 				"@{{a\nbla();ble();\n\nbli();\n@}}\n@{{b\nbla();ble();\n\nbli();\n@}}\n"
@@ -44,7 +59,7 @@ public class ReusableVariableRuleTest {
 	@Test
 	public void shouldCreateNode() {
 		
-		ReusableVariableNode node = (ReusableVariableNode) rule.getNode(TextChunkBuilder.to("@{{body\nbla();@}}"));
+		ReusableVariableNode node = (ReusableVariableNode) rule.getNode(TextChunkBuilder.to("@{{body\nbla();\n@}}\n"));
 		
 		Assert.assertEquals("body", node.getName());
 		Assert.assertEquals("bla();", node.getContent());

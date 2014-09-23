@@ -10,7 +10,8 @@ import br.com.caelum.vraptor.panettone.parser.ast.ReusableVariableNode;
 public class ReusableVariableRule extends Rule {
 
 	protected Pattern pattern() {
-		String pattern = "@\\{\\{" + Regexes.CLASS_NAME + "\\n([^@\\}\\}])*\\n@\\}\\}\\n";
+		String everythingButTheEndChars = "(?!@\\}\\}).";
+		String pattern = "@\\{\\{" + Regexes.CLASS_NAME + "\\n(" + everythingButTheEndChars + ")*\\n@\\}\\}\\n";
 		
 		Pattern p = Pattern.compile(pattern, Pattern.DOTALL);
 		return p;
@@ -22,7 +23,7 @@ public class ReusableVariableRule extends Rule {
 		
 		String varName = chunk.getText().substring(3, firstLine);
 		String varContent = chunk.getText().substring(firstLine);
-		varContent = varContent.substring(1, varContent.length()-3);
+		varContent = varContent.substring(1, varContent.indexOf("\n@}}"));
 		
 		return new ReusableVariableNode(varName, varContent, chunk.getBeginLine());
 	}
