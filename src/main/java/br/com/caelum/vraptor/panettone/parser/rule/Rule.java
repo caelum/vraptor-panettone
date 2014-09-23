@@ -12,7 +12,7 @@ import br.com.caelum.vraptor.panettone.parser.ast.Node;
 public abstract class Rule {
 
 	public final List<TextChunk> getChunks(SourceCode sc) {
-		List<TextChunk> chunks = new ArrayList<TextChunk>();
+		List<TextChunk> chunks = new ArrayList<>();
 
 		Pattern p = pattern();
 		Matcher matcher = p.matcher(sc.getSource());
