@@ -10,7 +10,8 @@ public class TemplateTest {
 	
 	@Test
 	public void shouldReturnString() {
-		String expected = emptyRun("write(\"<html>Oi</html>\");\n");
+		String expected = emptyRun("// line 1\n"
+				+ "write(\"<html>Oi</html>\");\n");
 		String result = new Template("<html>Oi</html>").renderType();
 		assertEquals(expected, result);
 	}
@@ -108,21 +109,24 @@ public class TemplateTest {
 	
 	@Test
 	public void shouldSupportLineBreak() {
-		String expected = emptyRun("write(\"<html>\\n\");\nwrite(\"Oi</html>\");\n");
+		String expected = emptyRun("// line 1\n"
+				+ "write(\"<html>\\n\");\nwrite(\"Oi</html>\");\n");
 		String result = new Template("<html>\nOi</html>").renderType();
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldSupportQuotes() {
-		String expected = emptyRun("write(\"<html>\\\"Oi\\\"</html>\");\n");
+		String expected = emptyRun("// line 1\n"
+				+ "write(\"<html>\\\"Oi\\\"</html>\");\n");
 		String result = new Template("<html>\"Oi\"</html>").renderType();
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldSupportBackslashes() {
-		String expected = emptyRun("write(\"<html>\\\\s</html>\");\n");
+		String expected = emptyRun("// line 1\n"
+				+ "write(\"<html>\\\\s</html>\");\n");
 		String result = new Template("<html>\\s</html>").renderType();
 		assertEquals(expected, result);
 	}
@@ -248,8 +252,8 @@ public class TemplateTest {
 	
 	@Test
 	public void shouldSupportSingleMemberWithExtraCodeNearby() {
-		String expected = "@javax.inject.Inject private i18n.Messages m;\n"
-				+ "public void render(User user,List<News> newses) {\n"
+		String expected = "@javax.inject.Inject private i18n.Messages m; // line 3\n"
+				+ "public void render(User user /* line 1 */,List<News> newses /* line 2 */) {\n"
 				+ " use(header.class).render(\"Welcome\"); \n"
 				+ "}\n";
 		String result = new Template(
