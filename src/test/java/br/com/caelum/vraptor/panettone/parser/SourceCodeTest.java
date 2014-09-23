@@ -131,22 +131,35 @@ public class SourceCodeTest {
 				 + "</html>"
 			);	
 		
-		Assert.assertEquals(1, sc.lineBegin("<html>"));
-		Assert.assertEquals(5, sc.lineBegin("</html>"));
+		Assert.assertEquals(1, sc.lineNumberFor(2));
+		Assert.assertEquals(3, sc.lineNumberFor(14));
+		Assert.assertEquals(3, sc.lineNumberFor(15));
 	}
 
 	@Test
-	public void shouldFindBeginLineInMultipleLineChunks() {
+	public void shouldFindBeginLineInAnLineWithManyExpressions() {
 		SourceCode sc = new SourceCode(
-				"<html>\n"
-						+ "<body>\n"
-						+ "@bla\n"
-						+ "</body>\n"
-						+ "</html>"
+				"<html>@mensagem\n" +
+				"outra @variavel\n" +
+				"</html>"
 				);	
 		
-		Assert.assertEquals(1, sc.lineBegin("<html>\n<body>\n"));
+		Assert.assertEquals(1, sc.lineNumberFor(6));
+		Assert.assertEquals(2, sc.lineNumberFor(22));
 	}
+	
+	@Test
+	public void shouldFindBeginLineEvenInASourceWithNoNewLines() {
+		SourceCode sc = new SourceCode(
+				"<html>@mensagem</html>"
+				);	
+		
+		Assert.assertEquals(1, sc.lineNumberFor(0));
+		Assert.assertEquals(1, sc.lineNumberFor(1));
+		Assert.assertEquals(1, sc.lineNumberFor(5));
+		Assert.assertEquals(1, sc.lineNumberFor(10));
+	}
+
 	
 	@Test
 	public void shouldSaveChunks() {
