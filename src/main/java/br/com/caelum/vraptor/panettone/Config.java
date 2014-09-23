@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -33,8 +34,10 @@ public class Config {
 			return Files.lines(defaults.toPath())
 					.filter(l -> l.startsWith(prefix + " "))
 					.map(l -> l.substring(len).trim());
+		} catch(NoSuchFileException e) {
+			return new ArrayList<String>().stream();
 		} catch (IOException e) {
-			throw new RuntimeException("Unable to read defaults " + defaults.getAbsolutePath());
+			throw new RuntimeException("Unable to read defaults " + defaults.getAbsolutePath(), e);
 		}
 	}
 
