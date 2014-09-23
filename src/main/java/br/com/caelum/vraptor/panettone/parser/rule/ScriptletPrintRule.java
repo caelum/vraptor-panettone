@@ -9,16 +9,7 @@ import br.com.caelum.vraptor.panettone.parser.ast.ScriptletPrintNode;
 public class ScriptletPrintRule extends Rule {
 
 	protected Pattern pattern() {
-		String scriptletBegin = "(<%=)\\s*";
-		String scriptletEnd = "\\s*(%>)";
-		
-		String parameters = "(\\([\\w'\",\\.\\s]*\\))?";
-		String variableName = "[\\w\\[\\]\"']+";
-		String dot = "(\\.)?";
-		
-		String ifTernary = "(\\s*[\\?\\:]?\\s*)";
-		
-		String pattern = scriptletBegin + "(((" + variableName + parameters + ")" + dot + ")+" + ifTernary + ")+" + scriptletEnd;
+		String pattern = "(<%=\\s*.*?\\s*%>)";
 		
 		Pattern p = Pattern.compile(pattern);
 		return p;
