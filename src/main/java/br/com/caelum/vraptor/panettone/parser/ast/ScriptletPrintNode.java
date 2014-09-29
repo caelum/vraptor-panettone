@@ -3,7 +3,7 @@ package br.com.caelum.vraptor.panettone.parser.ast;
 
 public class ScriptletPrintNode extends Node {
 
-	private String expr;
+	private final String expr;
 
 	public ScriptletPrintNode(String expr, int beginLine) {
 		super(beginLine);

@@ -1,13 +1,14 @@
 package br.com.caelum.vraptor.panettone.parser.ast;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import br.com.caelum.vraptor.panettone.parser.RuleChunk;
 import br.com.caelum.vraptor.panettone.parser.TextChunk;
 
 public class PannetoneAST {
 
-	private LinkedList<Node> nodes;
+	private final List<Node> nodes;
 	
 	public PannetoneAST() {
 		this.nodes = new LinkedList<Node>();
@@ -18,7 +19,6 @@ public class PannetoneAST {
 	}
 	
 	public void walk(ASTWalker walker) {
-		
 		for(Node node : nodes) {
 			walker.visitBefore(node);
 			node.accept(walker);

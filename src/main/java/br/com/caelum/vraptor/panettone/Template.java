@@ -21,9 +21,7 @@ public class Template {
 		PanettoneWalker walker = new PanettoneWalker(code);
 		
 		PannetoneAST ast = new PanettoneParser().parse(content);
-//		ast.walk(new DebuggerWalker(new LineNumberWalker(code, walker)));
-//		ast.walk(new DebuggerWalker(walker));
-		ast.walk(walker);
+		ast.walk(new LineNumberWalker(code, walker));
 		
 		return walker.getJavaCode();
 	}

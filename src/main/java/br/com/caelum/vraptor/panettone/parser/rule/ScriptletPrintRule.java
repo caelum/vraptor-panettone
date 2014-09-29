@@ -8,11 +8,10 @@ import br.com.caelum.vraptor.panettone.parser.ast.ScriptletPrintNode;
 
 public class ScriptletPrintRule extends Rule {
 
+	private static final Pattern SCRIPTLET_PRINT = Pattern.compile("(<%=\\s*.*?\\s*%>)");
+
 	protected Pattern pattern() {
-		String pattern = "(<%=\\s*.*?\\s*%>)";
-		
-		Pattern p = Pattern.compile(pattern);
-		return p;
+		return SCRIPTLET_PRINT;
 	}
 
 	@Override

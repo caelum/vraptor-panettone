@@ -14,17 +14,21 @@ import br.com.caelum.vraptor.panettone.parser.ast.VariableDeclarationNode;
 
 public class LineNumberWalker implements ASTWalker {
 
-	private CodeBuilder code;
-	private ASTWalker w;
+	private final CodeBuilder code;
+	private final ASTWalker w;
+	private int lastLine = -1;
 
 	public LineNumberWalker(CodeBuilder code, ASTWalker w) {
 		this.code = code;
 		this.w = w;
 	}
-	
+
 	@Override
 	public void visitBefore(Node node) {
-		code.append("// line " + node.getBeginLine() + "\n");
+		if (node.getBeginLine() != lastLine) {
+			code.append("// line " + node.getBeginLine() + "\n");
+			lastLine = node.getBeginLine();
+		}
 		w.visitBefore(node);
 	}
 
@@ -77,6 +81,5 @@ public class LineNumberWalker implements ASTWalker {
 	public void visitComment(CommentNode node) {
 		w.visitComment(node);
 	}
-
 
 }

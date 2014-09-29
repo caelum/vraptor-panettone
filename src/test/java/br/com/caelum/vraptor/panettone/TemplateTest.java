@@ -135,11 +135,15 @@ public class TemplateTest {
 	}
 
 	private String emptyRun(String msg) {
-		return "public void render() {\n" + msg+"}\n";
+		return "public void render() {\n"
+				+ "// line 1\n"
+				+ msg+"}\n";
 	}
 
 	private String emptyRun(String prefix, String msg) {
-		return prefix + "public void render() {\n" + msg+"}\n";
+		return prefix + "public void render() {\n"
+				+ "// line 1\n"
+				+ msg+"}\n";
 	}
 
 	@Test
@@ -151,27 +155,40 @@ public class TemplateTest {
 
 	@Test
 	public void shouldAddVariables() {
-		String expected = "public void render(String mensagem) {\nwrite(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
+		String expected = "public void render(String mensagem) {\n"
+				+ "// line 1\n"
+				+ "// line 2\n"
+				+ "write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
 		String result = new Template("(@ String mensagem )\n<html><%= mensagem %></html>").renderType();
 		assertEquals(expected, result);
 	}
 	@Test
 	public void shouldAddVariablesEvenWithLaterAts() {
-		String expected = "public void render(String mensagem) {\nwrite(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
+		String expected = "public void render(String mensagem) {\n"
+				+ "// line 1\n"
+				+ "// line 2\n"
+				+ "write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
 		String result = new Template("(@ String mensagem )\n<html>@mensagem</html>").renderType();
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldAddVariablesWithoutSpace() {
-		String expected = "public void render(String mensagem) {\nwrite(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
+		String expected = "public void render(String mensagem) {\n"
+				+ "// line 1\n"
+				+ "// line 2\n"
+				+ "write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
 		String result = new Template("(@String mensagem)\n<html><%= mensagem %></html>").renderType();
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldAddDefaultVariables() {
-		String expected = "public void render(String mensagem) {\nif(mensagem == null) mensagem = \"hello\" ;\nwrite(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
+		String expected = "public void render(String mensagem) {\n"
+				+ "// line 1\n"
+				+ "if(mensagem == null) mensagem = \"hello\" ;\n"
+				+ "// line 2\n"
+				+ "write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
 		String result = new Template("(@ String mensagem = \"hello\" )\n<html><%=mensagem%></html>").renderType();
 		assertEquals(expected, result);
 	}
@@ -186,7 +203,12 @@ public class TemplateTest {
 	@Test
 	public void shouldSupportMethodInvocationWithPackage() {
 		String expected = emptyRun("@javax.inject.Inject private br.com.caelum.vraptor.panettone.User user;\n",
-				"write(\"<html>\");\nwrite(user.getName());\nwrite(\"</html>\");\n");
+				"// line 2\n"
+				+ "write(\"<html>\");\n"
+				+ "// line 2\n"
+				+ "write(user.getName());\n"
+				+ "// line 2\n"
+				+ "write(\"</html>\");\n");
 		String result = new Template("(@inject br.com.caelum.vraptor.panettone.User user)\n"
 				+ "<html><%=user.getName()%></html>").renderType();
 		assertEquals(expected, result);
@@ -195,7 +217,8 @@ public class TemplateTest {
 	@Test
 	public void shouldSupportMethodInvocationWithMember() {
 		String expected = emptyRun("@javax.inject.Inject private User user;\n", 
-				"write(\"<html>\");\nwrite(user.getName());\nwrite(\"</html>\");\n");
+				"// line 2\n"
+				+ "write(\"<html>\");\nwrite(user.getName());\nwrite(\"</html>\");\n");
 		String result = new Template("(@inject User user)\n"
 				+ "<html><%=user.getName()%></html>").renderType();
 		assertEquals(expected, result);
@@ -226,6 +249,8 @@ public class TemplateTest {
 	public void shouldSupportSingleMemberWithNoSpace() {
 		String expected = "@javax.inject.Inject private String mensagem;\n"
 				+ "public void render() {\n"
+				+ "// line 1\n"
+				+ "// line 2\n"
 				+ "write(\"<html>\");\n"
 				+ "write(mensagem);\n"
 				+ "write(\"</html>\");\n"
@@ -238,6 +263,8 @@ public class TemplateTest {
 	public void shouldSupportSingleMember() {
 		String expected = "@javax.inject.Inject private String mensagem;\n"
 				+ "public void render() {\n"
+				+ "// line 1\n"
+				+ "// line 2\n"
 				+ "write(\"<html>\");\n"
 				+ "write(mensagem);\n"
 				+ "write(\"</html>\");\n"
@@ -250,6 +277,10 @@ public class TemplateTest {
 	public void shouldSupportSingleMemberWithExtraCodeNearby() {
 		String expected = "@javax.inject.Inject private i18n.Messages m;\n"
 				+ "public void render(User user,List<News> newses) {\n"
+				+ "// line 1\n"
+				+ "// line 2\n"
+				+ "// line 3\n"
+				+ "// line 4\n"
 				+ " use(header.class).render(\"Welcome\"); \n"
 				+ "}\n";
 		String result = new Template(
@@ -264,6 +295,9 @@ public class TemplateTest {
 	public void shouldSupportMembers() {
 		String variable = "@javax.inject.Inject private User user;\n";
 		String render = "public void render(String mensagem) {\n"
+				+ "// line 1\n"
+				+ "// line 2\n"
+				+ "// line 3\n"
 				+ "write(\"<html>\");\n"
 				+ "write(mensagem);\n"
 				+ "write(\"</html>\");\n"
@@ -276,10 +310,12 @@ public class TemplateTest {
 	@Test
 	public void shouldSupportBodies() {
 		String expected = "public void render() {\n"
+				+ "// line 1\n"
 				+ "Runnable body = () -> {\n"
 				+ "write(\"Guilherme \");\n"
 				+ "write(mensagem);\n"
 				+ "};\n"
+				+ "// line 4\n"
 				+ "write(\"<html>\");\n"
 				+ "body.run();\n"
 				+ "write(\"</html>\");\n}\n";
@@ -293,6 +329,7 @@ public class TemplateTest {
 	@Test
 	public void shouldSupportComplexOutput() {
 		String expected = "public void render() {\n"
+				+ "// line 1\n"
 				+ "write(\"<html>\");\n"
 				+ "write(reason.equals(\"CAELUM_OFFLINE\") ? \"selected='selected'\":\"\");\n"
 				+ "write(\"</html>\");\n}\n";

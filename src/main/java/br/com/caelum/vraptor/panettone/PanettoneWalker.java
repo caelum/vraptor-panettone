@@ -23,7 +23,7 @@ public class PanettoneWalker implements ASTWalker {
 	private final ELEvaluator el = new ELEvaluator();
 	private final List<String> variables = new ArrayList<>();
 	private final StringBuilder injects = new StringBuilder();
-	private CodeBuilder code;
+	private final CodeBuilder code;
 
 	public PanettoneWalker(CodeBuilder code) {
 		this.code = code;
