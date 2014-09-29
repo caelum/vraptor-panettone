@@ -19,7 +19,7 @@ public abstract class Rule {
 
 		while (matcher.find()) {
 			String matched = parseMatched(matcher.group());
-			chunks.add(new TextChunk(matched, sc.lineBegin(matched)));
+			chunks.add(new TextChunk(matched, sc.lineNumberFor(matcher.start())));
 		}
 
 		return chunks;

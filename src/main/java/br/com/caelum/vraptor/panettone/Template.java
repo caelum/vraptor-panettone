@@ -17,9 +17,14 @@ public class Template {
 	}
 	
 	public String renderType() {
-		PanettoneWalker walker = new PanettoneWalker();
+		CodeBuilder code = new CodeBuilder();
+		PanettoneWalker walker = new PanettoneWalker(code);
+		
 		PannetoneAST ast = new PanettoneParser().parse(content);
+//		ast.walk(new DebuggerWalker(new LineNumberWalker(code, walker)));
+//		ast.walk(new DebuggerWalker(walker));
 		ast.walk(walker);
+		
 		return walker.getJavaCode();
 	}
 

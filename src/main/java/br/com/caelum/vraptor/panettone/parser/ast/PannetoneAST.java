@@ -20,7 +20,9 @@ public class PannetoneAST {
 	public void walk(ASTWalker walker) {
 		
 		for(Node node : nodes) {
+			walker.visitBefore(node);
 			node.accept(walker);
+			walker.visitAfter(node);
 		}
 	}
 

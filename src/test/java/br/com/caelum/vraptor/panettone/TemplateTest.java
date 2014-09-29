@@ -294,7 +294,7 @@ public class TemplateTest {
 	public void shouldSupportComplexOutput() {
 		String expected = "public void render() {\n"
 				+ "write(\"<html>\");\n"
-				+ "write(reason.equals(\"CAELUM_OFFLINE\" ? \"selected='selected'\":\"\");\n"
+				+ "write(reason.equals(\"CAELUM_OFFLINE\") ? \"selected='selected'\":\"\");\n"
 				+ "write(\"</html>\");\n}\n";
 		String result = new Template("<html><%=reason.equals(\"CAELUM_OFFLINE\") ? \"selected='selected'\":\"\"%></html>").renderType();
 		assertEquals(expected, result);

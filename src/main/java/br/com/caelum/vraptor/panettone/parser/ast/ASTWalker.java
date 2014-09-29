@@ -2,6 +2,9 @@ package br.com.caelum.vraptor.panettone.parser.ast;
 
 
 public interface ASTWalker {
+	
+	void visitBefore(Node node);
+	void visitAfter(Node node);
 
 	void visitPrintVariable(PrintVariableNode node);
 
