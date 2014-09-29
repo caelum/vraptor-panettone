@@ -19,7 +19,7 @@ public class Compiler {
 
 	private final File from;
 	private final File to;
-	private final Watcher watcher;
+	private Watcher watcher;
 	private final List<String> imports;
 	private final CompilationListener[] listeners;
 	private final PrintStream out = System.out;
@@ -33,7 +33,6 @@ public class Compiler {
 		this.from = from;
 		this.to = to;
 		this.imports = new ArrayList<>(imports);
-		this.watcher = new Watcher(from.toPath(), this);
 		Config config = new Config(from);
 		this.imports.addAll(config.getImports());
 		this.listeners = config.getListenersOr(listeners);
@@ -107,6 +106,7 @@ public class Compiler {
 	 * Watches the base directory for any file changes.
 	 */
 	public void startWatch() {
+		this.watcher = new Watcher(from.toPath(), this);
 		Thread t = new Thread(watcher);
 		t.setDaemon(true);
 		t.start();
