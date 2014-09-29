@@ -50,6 +50,23 @@ If you use VRaptor:
 result.use(hello.class).render(users);
 ```
 
+Your output file will be debugable and good looking:
+
+```
+public void render(List<User> users) {
+// line 2
+	write("<html>\n");
+// line 3
+ for(User user : users) {
+// line 4 
+	write("<h1>Hi @user</h1>\n");
+// line 5
+ } 
+// line 6
+	write("</html>\n");
+}
+```
+
 # Eclipse
 
 Why would you use the command line if you have an IDE? Just add the plugin from this update site
@@ -343,6 +360,7 @@ Maurício Aniche
 Rodrigo Turini
 Fernanda Bernardo
 Felipe Oliveira
+Caio Incau
 
 # Issues, help, contributing
 
