@@ -4,10 +4,7 @@ import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -59,7 +56,7 @@ public class Compiler {
 	}
 
 	public Optional<Exception> compile(File f) {
-		try (FileReader reader = new FileReader(f)) {
+		try (Reader reader = new InputStreamReader(new FileInputStream(f), "UTF-8")){
 			Template template = new Template(reader);
 			String name = noExtension(nameFor(f));
 			String content = template.renderType();
