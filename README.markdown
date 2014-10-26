@@ -76,6 +76,8 @@ and add the project nature:
 http://panettone-eclipse.herokuapp.com
 ``` 
 
+After that, do a CTRL+3 and search for "Panettone", you will find the action named "Apply Panettone nature to project"
+
 
 # Imports
 
