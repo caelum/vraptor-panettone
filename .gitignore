@@ -5,3 +5,5 @@ target
 .project
 .*.swp
 *~
+*.iml
+.idea/
