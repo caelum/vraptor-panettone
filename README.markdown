@@ -29,7 +29,7 @@ So we will try avoiding quick awesome expressive compact fluid adjective sentenc
 
 Write your `hello.tone.html`:
 
-```
+```jsp
 @(List<User> users)
 <html>
 <% for(User user : users) { %>
@@ -40,19 +40,19 @@ Write your `hello.tone.html`:
 
 Write your `HelloWorld.java` and you are ready to type safe and debug your views:
 
-```
+```java
 new hello(out).render(users);
 ```
 
 If you use VRaptor:
 
-```
+```java
 result.use(hello.class).render(users);
 ```
 
 Your output file will be debugable and good looking:
 
-```
+```java
 public void render(List<User> users) {
 // line 2
 	write("<html>\n");
@@ -85,7 +85,7 @@ After that, do a CTRL+3 and search for "Panettone", you will find the action nam
 
 You can add extra imports by creating a file `src/main/views/tone.defaults` such as:
 
-```
+```java
 import br.com.caelum.myproject.model.*
 import java.function.*
 ```
@@ -94,7 +94,7 @@ import java.function.*
 
 Simply define injected variables in your template:
 
-```
+```jsp
 <%@ Localizer l %>
 ```
 
@@ -109,15 +109,19 @@ java -jar vraptor-panettone-*.jar br.com.caelum.vraptor.i18n.*
 Yeah, we all love methods, and we know we should be careful with logic in the view layer, right?
 Want a method that is cheap and access the variables? Define a lambda:
 
+```jsp
 <%
 Runnable love = () -> {
 	out.write("Hi " + user.getName());
 };
 %>
+```
 
 And invoke it:
 
+```jsp
 <% love.run(); %>
+```
 
 Yes, this is Java 8 compatible, in fact we require Java 8.
 
@@ -126,30 +130,35 @@ Yes, this is Java 8 compatible, in fact we require Java 8.
 Feel free to include another template in any part of your template:
 
 partial.tone.html:
-```
+
+```jsp
 <body>Hello</body>
 ```
 
 full.tone.html:
-```
+
+```jsp
 <html><% new partial(out).render(); %></html>
 ```
 
 VRaptor version:
-```
+
+```jsp
 <html><% use(partial.class).render(); %></html>
 ```
 
 # Invoking another template with a custom body tag
 
 partial.tone.html:
-```
+
+```jsp
 <%@ Runnable body %>
 <body>@{body.run()}</body>
 ```
 
 VRaptor version:
-```
+
+```jsp
 <html>
 @{{body
 	Custom code here
@@ -163,7 +172,9 @@ that the parent template has (and none to its children template).
 
 If you want to make it optional:
 
+```
 (@ Runnable body = () -> {} )
+```
 
 # Parameter defaults (to be implemented)
 
@@ -182,7 +193,7 @@ Each default variable must be defined in its own context:
 
 Only one method will be generated: `render(User user, String message)` and within its body there will be a default check:
 
-```
+```java
 if(message==null) message = "hello";
 ```
 
@@ -217,14 +228,14 @@ Take care of your NULLs, please. If you are nullable, it is up to you to be care
 
 You can add comments to your code with:
 
-```
+```jsp
 @-- my comment --@
 <%= user.getName() %>
 ```
 
 And it will be debug friendly:
 
-```
+```jsp
 // my comment
 write(user.getName());
 ```
@@ -233,7 +244,7 @@ write(user.getName());
 
 Write your template:
 
-```
+```jsp
 (@String mensagem )
 <html>
 @mensagem
@@ -242,7 +253,7 @@ Write your template:
 
 Debug your file as you are used to:
 
-```
+```java
 public void render(String mensagem ) {
 write("<html>");
 write( mensagem );
@@ -282,7 +293,8 @@ Use this String as you wish. You can print and memorize it, for instance. Or you
 java -jar vraptor-panettone-*.jar --watch br.com.caelum.vraptor.mymodelpackage 
 ```
 2. Create your source panettone file at `src/main/views`, such as `hello.tone.html`, yummy.
-```
+
+```jsp
 @(String message)
 <html>
 <h1>@message</h1>
@@ -308,7 +320,7 @@ java -jar vraptor-panettone-0.9.0-SNAPSHOT.jar --watch br.com.caelum.vraptor.mym
 
 ANT: Copy and paste ready
 
-```
+```xml
 <project name="myproject" default="compile-views">
 
 	<path id="running.path.id">
