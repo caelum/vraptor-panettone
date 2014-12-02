@@ -62,13 +62,13 @@ public class VRaptorCompilationListener implements CompilationListener {
 			String type = typeAndName[0];
 			String name = typeAndName[1];
 			
-			code.append("private " + type + " " + name + ";");
-			code.append("public " + typeName + " " + name + "("+ type + " " + name +") { this."+name+" = " + name + "; return this; }");
+			code.append("private " + type + " " + name + ";\n");
+			code.append("public " + typeName + " " + name + "("+ type + " " + name +") { this."+name+" = " + name + "; return this; }\n");
 			
 			doneParams.add(name);
 		}
 		
-		code.append("public void done() { render(" + doneParams.stream().collect(joining(",")) + "); }");
+		code.append("public void done() { render(" + doneParams.stream().collect(joining(",")) + "); }\n");
 		
 		return code.toString();
 	}
