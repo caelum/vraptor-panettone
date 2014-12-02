@@ -24,9 +24,11 @@ public class PanettoneWalker implements ASTWalker {
 	private final List<String> variables = new ArrayList<>();
 	private final StringBuilder injects = new StringBuilder();
 	private final CodeBuilder code;
+	private final CompilationListener[] listeners;
 
-	public PanettoneWalker(CodeBuilder code) {
+	public PanettoneWalker(CodeBuilder code, CompilationListener[] listeners) {
 		this.code = code;
+		this.listeners = listeners;
 	}
 	@Override
 	public void visitPrintVariable(PrintVariableNode node) {
@@ -96,7 +98,13 @@ public class PanettoneWalker implements ASTWalker {
 		String parameters = variables.stream().collect(joining(","));
 		String prefix = "public void render(" + parameters + ") {\n";
 		String sufix = "}\n";
-		return injects + prefix + code.toString() + sufix;
+		
+		StringBuilder toAppend = new StringBuilder();
+		for (CompilationListener cl : listeners) {
+			toAppend.append(cl.useParameters(variables));
+		}
+		
+		return injects + prefix + code.toString() + toAppend + sufix;
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package br.com.caelum.vraptor.panettone;
 
 import java.io.File;
+import java.util.List;
 
 public class VRaptorCompilationListener implements CompilationListener {
 
@@ -37,6 +38,18 @@ public class VRaptorCompilationListener implements CompilationListener {
 
 	@Override
 	public void clear() {
+	}
+
+	@Override
+	public String preprocess(String content) {
+		// TODO regex pra invocacao de tag
+		return content;
+	}
+	
+	@Override
+	public String useParameters(List<String> variables) {
+		// TODO gera builder e render() final
+		return "";
 	}
 
 }

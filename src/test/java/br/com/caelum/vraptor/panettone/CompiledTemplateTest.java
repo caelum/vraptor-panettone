@@ -34,13 +34,13 @@ public class CompiledTemplateTest {
 	}
 	
 	private CompiledTemplate compile(String name, List<String> imports, String content) {
-		CompiledTemplate ct = new CompiledTemplate(dir, name, imports, new Template(content).renderType());
+		CompiledTemplate ct = new CompiledTemplate(dir, name, imports, new Template(new CompilationListener[]{},content).renderType());
 		typeCompiler.compileToBytecode(ct.getFile());
 		return ct;
 	}
 	
 	private CompiledTemplate compile(String name, String content) {
-		String template = new Template(content).renderType();
+		String template = new Template(new CompilationListener[]{},content).renderType();
 		CompiledTemplate ct = new CompiledTemplate(dir, name, template);
 		typeCompiler.compileToBytecode(ct.getFile());
 		return ct;

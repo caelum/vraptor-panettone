@@ -2,6 +2,7 @@ package br.com.caelum.vraptor.panettone;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BytecodeCompiler implements CompilationListener {
@@ -47,5 +48,14 @@ public class BytecodeCompiler implements CompilationListener {
 	public void clear() {
 	}
 
+	@Override
+	public String preprocess(String content) {
+		return content;
+	}
+
+	@Override
+	public String useParameters(List<String> variables) {
+		return "";
+	}
 	
 }
