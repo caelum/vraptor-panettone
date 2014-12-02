@@ -106,7 +106,7 @@ public class PanettoneWalker implements ASTWalker {
 			toAppend.append(cl.useParameters(variables, typeName));
 		}
 		
-		return injects + prefix + code.toString() + toAppend + sufix;
+		return injects + prefix + code.toString() + sufix + toAppend;
 	}
 
 	@Override
