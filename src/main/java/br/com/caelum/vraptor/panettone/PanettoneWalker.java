@@ -25,10 +25,12 @@ public class PanettoneWalker implements ASTWalker {
 	private final StringBuilder injects = new StringBuilder();
 	private final CodeBuilder code;
 	private final CompilationListener[] listeners;
+	private final String typeName;
 
-	public PanettoneWalker(CodeBuilder code, CompilationListener[] listeners) {
+	public PanettoneWalker(CodeBuilder code, CompilationListener[] listeners, String typeName) {
 		this.code = code;
 		this.listeners = listeners;
+		this.typeName = typeName;
 	}
 	@Override
 	public void visitPrintVariable(PrintVariableNode node) {
@@ -101,7 +103,7 @@ public class PanettoneWalker implements ASTWalker {
 		
 		StringBuilder toAppend = new StringBuilder();
 		for (CompilationListener cl : listeners) {
-			toAppend.append(cl.useParameters(variables));
+			toAppend.append(cl.useParameters(variables, typeName));
 		}
 		
 		return injects + prefix + code.toString() + toAppend + sufix;

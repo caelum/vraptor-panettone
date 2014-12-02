@@ -1,6 +1,9 @@
 package br.com.caelum.vraptor.panettone;
 
+import static java.util.stream.Collectors.joining;
+
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 public class VRaptorCompilationListener implements CompilationListener {
@@ -47,9 +50,27 @@ public class VRaptorCompilationListener implements CompilationListener {
 	}
 	
 	@Override
-	public String useParameters(List<String> variables) {
+	public String useParameters(List<String> variables, String typeName) {
 		// TODO gera builder e render() final
-		return "";
+		
+		StringBuilder code = new StringBuilder();
+		
+		List<String> doneParams = new LinkedList<String>();
+		
+		for (String variable : variables) {
+			String[] typeAndName = variable.split("\\s");
+			String type = typeAndName[0];
+			String name = typeAndName[1];
+			
+			code.append("private " + type + " " + name + ";");
+			code.append("public " + typeName + " " + name + "("+ type + " " + name +") { this."+name+" = " + name + "; return this; }");
+			
+			doneParams.add(name);
+		}
+		
+		code.append("public void done() { render(" + doneParams.stream().collect(joining(",")) + "); }");
+		
+		return code.toString();
 	}
 
 }

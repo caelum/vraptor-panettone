@@ -59,7 +59,7 @@ public class Compiler {
 		try (Reader reader = new InputStreamReader(new FileInputStream(f), "UTF-8")){
 			Template template = new Template(this.listeners, reader);
 			String name = noExtension(nameFor(f));
-			String content = template.renderType();
+			String content = template.renderType(name);
 			CompiledTemplate compiled = new CompiledTemplate(to, name, imports, content, listeners);
 			invokeOn(listeners, l-> l.finished(f, compiled));
 			return Optional.empty();

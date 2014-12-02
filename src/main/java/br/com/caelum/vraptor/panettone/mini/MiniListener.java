@@ -36,7 +36,7 @@ public class MiniListener implements CompilationListener{
 	}
 
 	@Override
-	public String useParameters(List<String> variables) {
+	public String useParameters(List<String> variables, String typeName) {
 		return "";
 	}
 

@@ -39,9 +39,10 @@ public interface CompilationListener {
 	
 	/**
 	 * @param variables Parameters List with types
+	 * @param typeName 
 	 * @return Code to be added
 	 */
-	String useParameters(List<String> variables);
+	String useParameters(List<String> variables, String typeName);
 	
 
 }

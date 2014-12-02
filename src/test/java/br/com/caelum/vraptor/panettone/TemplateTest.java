@@ -11,35 +11,35 @@ public class TemplateTest {
 	@Test
 	public void shouldReturnString() {
 		String expected = emptyRun("write(\"<html>Oi</html>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<html>Oi</html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html>Oi</html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldSupportExpressionLanguageVariable() {
 		String expected = emptyRun("write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<html>@mensagem</html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html>@mensagem</html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldSupportExpressionLanguageWithinAnotherCode() {
 		String expected = emptyRun("write(\"<script>var x = '\");\nwrite(mensagem);\nwrite(\"'; var y = '\");\nwrite(mensagem);\nwrite(\"';</script>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<script>var x = '@mensagem'; var y = '@mensagem';</script>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<script>var x = '@mensagem'; var y = '@mensagem';</script>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldSupportExpressionLanguageGetterInvocation() {
 		String expected = emptyRun("write(\"<html>\");\nwrite(message.getBytes());\nwrite(\"</html>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<html>@message.bytes</html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html>@message.bytes</html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldSupportExpressionLanguageGetWithString() {
 		String expected = emptyRun("write(\"<html>\");\nwrite(message.get(\"bytes\"));\nwrite(\"</html>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<html>@message['bytes']</html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html>@message['bytes']</html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
@@ -48,7 +48,7 @@ public class TemplateTest {
 		String expected = emptyRun("write(\"<html>\");\n"
 				+ "write(message.bytes(a.getB()).c(d).getE().f());\n"
 				+ "write(\"</html>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<html>@message.bytes(a.b).c(d).e.f()</html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html>@message.bytes(a.b).c(d).e.f()</html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
@@ -57,7 +57,7 @@ public class TemplateTest {
 		String expected = emptyRun("write(\"<html>\");\n"
 				+ "write(message.getBytes().getLength());\n"
 				+ "write(\"</html>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<html>@message.bytes.length</html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html>@message.bytes.length</html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
@@ -66,7 +66,7 @@ public class TemplateTest {
 		String expected = emptyRun("write(\"<html>\");\n"
 				+ "write(message.get(15));\n"
 				+ "write(\"</html>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<html>@message[15]</html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html>@message[15]</html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
@@ -75,7 +75,7 @@ public class TemplateTest {
 		String expected = emptyRun("write(\"<html>\");\n"
 				+ "write(a.getB());\n"
 				+ "write(\"</html>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<html>@{a.b}</html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html>@{a.b}</html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
@@ -84,7 +84,7 @@ public class TemplateTest {
 		String expected = emptyRun("write(\"<html>\");\n"
 				+ "write(message.get(\"a.b\"));\n"
 				+ "write(\"</html>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<html>@message['a.b']</html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html>@message['a.b']</html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
@@ -93,7 +93,7 @@ public class TemplateTest {
 		String expected = emptyRun("write(\"<html>\");\n"
 				+ "write(message.getSize().get(bytes));\n"
 				+ "write(\"</html>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<html>@message.size[bytes]</html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html>@message.size[bytes]</html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
@@ -102,35 +102,35 @@ public class TemplateTest {
 		String expected = emptyRun("write(\"<html>\");\n"
 				+ "write(l.get(nip.getDate()).custom(\"date_hour\"));\n"
 				+ "write(\"</html>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<html>@l[nip.date].custom('date_hour')</html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html>@l[nip.date].custom('date_hour')</html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 	
 	@Test
 	public void shouldSupportLineBreak() {
 		String expected = emptyRun("write(\"<html>\\n\");\nwrite(\"Oi</html>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<html>\nOi</html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html>\nOi</html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldSupportQuotes() {
 		String expected = emptyRun("write(\"<html>\\\"Oi\\\"</html>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<html>\"Oi\"</html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html>\"Oi\"</html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldSupportBackslashes() {
 		String expected = emptyRun("write(\"<html>\\\\s</html>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<html>\\s</html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html>\\s</html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldSupportBackslashesInQuotes() {
 		String expected = emptyRun("write(\"var words = p.split(\\\"\\\\s+\\\");\");\n");
-		String result = new Template(new CompilationListener[]{}, "var words = p.split(\"\\s+\");").renderType();
+		String result = new Template(new CompilationListener[]{}, "var words = p.split(\"\\s+\");").renderType("oi");
 		assertEquals(expected, result);
 	}
 
@@ -149,7 +149,7 @@ public class TemplateTest {
 	@Test
 	public void shouldInterpolateObject() {
 		String expected = emptyRun("write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<html><%=mensagem%></html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html><%=mensagem%></html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
@@ -159,7 +159,7 @@ public class TemplateTest {
 				+ "// line 1\n"
 				+ "// line 2\n"
 				+ "write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
-		String result = new Template(new CompilationListener[]{}, "(@ String mensagem )\n<html><%= mensagem %></html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "(@ String mensagem )\n<html><%= mensagem %></html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 	@Test
@@ -168,7 +168,7 @@ public class TemplateTest {
 				+ "// line 1\n"
 				+ "// line 2\n"
 				+ "write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
-		String result = new Template(new CompilationListener[]{}, "(@ String mensagem )\n<html>@mensagem</html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "(@ String mensagem )\n<html>@mensagem</html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
@@ -178,7 +178,7 @@ public class TemplateTest {
 				+ "// line 1\n"
 				+ "// line 2\n"
 				+ "write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
-		String result = new Template(new CompilationListener[]{}, "(@String mensagem)\n<html><%= mensagem %></html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "(@String mensagem)\n<html><%= mensagem %></html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
@@ -189,14 +189,14 @@ public class TemplateTest {
 				+ "if(mensagem == null) mensagem = \"hello\" ;\n"
 				+ "// line 2\n"
 				+ "write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
-		String result = new Template(new CompilationListener[]{}, "(@ String mensagem = \"hello\" )\n<html><%=mensagem%></html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "(@ String mensagem = \"hello\" )\n<html><%=mensagem%></html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void shouldSupportMethodInvocation() {
 		String expected = emptyRun("write(\"<html>\");\nwrite(user.getName());\nwrite(\"</html>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<html><%= user.getName() %></html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html><%= user.getName() %></html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 	
@@ -210,7 +210,7 @@ public class TemplateTest {
 				+ "// line 2\n"
 				+ "write(\"</html>\");\n");
 		String result = new Template(new CompilationListener[]{}, "(@inject br.com.caelum.vraptor.panettone.User user)\n"
-				+ "<html><%=user.getName()%></html>").renderType();
+				+ "<html><%=user.getName()%></html>").renderType("oi");
 //		assertEquals(expected, result);
 	}
 
@@ -220,7 +220,7 @@ public class TemplateTest {
 				"// line 2\n"
 				+ "write(\"<html>\");\nwrite(user.getName());\nwrite(\"</html>\");\n");
 		String result = new Template(new CompilationListener[]{}, "(@inject User user)\n"
-				+ "<html><%=user.getName()%></html>").renderType();
+				+ "<html><%=user.getName()%></html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
@@ -232,7 +232,7 @@ public class TemplateTest {
 				+ "write(user.getName());\n"
 				+ "}\n"
 				+ "write(\"</html>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<html><%for(String user : users) {%><%= user.getName() %><%}%></html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html><%for(String user : users) {%><%= user.getName() %><%}%></html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
@@ -241,7 +241,7 @@ public class TemplateTest {
 		String expected = emptyRun("write(\"<html>\");\n"
 				+ "/* comments here */"
 				+ "write(\"</html>\");\n");
-		String result = new Template(new CompilationListener[]{}, "<html>@-- comments here --@</html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html>@-- comments here --@</html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
@@ -255,7 +255,7 @@ public class TemplateTest {
 				+ "write(mensagem);\n"
 				+ "write(\"</html>\");\n"
 				+ "}\n";
-		String result = new Template(new CompilationListener[]{}, "(@inject String mensagem)\n<html><%= mensagem %></html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "(@inject String mensagem)\n<html><%= mensagem %></html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 	
@@ -269,7 +269,7 @@ public class TemplateTest {
 				+ "write(mensagem);\n"
 				+ "write(\"</html>\");\n"
 				+ "}\n";
-		String result = new Template(new CompilationListener[]{}, "(@inject String mensagem )\n<html><%= mensagem %></html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "(@inject String mensagem )\n<html><%= mensagem %></html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 	
@@ -288,7 +288,7 @@ public class TemplateTest {
 				"(@ List<News> newses)\n" +
 				"(@inject i18n.Messages m )\n" +
 				"<% use(header.class).render(\"Welcome\"); %>"
-				).renderType();
+				).renderType("oi");
 		assertEquals(expected, result);
 	}
 	@Test
@@ -303,7 +303,7 @@ public class TemplateTest {
 				+ "write(\"</html>\");\n"
 				+ "}\n";
 		String expected = variable + render;
-		String result = new Template(new CompilationListener[]{}, "(@inject User user)\n(@ String mensagem)\n<html><%= mensagem %></html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "(@inject User user)\n(@ String mensagem)\n<html><%= mensagem %></html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 
@@ -322,7 +322,7 @@ public class TemplateTest {
 		String result = new Template(new CompilationListener[]{}, "@{{body\n"
 				+ "Guilherme @mensagem\n"
 				+ "@}}\n"
-				+ "<html><%body.run();%></html>").renderType();
+				+ "<html><%body.run();%></html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 	
@@ -333,7 +333,7 @@ public class TemplateTest {
 				+ "write(\"<html>\");\n"
 				+ "write(reason.equals(\"CAELUM_OFFLINE\") ? \"selected='selected'\":\"\");\n"
 				+ "write(\"</html>\");\n}\n";
-		String result = new Template(new CompilationListener[]{}, "<html><%=reason.equals(\"CAELUM_OFFLINE\") ? \"selected='selected'\":\"\"%></html>").renderType();
+		String result = new Template(new CompilationListener[]{}, "<html><%=reason.equals(\"CAELUM_OFFLINE\") ? \"selected='selected'\":\"\"%></html>").renderType("oi");
 		assertEquals(expected, result);
 	}
 		
