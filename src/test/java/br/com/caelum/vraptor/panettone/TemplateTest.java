@@ -457,4 +457,61 @@ public class TemplateTest {
 		assertEquals(expected, result);
 	}
 	
+	@Test
+	public void shouldIncludeBuilderForVariable() {
+		String expected = "public void render(String message) {\n"
+				+ "// line 1\n"
+				+ "// line 2\n"
+				+ "write(\"<html>\");\n"
+				+ "write(message);\n"
+				+ "write(\"</html>\");\n"
+				+ "}\n"
+				+ "private String message;\n"
+				+ "public header message(String message) { this.message = message; return this; }\n"
+				+ "public void done() { render(message); }\n";
+		String result = new Template(new CompilationListener[]{new VRaptorCompilationListener()}, "(@String message )\n<html><%= message %></html>").renderType("header");
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void shouldIncludeBuilderForMultipleVariables() {
+		String expected = "public void render(String message,String title) {\n"
+				+ "// line 1\n"
+				+ "// line 2\n"
+				+ "// line 3\n"
+				+ "write(\"<html>\");\n"
+				+ "write(message);\n"
+				+ "write(\"</html>\");\n"
+				+ "}\n"
+				+ "private String message;\n"
+				+ "public header message(String message) { this.message = message; return this; }\n"
+				+ "private String title;\n"
+				+ "public header title(String title) { this.title = title; return this; }\n"
+				+ "public void done() { render(message,title); }\n";
+		String result = new Template(new CompilationListener[]{new VRaptorCompilationListener()}, "(@String message)\n(@String title)\n<html><%= message %></html>").renderType("header");
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void shouldIncludeBuilderForMultipleVariablesAndBody() {
+		String expected = "public void render(String message,String title,Runnable body) {\n"
+				+ "// line 1\n"
+				+ "// line 2\n"
+				+ "// line 3\n"
+				+ "// line 4\n"
+				+ "write(\"<html>\");\n"
+				+ "write(message);\n"
+				+ " body.run(); \n"
+				+ "write(\"</html>\");\n"
+				+ "}\n"
+				+ "private String message;\n"
+				+ "public header message(String message) { this.message = message; return this; }\n"
+				+ "private String title;\n"
+				+ "public header title(String title) { this.title = title; return this; }\n"
+				+ "private Runnable body;\n"
+				+ "public header body(Runnable body) { this.body = body; return this; }\n"
+				+ "public void done() { render(message,title,body); }\n";
+		String result = new Template(new CompilationListener[]{new VRaptorCompilationListener()}, "(@String message)\n(@String title)\n(@Runnable body)\n<html><%= message %><% body.run(); %></html>").renderType("header");
+		assertEquals(expected, result);
+	}
 }
