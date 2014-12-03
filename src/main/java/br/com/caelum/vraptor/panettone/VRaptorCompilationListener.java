@@ -49,7 +49,7 @@ public class VRaptorCompilationListener implements CompilationListener {
 	private static final String OPEN_TAG_REGEX = "^<tone:([^\\s>]+)\\s*";
 	private static final String SELF_CLOSING_TAG_REGEX = "/>$";
 	private static final String TAG_REMAINS_OPEN_REGEX = ">$";
-	private static final String TAG_PARAM_REGEX = "\\s*([\\w_\\-\\d]+)=(\"[^\"]*\")\\s*";
+	private static final String TAG_PARAM_REGEX = "\\s*([\\w_\\-\\d]+)\\s*=\\s*(\"[^\"]*\")\\s*";
 	private static final String CLOSING_TAG_REGEX = "</tone:[^>]+>";
 	
 	private static final String OPEN_INVOCATION_PART = "<%use($1.class)";
