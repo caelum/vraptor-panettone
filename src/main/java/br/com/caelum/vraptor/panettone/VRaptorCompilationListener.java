@@ -92,9 +92,9 @@ public class VRaptorCompilationListener implements CompilationListener {
 	public String useParameters(List<String> variables, String typeName) {
 		StringBuilder code = new StringBuilder();
 		
-		List<String> doneParams = new LinkedList<String>();
+		List<String> doneParams = new LinkedList<>();
 		
-		for (String variable : variables) {
+		variables.forEach((variable) -> {
 			String[] typeAndName = variable.split("\\s");
 			String type = typeAndName[0];
 			String name = typeAndName[1];
@@ -103,7 +103,7 @@ public class VRaptorCompilationListener implements CompilationListener {
 			code.append("public " + typeName + " " + name + "("+ type + " " + name +") { this."+name+" = " + name + "; return this; }\n");
 			
 			doneParams.add(name);
-		}
+		});
 		
 		code.append("public void done() { render(" + doneParams.stream().collect(joining(",")) + "); }\n");
 		

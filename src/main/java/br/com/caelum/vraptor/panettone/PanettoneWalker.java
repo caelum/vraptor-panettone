@@ -1,6 +1,7 @@
 package br.com.caelum.vraptor.panettone;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import br.com.caelum.vraptor.panettone.parser.PanettoneParser;
@@ -102,9 +103,9 @@ public class PanettoneWalker implements ASTWalker {
 		String sufix = "}\n";
 		
 		StringBuilder toAppend = new StringBuilder();
-		for (CompilationListener cl : listeners) {
+		Arrays.stream(listeners).forEach((cl) -> {
 			toAppend.append(cl.useParameters(variables, typeName));
-		}
+		});
 		
 		return injects + prefix + code.toString() + sufix + toAppend;
 	}
