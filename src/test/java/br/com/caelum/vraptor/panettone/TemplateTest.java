@@ -337,5 +337,124 @@ public class TemplateTest {
 		assertEquals(expected, result);
 	}
 		
+	@Test
+	public void shouldSupportXMLSyntax() {
+		String expected = "public void render() {\n"
+				+ "// line 1\n"
+				+ "use(header.class).done();\n"
+				+ "}\n"
+				+ "public void done() { render(); }\n";
+		String result = new Template(new CompilationListener[]{new VRaptorCompilationListener()},"<tone:header />").renderType("header");
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void shouldSupportXMLSyntaxWithParam() {
+		String expected = "public void render() {\n"
+				+ "// line 1\n"
+				+ "write(\"<html>\");\n"
+				+ "use(header.class).title(\"MyTitle\").done();\n"
+				+ "write(\"</html>\");\n"
+				+ "}\n"
+				+ "public void done() { render(); }\n";
+		String result = new Template(new CompilationListener[]{new VRaptorCompilationListener()},"<html><tone:header title=\"MyTitle\" /></html>").renderType("header");
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void shouldSupportXMLSyntaxWithMultipleParam() {
+		String expected = "public void render() {\n"
+				+ "// line 1\n"
+				+ "write(\"<html>\");\n"
+				+ "use(header.class).title(\"MyTitle\").description(\"Desc\").done();\n"
+				+ "write(\"</html>\");\n"
+				+ "}\n"
+				+ "public void done() { render(); }\n";
+		String result = new Template(new CompilationListener[]{new VRaptorCompilationListener()},"<html><tone:header title=\"MyTitle\" description=\"Desc\"/></html>").renderType("header");
+		assertEquals(expected, result);
+	}
+
+
+	@Test
+	public void shouldSupportXMLSyntaxWithEmptyBody() {
+		String expected = "public void render() {\n"
+				+ "// line 1\n"
+				+ "use(header.class).body(()->{\n"
+				+ "// line 3\n"
+				+ "}).done();\n"
+				+ "}\n"
+				+ "public void done() { render(); }\n";
+		String result = new Template(new CompilationListener[]{new VRaptorCompilationListener()},"<tone:header></tone:header>").renderType("header");
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void shouldSupportXMLSyntaxWithTextBody() {
+		String expected = "public void render() {\n"
+				+ "// line 1\n"
+				+ "use(header.class).body(()->{\n"
+				+ "// line 2\n"
+				+ "write(\"Body\");\n"
+				+ "// line 3\n"
+				+ "}).done();\n"
+				+ "}\n"
+				+ "public void done() { render(); }\n";
+		String result = new Template(new CompilationListener[]{new VRaptorCompilationListener()},"<tone:header>Body</tone:header>").renderType("header");
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void shouldSupportXMLSyntaxWithParamAndBody() {
+		String expected = "public void render() {\n"
+				+ "// line 1\n"
+				+ "use(header.class).title(\"MyTitle\").body(()->{\n"
+				+ "// line 2\n"
+				+ "write(\"Body\");\n"
+				+ "// line 3\n"
+				+ "}).done();\n"
+				+ "}\n"
+				+ "public void done() { render(); }\n";
+		String result = new Template(new CompilationListener[]{new VRaptorCompilationListener()},"<tone:header title=\"MyTitle\">Body</tone:header>").renderType("header");
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void shouldSupportXMLSyntaxWithMultipleTags() {
+		String expected = "public void render() {\n"
+				+ "// line 1\n"
+				+ "use(header.class).body(()->{\n"
+				+ "// line 2\n"
+				+ "write(\"Body\");\n"
+				+ "// line 3\n"
+				+ "}).done();\n"
+				+ "use(footer.class).body(()->{\n"
+				+ "// line 4\n"
+				+ "write(\"more\");\n"
+				+ "// line 3\n"
+				+ "}).done();\n"
+				+ "}\n"
+				+ "public void done() { render(); }\n";
+		String result = new Template(new CompilationListener[]{new VRaptorCompilationListener()},"<tone:header>Body</tone:header><tone:footer>more</tone:footer>").renderType("header");
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void shouldSupportXMLSyntaxWithNestedTags() {
+		String expected = "public void render() {\n"
+				+ "// line 1\n"
+				+ "use(header.class).body(()->{\n"
+				+ "// line 2\n"
+				+ "write(\"Body\");\n"
+				+ "use(content.class).body(()->{\n"
+				+ "// line 3\n"
+				+ "write(\"more\");\n"
+				+ "// line 4\n"
+				+ "}).done();\n"
+				+ "}).done();\n"
+				+ "}\n"
+				+ "public void done() { render(); }\n";
+		String result = new Template(new CompilationListener[]{new VRaptorCompilationListener()},"<tone:header>Body<tone:content>more</tone:content></tone:header>").renderType("header");
+		assertEquals(expected, result);
+	}
 	
 }

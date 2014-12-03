@@ -5,6 +5,8 @@ import static java.util.stream.Collectors.joining;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class VRaptorCompilationListener implements CompilationListener {
 
@@ -45,14 +47,43 @@ public class VRaptorCompilationListener implements CompilationListener {
 
 	@Override
 	public String preprocess(String content) {
-		// TODO regex pra invocacao de tag
+		
+		// extract tags
+		Pattern p = Pattern.compile("<tone:[^>]+>");
+		Matcher m = p.matcher(content);
+		StringBuffer sb = new StringBuffer();
+		 
+		while (m.find()) {
+			String tag = m.group();
+			
+			// open tag
+			tag = tag.replaceFirst("^<tone:([^\\s>]+)\\s*", "<%use($1.class)");
+
+			// closing tag
+			if (tag.endsWith("/>")) {
+				// self closing tag
+				tag = tag.replaceFirst("/>$", ".done();%>");
+			} else {
+				// tag remains open
+				tag = tag.replaceFirst(">$", ".body(()->{%>\n");
+			}
+			
+			// params
+			tag = tag.replaceAll("\\s*([\\w_\\-\\d]+)=(\"[^\"]*\")\\s*", ".$1($2)");
+			
+		    m.appendReplacement(sb, tag);
+		}
+		m.appendTail(sb);
+		content = sb.toString();
+		
+		// closing tag
+		content = content.replaceAll("</tone:[^>]+>", "\n<%}).done();%>");
+		
 		return content;
 	}
 	
 	@Override
 	public String useParameters(List<String> variables, String typeName) {
-		// TODO gera builder e render() final
-		
 		StringBuilder code = new StringBuilder();
 		
 		List<String> doneParams = new LinkedList<String>();
