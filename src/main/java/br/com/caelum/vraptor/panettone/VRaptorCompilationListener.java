@@ -45,39 +45,45 @@ public class VRaptorCompilationListener implements CompilationListener {
 	public void clear() {
 	}
 
+	private static final String TONE_TAG_REGEX = "<tone:[^>]+>";
+	private static final String OPEN_TAG_REGEX = "^<tone:([^\\s>]+)\\s*";
+	private static final String SELF_CLOSING_TAG_REGEX = "/>$";
+	private static final String TAG_REMAINS_OPEN_REGEX = ">$";
+	private static final String TAG_PARAM_REGEX = "\\s*([\\w_\\-\\d]+)=(\"[^\"]*\")\\s*";
+	private static final String CLOSING_TAG_REGEX = "</tone:[^>]+>";
+	
+	private static final String OPEN_INVOCATION_PART = "<%use($1.class)";
+	private static final String CLOSE_INVOCATION_PART = ".done();%>";
+	private static final String INVOKE_BUILDER_METHOD_PART = ".$1($2)";
+	private static final String OPEN_BODY_PART = ".body(()->{%>\n";
+	private static final String CLOSE_BODY_PART = "\n<%}).done();%>";
+	
 	@Override
 	public String preprocess(String content) {
 		
-		// extract tags
-		Pattern p = Pattern.compile("<tone:[^>]+>");
+		Pattern p = Pattern.compile(TONE_TAG_REGEX);
 		Matcher m = p.matcher(content);
 		StringBuffer sb = new StringBuffer();
 		 
 		while (m.find()) {
 			String tag = m.group();
 			
-			// open tag
-			tag = tag.replaceFirst("^<tone:([^\\s>]+)\\s*", "<%use($1.class)");
+			tag = tag.replaceFirst(OPEN_TAG_REGEX, OPEN_INVOCATION_PART);
 
-			// closing tag
 			if (tag.endsWith("/>")) {
-				// self closing tag
-				tag = tag.replaceFirst("/>$", ".done();%>");
+				tag = tag.replaceFirst(SELF_CLOSING_TAG_REGEX, CLOSE_INVOCATION_PART);
 			} else {
-				// tag remains open
-				tag = tag.replaceFirst(">$", ".body(()->{%>\n");
+				tag = tag.replaceFirst(TAG_REMAINS_OPEN_REGEX, OPEN_BODY_PART);
 			}
 			
-			// params
-			tag = tag.replaceAll("\\s*([\\w_\\-\\d]+)=(\"[^\"]*\")\\s*", ".$1($2)");
+			tag = tag.replaceAll(TAG_PARAM_REGEX, INVOKE_BUILDER_METHOD_PART);
 			
 		    m.appendReplacement(sb, tag);
 		}
 		m.appendTail(sb);
 		content = sb.toString();
 		
-		// closing tag
-		content = content.replaceAll("</tone:[^>]+>", "\n<%}).done();%>");
+		content = content.replaceAll(CLOSING_TAG_REGEX, CLOSE_BODY_PART);
 		
 		return content;
 	}
