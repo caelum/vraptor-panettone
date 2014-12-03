@@ -1,7 +1,6 @@
 package br.com.caelum.vraptor.panettone;
 
 import java.io.Reader;
-import java.util.List;
 
 import br.com.caelum.vraptor.panettone.parser.PanettoneParser;
 import br.com.caelum.vraptor.panettone.parser.ast.PannetoneAST;
