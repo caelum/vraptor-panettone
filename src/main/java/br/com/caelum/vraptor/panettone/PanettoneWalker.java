@@ -27,7 +27,7 @@ public class PanettoneWalker implements ASTWalker {
 	private final CompilationListener[] listeners;
 	private final String typeName;
 
-	public PanettoneWalker(CodeBuilder code, CompilationListener[] listeners, String typeName) {
+	public PanettoneWalker(CodeBuilder code, String typeName, CompilationListener... listeners) {
 		this.code = code;
 		this.listeners = listeners;
 		this.typeName = typeName;

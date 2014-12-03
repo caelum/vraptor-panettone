@@ -57,7 +57,7 @@ public class Compiler {
 
 	public Optional<Exception> compile(File f) {
 		try (Reader reader = new InputStreamReader(new FileInputStream(f), "UTF-8")){
-			Template template = new Template(this.listeners, reader);
+			Template template = new Template(reader, this.listeners);
 			String name = noExtension(nameFor(f));
 			String typeName = name.replaceAll(".+/", "");
 			String content = template.renderType(typeName);
