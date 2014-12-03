@@ -252,6 +252,26 @@ write("</html>");
 
 Live your life as usual, no crazy `yield`s to debug :).
 
+# Tagfile style invocation
+
+You can also invoke a template using a XML tag syntax. In this mode, all
+parameters should be `String` and are considered optional.
+
+```
+<tone:header title="MyTitle"/>
+```
+
+It's possible to include a body in your tag. In this case, the parameter should
+always be `Runnable body`:
+
+```
+<tone:header title="MyTitle">
+   Body Content
+</tone:header>
+```
+
+This featured is not meant to be abused. It's main purpose is to allow a friendlier 
+syntax to call small front-end components.  
 
 # Quick question and answers
 
