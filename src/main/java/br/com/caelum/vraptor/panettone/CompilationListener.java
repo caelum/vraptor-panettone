@@ -1,6 +1,7 @@
 package br.com.caelum.vraptor.panettone;
 
 import java.io.File;
+import java.util.List;
 
 public interface CompilationListener {
 	
@@ -28,5 +29,20 @@ public interface CompilationListener {
 	 * Clearing all compilation data.
 	 */
 	void clear();
+	
+	/**
+	 * 
+	 * @param content File content
+	 * @return File content preprocessed
+	 */
+	String preprocess(String content);
+	
+	/**
+	 * @param variables Parameters List with types
+	 * @param typeName 
+	 * @return Code to be added
+	 */
+	String useParameters(List<String> variables, String typeName);
+	
 
 }

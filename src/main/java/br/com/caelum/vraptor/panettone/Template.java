@@ -8,17 +8,27 @@ import br.com.caelum.vraptor.panettone.parser.ast.PannetoneAST;
 public class Template {
 
 	private final String content;
+	private final CompilationListener[] listeners;
 
-	public Template(Reader reader) {
-		this.content = CompiledTemplate.toString(reader);
+	public Template(Reader reader, CompilationListener... listeners) {
+		this.listeners = listeners;
+		this.content = preprocessAll(CompiledTemplate.toString(reader));
 	}
-	public Template(String content) {
-		this.content = content;
+	public Template(String content, CompilationListener... listeners) {
+		this.listeners = listeners;
+		this.content = preprocessAll(content);
 	}
 	
-	public String renderType() {
+	private String preprocessAll(String content) {
+		for (CompilationListener cl : listeners) {
+			content = cl.preprocess(content);
+		}
+		return content;
+	}
+	
+	public String renderType(String typeName) {
 		CodeBuilder code = new CodeBuilder();
-		PanettoneWalker walker = new PanettoneWalker(code);
+		PanettoneWalker walker = new PanettoneWalker(code, typeName, listeners);
 		
 		PannetoneAST ast = new PanettoneParser().parse(content);
 		ast.walk(new LineNumberWalker(code, walker));

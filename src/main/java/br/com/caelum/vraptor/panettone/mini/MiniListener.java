@@ -1,6 +1,7 @@
 package br.com.caelum.vraptor.panettone.mini;
 
 import java.io.File;
+import java.util.List;
 
 import br.com.caelum.vraptor.panettone.CompilationListener;
 import br.com.caelum.vraptor.panettone.CompiledTemplate;
@@ -27,6 +28,16 @@ public class MiniListener implements CompilationListener{
 
 	@Override
 	public void clear() {
+	}
+	
+	@Override
+	public String preprocess(String content) {
+		return content;
+	}
+
+	@Override
+	public String useParameters(List<String> variables, String typeName) {
+		return "";
 	}
 
 }

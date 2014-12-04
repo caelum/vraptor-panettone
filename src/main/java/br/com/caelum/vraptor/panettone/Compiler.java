@@ -57,9 +57,10 @@ public class Compiler {
 
 	public Optional<Exception> compile(File f) {
 		try (Reader reader = new InputStreamReader(new FileInputStream(f), "UTF-8")){
-			Template template = new Template(reader);
+			Template template = new Template(reader, this.listeners);
 			String name = noExtension(nameFor(f));
-			String content = template.renderType();
+			String typeName = name.replaceAll(".+/", "");
+			String content = template.renderType(typeName);
 			CompiledTemplate compiled = new CompiledTemplate(to, name, imports, content, listeners);
 			invokeOn(listeners, l-> l.finished(f, compiled));
 			return Optional.empty();

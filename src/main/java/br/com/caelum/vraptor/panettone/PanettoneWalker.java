@@ -1,6 +1,7 @@
 package br.com.caelum.vraptor.panettone;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import br.com.caelum.vraptor.panettone.parser.PanettoneParser;
@@ -24,9 +25,13 @@ public class PanettoneWalker implements ASTWalker {
 	private final List<String> variables = new ArrayList<>();
 	private final StringBuilder injects = new StringBuilder();
 	private final CodeBuilder code;
+	private final CompilationListener[] listeners;
+	private final String typeName;
 
-	public PanettoneWalker(CodeBuilder code) {
+	public PanettoneWalker(CodeBuilder code, String typeName, CompilationListener... listeners) {
 		this.code = code;
+		this.listeners = listeners;
+		this.typeName = typeName;
 	}
 	@Override
 	public void visitPrintVariable(PrintVariableNode node) {
@@ -96,7 +101,13 @@ public class PanettoneWalker implements ASTWalker {
 		String parameters = variables.stream().collect(joining(","));
 		String prefix = "public void render(" + parameters + ") {\n";
 		String sufix = "}\n";
-		return injects + prefix + code.toString() + sufix;
+		
+		StringBuilder toAppend = new StringBuilder();
+		Arrays.stream(listeners).forEach((cl) -> {
+			toAppend.append(cl.useParameters(variables, typeName));
+		});
+		
+		return injects + prefix + code.toString() + sufix + toAppend;
 	}
 
 	@Override

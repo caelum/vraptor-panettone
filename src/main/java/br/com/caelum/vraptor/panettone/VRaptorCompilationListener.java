@@ -1,6 +1,12 @@
 package br.com.caelum.vraptor.panettone;
 
+import static java.util.stream.Collectors.joining;
+
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class VRaptorCompilationListener implements CompilationListener {
 
@@ -37,6 +43,71 @@ public class VRaptorCompilationListener implements CompilationListener {
 
 	@Override
 	public void clear() {
+	}
+
+	private static final String TONE_TAG_REGEX = "<tone:[^>]+>";
+	private static final String OPEN_TAG_REGEX = "^<tone:([^\\s>]+)\\s*";
+	private static final String SELF_CLOSING_TAG_REGEX = "/>$";
+	private static final String TAG_REMAINS_OPEN_REGEX = ">$";
+	private static final String TAG_PARAM_REGEX = "\\s*([\\w_\\-\\d]+)\\s*=\\s*(\"[^\"]*\")\\s*";
+	private static final String CLOSING_TAG_REGEX = "</tone:[^>]+>";
+	
+	private static final String OPEN_INVOCATION_PART = "<%use($1.class)";
+	private static final String CLOSE_INVOCATION_PART = ".done();%>";
+	private static final String INVOKE_BUILDER_METHOD_PART = ".$1($2)";
+	private static final String OPEN_BODY_PART = ".body(()->{%>\n";
+	private static final String CLOSE_BODY_PART = "\n<%}).done();%>";
+	
+	@Override
+	public String preprocess(String content) {
+		
+		Pattern p = Pattern.compile(TONE_TAG_REGEX);
+		Matcher m = p.matcher(content);
+		StringBuffer sb = new StringBuffer();
+		 
+		while (m.find()) {
+			String tag = m.group();
+			
+			tag = tag.replaceFirst(OPEN_TAG_REGEX, OPEN_INVOCATION_PART);
+
+			if (tag.endsWith("/>")) {
+				tag = tag.replaceFirst(SELF_CLOSING_TAG_REGEX, CLOSE_INVOCATION_PART);
+			} else {
+				tag = tag.replaceFirst(TAG_REMAINS_OPEN_REGEX, OPEN_BODY_PART);
+			}
+			
+			tag = tag.replaceAll(TAG_PARAM_REGEX, INVOKE_BUILDER_METHOD_PART);
+			
+		    m.appendReplacement(sb, tag);
+		}
+		m.appendTail(sb);
+		content = sb.toString();
+		
+		content = content.replaceAll(CLOSING_TAG_REGEX, CLOSE_BODY_PART);
+		
+		return content;
+	}
+	
+	@Override
+	public String useParameters(List<String> variables, String typeName) {
+		StringBuilder code = new StringBuilder();
+		
+		List<String> doneParams = new LinkedList<>();
+		
+		variables.forEach((variable) -> {
+			String[] typeAndName = variable.split("\\s");
+			String type = typeAndName[0];
+			String name = typeAndName[1];
+			
+			code.append("private " + type + " " + name + ";\n");
+			code.append("public " + typeName + " " + name + "("+ type + " " + name +") { this."+name+" = " + name + "; return this; }\n");
+			
+			doneParams.add(name);
+		});
+		
+		code.append("public void done() { render(" + doneParams.stream().collect(joining(",")) + "); }\n");
+		
+		return code.toString();
 	}
 
 }

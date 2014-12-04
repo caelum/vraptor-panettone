@@ -263,6 +263,45 @@ write("</html>");
 
 Live your life as usual, no crazy `yield`s to debug :).
 
+# Tagfile style invocation
+
+You can also invoke a template using a XML tag syntax. In this mode, all
+parameters should be `String` and are considered optional.
+
+```
+<tone:header title="MyTitle"/>
+```
+
+The generated code looks like this:
+```
+<% use(header.class).title("MyTitle").done(); %>
+```
+
+It's possible to include a body in your tag. In this case, the parameter should
+always be `Runnable body`:
+
+```
+<tone:header title="MyTitle">
+   Body Content
+</tone:header>
+```
+
+The generated code looks like this:
+```
+<% use(header.class).title("MyTitle").body(()->{ %>
+    Body Content
+<% }).done(); %>
+```
+
+Please note that all arguments are optional and `String`, except the body tag.
+
+This tag invocation syntax is still compile safe, but in a different manner. 
+With tag syntax, the compiler will check types and parameter names, but order and quantity doesn't matter.
+With the usual Java invocation syntax, the compiler checks types, order and parameter quantity, but not parameter names.
+So both syntaxes have its strengths and weakness. Choose the one that better fit you case by case.  
+
+This featured is not meant to be abused. It's main purpose is to allow a friendlier 
+syntax to call small front-end components.  
 
 # Quick question and answers
 
