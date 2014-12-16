@@ -76,6 +76,39 @@ public class VRaptorCompilationListenerTest {
 	}
 	
 	@Test
+	public void shouldIncludeSpecialBuilderForBooleanVariable() {
+		String expected = 
+				  "private Boolean flag;\n"
+				+ "public header flag(Boolean flag) { this.flag = flag; return this; }\n"
+				+ "public header flag(String flag) { this.flag = Boolean.valueOf(flag); return this; }\n"
+				+ "public void done() { render(flag); }\n";
+		String result = new VRaptorCompilationListener().useParameters(Arrays.asList("Boolean flag"), "header");
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void shouldIncludeSpecialBuilderForIntegerVariable() {
+		String expected = 
+				  "private Integer flag;\n"
+				+ "public header flag(Integer flag) { this.flag = flag; return this; }\n"
+				+ "public header flag(String flag) { this.flag = Integer.valueOf(flag); return this; }\n"
+				+ "public void done() { render(flag); }\n";
+		String result = new VRaptorCompilationListener().useParameters(Arrays.asList("Integer flag"), "header");
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void shouldIncludeSpecialBuilderForDoubleVariable() {
+		String expected = 
+				  "private Double flag;\n"
+				+ "public header flag(Double flag) { this.flag = flag; return this; }\n"
+				+ "public header flag(String flag) { this.flag = Double.valueOf(flag); return this; }\n"
+				+ "public void done() { render(flag); }\n";
+		String result = new VRaptorCompilationListener().useParameters(Arrays.asList("Double flag"), "header");
+		assertEquals(expected, result);
+	}
+	
+	@Test
 	public void shouldIncludeBuilderForMultipleVariables() {
 		String expected = 
 				  "private String message;\n"

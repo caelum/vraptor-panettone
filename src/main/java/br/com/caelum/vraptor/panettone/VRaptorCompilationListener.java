@@ -3,6 +3,7 @@ package br.com.caelum.vraptor.panettone;
 import static java.util.stream.Collectors.joining;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -101,6 +102,13 @@ public class VRaptorCompilationListener implements CompilationListener {
 			
 			code.append("private " + type + " " + name + ";\n");
 			code.append("public " + typeName + " " + name + "("+ type + " " + name +") { this."+name+" = " + name + "; return this; }\n");
+			
+			
+			final List<String> WRAPPERS = Arrays.asList(new String[]{"Integer", "Boolean", "Double", "Long", "Byte", "Short", "Float"});
+			
+			if (!type.equals("String") && WRAPPERS.contains(type)) {
+				code.append("public " + typeName + " " + name + "(String " + name +") { this."+name+" = " + type + ".valueOf(" + name + "); return this; }\n");
+			}
 			
 			doneParams.add(name);
 		});

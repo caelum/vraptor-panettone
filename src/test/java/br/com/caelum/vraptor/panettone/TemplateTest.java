@@ -472,6 +472,23 @@ public class TemplateTest {
 	}
 	
 	@Test
+	public void shouldIncludeBuilderForBooleanVariable() {
+		String expected = "public void render(Boolean message) {\n"
+				+ "// line 1\n"
+				+ "// line 2\n"
+				+ "write(\"<html>\");\n"
+				+ "write(message);\n"
+				+ "write(\"</html>\");\n"
+				+ "}\n"
+				+ "private Boolean message;\n"
+				+ "public header message(Boolean message) { this.message = message; return this; }\n"
+				+ "public header message(String message) { this.message = Boolean.valueOf(message); return this; }\n"
+				+ "public void done() { render(message); }\n";
+		String result = new Template("(@Boolean message )\n<html><%= message %></html>", new VRaptorCompilationListener()).renderType("header");
+		assertEquals(expected, result);
+	}
+	
+	@Test
 	public void shouldIncludeBuilderForMultipleVariables() {
 		String expected = "public void render(String message,String title) {\n"
 				+ "// line 1\n"
