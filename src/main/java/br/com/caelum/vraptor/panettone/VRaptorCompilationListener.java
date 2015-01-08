@@ -50,12 +50,14 @@ public class VRaptorCompilationListener implements CompilationListener {
 	private static final String OPEN_TAG_REGEX = "^<tone:([^\\s>]+)\\s*";
 	private static final String SELF_CLOSING_TAG_REGEX = "/>$";
 	private static final String TAG_REMAINS_OPEN_REGEX = ">$";
-	private static final String TAG_PARAM_REGEX = "\\s*([\\w_\\-\\d]+)\\s*=\\s*(\"[^\"]*\")\\s*";
+	private static final String TAG_PARAM_REGEX = "\\s*([\\w_\\-\\d]+)\\s*=\\s*\"([^\"]*)\"\\s*";
+	private static final String TAG_PARAM_WITH_CODE_REGEX = "\\s*([\\w_\\-\\d]+)\\s*=\\s*\"@([^\"]*)\"\\s*";
 	private static final String CLOSING_TAG_REGEX = "</tone:[^>]+>";
 	
 	private static final String OPEN_INVOCATION_PART = "<%use($1.class)";
 	private static final String CLOSE_INVOCATION_PART = ".done();%>";
-	private static final String INVOKE_BUILDER_METHOD_PART = ".$1($2)";
+	private static final String INVOKE_BUILDER_METHOD_WITH_STRING_PART = ".$1(\"$2\")";
+	private static final String INVOKE_BUILDER_METHOD_WITH_CODE_PART = ".$1($2)";
 	private static final String OPEN_BODY_PART = ".body(()->{%>\n";
 	private static final String CLOSE_BODY_PART = "\n<%}).done();%>";
 	
@@ -77,7 +79,8 @@ public class VRaptorCompilationListener implements CompilationListener {
 				tag = tag.replaceFirst(TAG_REMAINS_OPEN_REGEX, OPEN_BODY_PART);
 			}
 			
-			tag = tag.replaceAll(TAG_PARAM_REGEX, INVOKE_BUILDER_METHOD_PART);
+			tag = tag.replaceAll(TAG_PARAM_WITH_CODE_REGEX, INVOKE_BUILDER_METHOD_WITH_CODE_PART);
+			tag = tag.replaceAll(TAG_PARAM_REGEX, INVOKE_BUILDER_METHOD_WITH_STRING_PART);
 			
 		    m.appendReplacement(sb, tag);
 		}

@@ -23,6 +23,27 @@ public class VRaptorCompilationListenerTest {
 	}
 	
 	@Test
+	public void shouldSupportXMLSyntaxWithCodeParam() {
+		String expected = "<html><%use(header.class).title(title).done();%></html>";
+		String result = new VRaptorCompilationListener().preprocess("<html><tone:header title=\"@title\" /></html>");
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void shouldSupportXMLSyntaxWithComplexCodeParam() {
+		String expected = "<html><%use(header.class).title(obj.getTitle()).done();%></html>";
+		String result = new VRaptorCompilationListener().preprocess("<html><tone:header title=\"@obj.getTitle()\" /></html>");
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void shouldNotSupportXMLSyntaxWithELSyntaxParam() {
+		String expected = "<html><%use(header.class).title(obj.title).done();%></html>";
+		String result = new VRaptorCompilationListener().preprocess("<html><tone:header title=\"@obj.title\" /></html>");
+		assertEquals(expected, result);
+	}
+	
+	@Test
 	public void shouldSupportXMLSyntaxWithMultipleParam() {
 		String expected = "<html><%use(header.class).title(\"MyTitle\").description(\"Desc\").done();%></html>";
 		String result = new VRaptorCompilationListener().preprocess("<html><tone:header title=\"MyTitle\" description=\"Desc\"/></html>");

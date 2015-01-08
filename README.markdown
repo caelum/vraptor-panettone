@@ -277,6 +277,17 @@ The generated code looks like this:
 <% use(header.class).title("MyTitle").done(); %>
 ```
 
+You can invoke code inside parameters using `@`. Please note that it's direct code, not EL.
+
+```
+<tone:header title="@title" description="@obj.getDescription()" />
+```
+
+The generated code looks like this:
+```
+<% use(header.class).title(title).description(obj.getDescription()).done(); %>
+```
+
 It's possible to include a body in your tag. In this case, the parameter should
 always be `Runnable body`:
 
