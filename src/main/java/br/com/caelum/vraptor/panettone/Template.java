@@ -39,5 +39,11 @@ public class Template {
 		ast.walk(new LineNumberWalker(code, walker));
 		return walker;
 	}
+	
+	public String renderInterface(String typeName) {
+		PanettoneWalker walker = bake("i_" + typeName);
+		String code = walker.getMethodSignature() + ";";
+		return code;
+	}
 
 }

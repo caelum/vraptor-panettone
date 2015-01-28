@@ -110,7 +110,7 @@ public class PanettoneWalker implements ASTWalker {
 		return injects + prefix + body + sufix + extraMembers;
 	}
 	
-	private String getMethodSignature() {
+	String getMethodSignature() {
 		return "public void render(" + getParameters() + ")";
 	}
 	

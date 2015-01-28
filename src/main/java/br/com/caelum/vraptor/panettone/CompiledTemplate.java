@@ -1,5 +1,8 @@
 package br.com.caelum.vraptor.panettone;
 
+import static java.nio.charset.Charset.forName;
+import static java.nio.file.Files.write;
+import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 
@@ -29,7 +32,7 @@ public class CompiledTemplate {
 			String javaName = name + ".java";
 			this.file = new File(templates, javaName);
 			this.packages = stream(javaName.split("/"))
-				.filter(f -> !f.endsWith(".java"))
+				.filter(this::isNotTheFileName)
 				.map(packageName -> "." + packageName)
 				.collect(joining());
 			file.getParentFile().mkdirs();
@@ -47,10 +50,13 @@ public class CompiledTemplate {
 							"private void write(Object o) { if(o!=null) out.write(o.toString()); }\n" +
 							"private void write(String o) { if(o!=null) out.write(o); }\n" +
 							"}\n";
-			Files.write(file.toPath(), Arrays.asList(sourceCode), Charset.forName("UTF-8"));
+			write(file.toPath(), asList(sourceCode), forName("UTF-8"));
 		} catch (IOException e) {
 			throw new CompilationIOException("Unable to compile", e);
 		}
+	}
+	private boolean isNotTheFileName(String f) {
+		return !f.endsWith(".java");
 	}
 	
 	private String getConstructor(String typeName,
