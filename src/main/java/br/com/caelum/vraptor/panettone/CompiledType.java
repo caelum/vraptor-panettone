@@ -42,7 +42,7 @@ public class CompiledType {
 				.flatMap(Arrays::stream)
 				.collect(joining(","));
 		if(interfaces.isEmpty()) return "";
-		return "extends " + interfaces;
+		return "implements " + interfaces;
 	}
 	
 	private String importStatementsFor(List<String> imports) {
