@@ -1,7 +1,10 @@
 package br.com.caelum.vraptor.panettone;
 
+import static java.lang.String.format;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.joining;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import br.com.caelum.vraptor.panettone.parser.PanettoneParser;
@@ -16,8 +19,6 @@ import br.com.caelum.vraptor.panettone.parser.ast.ReusableVariableNode;
 import br.com.caelum.vraptor.panettone.parser.ast.ScriptletNode;
 import br.com.caelum.vraptor.panettone.parser.ast.ScriptletPrintNode;
 import br.com.caelum.vraptor.panettone.parser.ast.VariableDeclarationNode;
-import static java.lang.String.format;
-import static java.util.stream.Collectors.joining;
 
 public class PanettoneWalker implements ASTWalker {
 	
@@ -98,16 +99,23 @@ public class PanettoneWalker implements ASTWalker {
 	}
 
 	public String getJavaCode() {
-		String parameters = variables.stream().collect(joining(","));
-		String prefix = "public void render(" + parameters + ") {\n";
+		String prefix = getMethodSignature() + " {\n";
 		String sufix = "}\n";
 		
-		StringBuilder toAppend = new StringBuilder();
-		Arrays.stream(listeners).forEach((cl) -> {
-			toAppend.append(cl.useParameters(variables, typeName));
-		});
+		String extraMembers = stream(listeners)
+			.map(cl -> cl.useParameters(variables, typeName))
+			.collect(joining());
 		
-		return injects + prefix + code.toString() + sufix + toAppend;
+		String body = code.toString();
+		return injects + prefix + body + sufix + extraMembers;
+	}
+	
+	private String getMethodSignature() {
+		return "public void render(" + getParameters() + ")";
+	}
+	
+	private String getParameters() {
+		return variables.stream().collect(joining(","));
 	}
 
 	@Override
@@ -133,5 +141,5 @@ public class PanettoneWalker implements ASTWalker {
 	public void visitAfter(Node node) {
 		
 	}
-
+	
 }

@@ -1,6 +1,7 @@
 package br.com.caelum.vraptor.panettone;
 
 import java.io.Reader;
+import java.util.List;
 
 import br.com.caelum.vraptor.panettone.parser.PanettoneParser;
 import br.com.caelum.vraptor.panettone.parser.ast.PannetoneAST;
@@ -29,9 +30,10 @@ public class Template {
 	public String renderType(String typeName) {
 		CodeBuilder code = new CodeBuilder();
 		PanettoneWalker walker = new PanettoneWalker(code, typeName, listeners);
-		
 		PannetoneAST ast = new PanettoneParser().parse(content);
 		ast.walk(new LineNumberWalker(code, walker));
+		
+		
 		
 		return walker.getJavaCode();
 	}
