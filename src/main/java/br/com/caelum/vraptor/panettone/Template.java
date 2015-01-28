@@ -28,14 +28,16 @@ public class Template {
 	}
 	
 	public String renderType(String typeName) {
+		PanettoneWalker walker = bake(typeName);
+		return walker.getJavaCode();
+	}
+	
+	private PanettoneWalker bake(String typeName) {
 		CodeBuilder code = new CodeBuilder();
 		PanettoneWalker walker = new PanettoneWalker(code, typeName, listeners);
 		PannetoneAST ast = new PanettoneParser().parse(content);
 		ast.walk(new LineNumberWalker(code, walker));
-		
-		
-		
-		return walker.getJavaCode();
+		return walker;
 	}
 
 }
