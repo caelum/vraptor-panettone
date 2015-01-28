@@ -65,6 +65,10 @@ public class Compiler {
 			String content = template.renderType(typeName);
 			CompiledTemplate compiled = new CompiledTemplate(to, name, imports, content, listeners);
 			invokeOn(listeners, l-> l.finished(f, compiled));
+			
+			String method = template.renderInterface(typeName);
+			new CompiledInterface(to, name, imports, method, listeners);
+			
 			return empty();
 		} catch (Exception e) {
 			invokeOn(listeners, l -> l.finished(f, e));

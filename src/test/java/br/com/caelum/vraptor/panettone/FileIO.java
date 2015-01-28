@@ -1,7 +1,9 @@
 package br.com.caelum.vraptor.panettone;
 
 import static com.google.common.io.Files.write;
+import static java.nio.file.Files.list;
 import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,9 +56,9 @@ class FileIO {
 
 	private void clear(File dir) {
 		try {
-			List<String> internalDirs = Files.list(dir.toPath())
+			List<String> internalDirs = list(dir.toPath())
 					.map(Path::toFile).filter(File::isDirectory)
-					.map(File::getName).collect(Collectors.toList());
+					.map(File::getName).collect(toList());
 			internalDirs.remove("templates");
 			internalDirs.remove("tone");
 			if (!internalDirs.isEmpty()) {

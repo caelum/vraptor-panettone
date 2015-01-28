@@ -86,11 +86,11 @@ public class SimpleJavaCompiler {
 			ClassLoader parent = getClass().getClassLoader();
 			URL[] url = new URL[]{classPath.toURL()};
 			URLClassLoader loader = newInstance(url, parent);
-			return loader.loadClass(template.getFullName());
+			return loader.loadClass(template.getType().getFullName());
 		} catch (IOException e) {
 			throw new CompilationLoadException("Unable to compile", e);
 		} catch (ClassNotFoundException e) {
-			throw new CompilationLoadException("Unable to find class " + template.getFullName() + " at " + classPath, e);
+			throw new CompilationLoadException("Unable to find class " + template.getType().getFullName() + " at " + classPath, e);
 		}
 	}
 	

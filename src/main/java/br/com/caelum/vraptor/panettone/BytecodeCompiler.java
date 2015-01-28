@@ -36,8 +36,8 @@ public class BytecodeCompiler implements CompilationListener {
 
 	@Override
 	public void finished(File file, CompiledTemplate template) {
-		compiler.compileToBytecode(template.getFile());
-		types.put(template.getPackagedName(), compiler.getTypeFromNewClassLoader(template));
+		compiler.compileToBytecode(template.getType().getFile());
+		types.put(template.getType().getPackagedName(), compiler.getTypeFromNewClassLoader(template));
 	}
 
 	@Override

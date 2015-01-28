@@ -35,14 +35,14 @@ public class CompiledTemplateTest {
 	
 	private CompiledTemplate compile(String name, List<String> imports, String content) {
 		CompiledTemplate ct = new CompiledTemplate(dir, name, imports, new Template(content,new CompilationListener[]{}).renderType("oi"));
-		typeCompiler.compileToBytecode(ct.getFile());
+		typeCompiler.compileToBytecode(ct.getType().getFile());
 		return ct;
 	}
 	
 	private CompiledTemplate compile(String name, String content) {
 		String template = new Template(content,new CompilationListener[]{}).renderType("oi");
 		CompiledTemplate ct = new CompiledTemplate(dir, name, template);
-		typeCompiler.compileToBytecode(ct.getFile());
+		typeCompiler.compileToBytecode(ct.getType().getFile());
 		return ct;
 	}
 	
@@ -109,7 +109,7 @@ public class CompiledTemplateTest {
 	}
 
 	private String tryToRun(CompiledTemplate template, Class<?>[] types, Object ... params) {
-		typeCompiler.compileToBytecode(template.getFile());
+		typeCompiler.compileToBytecode(template.getType().getFile());
 		Class<?> type = typeCompiler.getTypeFromNewClassLoader(template);
 		return ReflectionHelper.run(type, types, params);
 	}

@@ -1,7 +1,6 @@
 package br.com.caelum.vraptor.panettone;
 
 import java.io.Reader;
-import java.util.List;
 
 import br.com.caelum.vraptor.panettone.parser.PanettoneParser;
 import br.com.caelum.vraptor.panettone.parser.ast.PannetoneAST;
@@ -13,7 +12,7 @@ public class Template {
 
 	public Template(Reader reader, CompilationListener... listeners) {
 		this.listeners = listeners;
-		this.content = preprocessAll(CompiledTemplate.toString(reader));
+		this.content = preprocessAll(CompiledType.toString(reader));
 	}
 	public Template(String content, CompilationListener... listeners) {
 		this.listeners = listeners;
