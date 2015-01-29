@@ -17,7 +17,7 @@ public class CompiledInterface {
 		try {
 			String sourceCode = "package templates" + type.getPackages() + ";\n\n" + 
 							type.getImportString() +
-							"public interface " + type.getTypeName() + " {\n" +
+							"public class " + type.getTypeName() + " {\n" +
 							content +
 							"}\n";
 			write(type.getFilePath(), asList(sourceCode), forName("UTF-8"));

@@ -41,8 +41,11 @@ public class Template {
 	
 	public String renderInterface(String typeName) {
 		PanettoneWalker walker = bake("i_" + typeName);
-		String code = walker.getMethodSignature() + ";";
-		return code;
+		String instance = "@Inject private PanettoneLazyLoader _lazyLoader;\n";
+		String code = walker.getMethodSignature();
+		String packagedName = typeName.replaceAll("/", ".").replaceAll(".java", ".class");
+		String delegate = "_lazyLoader.load(" + packagedName + ").render(" + walker.getParameterInvocation() + ");";
+		return instance + code + "{\n" + delegate + "\n}\n";
 	}
 
 }

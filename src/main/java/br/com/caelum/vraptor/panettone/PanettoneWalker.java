@@ -24,6 +24,7 @@ public class PanettoneWalker implements ASTWalker {
 	
 	private final ELEvaluator el = new ELEvaluator();
 	private final List<String> variables = new ArrayList<>();
+	private final List<String> variableNames = new ArrayList<>();
 	private final StringBuilder injects = new StringBuilder();
 	private final CodeBuilder code;
 	private final CompilationListener[] listeners;
@@ -50,6 +51,7 @@ public class PanettoneWalker implements ASTWalker {
 	public void visitVariableDeclaration(VariableDeclarationNode node) {
 		String variableFull = node.getType() + " " + node.getName();
 		variables.add(variableFull);
+		variableNames.add(node.getName());
 		
 		if(node.getDefaultValue()!=null) {
 			code.append(String.format("if(%s == null) %s = %s;\n", node.getName(), node.getName(), node.getDefaultValue()));
@@ -140,6 +142,9 @@ public class PanettoneWalker implements ASTWalker {
 	@Override
 	public void visitAfter(Node node) {
 		
+	}
+	public String getParameterInvocation() {
+		return variableNames.stream().collect(joining(","));
 	}
 	
 }

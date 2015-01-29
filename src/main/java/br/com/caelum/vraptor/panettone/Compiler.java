@@ -1,12 +1,20 @@
 package br.com.caelum.vraptor.panettone;
 
+import static br.com.caelum.vraptor.panettone.VRaptorCompiler.VIEW_INPUT;
 import static java.lang.String.format;
+import static java.lang.System.currentTimeMillis;
+import static java.nio.file.Files.walk;
 import static java.util.Arrays.stream;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -41,7 +49,7 @@ public class Compiler {
 
 	public List<Exception> compileAll() {
 		List<File> files = tonesAt(from);
-		long start = System.currentTimeMillis();
+		long start = currentTimeMillis();
 		out.println("Compiling " + files.size() + " files...");
 		List<Exception> exceptions = files.stream()
 			.map(this::compile)
@@ -142,7 +150,7 @@ public class Compiler {
 
 	private void clearChildren(File current) {
 		try {
-			Files.walk(current.toPath()).map(Path::toFile).forEach(File::delete);
+			walk(current.toPath()).map(Path::toFile).forEach(File::delete);
 		} catch (IOException e) {
 			err.println("Unable to clear folders: " + current.getAbsolutePath() + " due to " + e.getMessage());
 		}
@@ -153,8 +161,8 @@ public class Compiler {
 	 * the tone user might have created.
 	 */
 	public void removeJavaVersionOf(String path) {
-		int position = path.indexOf(VRaptorCompiler.VIEW_INPUT);
-		path = path.substring(position + VRaptorCompiler.VIEW_INPUT.length() + 1);
+		int position = path.indexOf(VIEW_INPUT);
+		path = path.substring(position + VIEW_INPUT.length() + 1);
 		String java = "templates/" + path.replaceAll("\\.tone.*", "\\.java");
 		new File(to, java).delete();
 	}
