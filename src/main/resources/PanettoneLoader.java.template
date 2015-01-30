@@ -1,0 +1,33 @@
+package br.com.caelum.vraptor.panettone;
+
+/**
+  * Defaults to always reload.
+  */
+public class PanettoneLoader {
+
+	public final static String PANETTONE_DYNAMIC_LOADING = "br.com.caelum.vraptor.panettone.dynamic_loading";
+
+	@Inject
+	private Environment env;
+	
+	private ClassLoader loader = createClassLoader();
+
+	public <T> T load(Class<T> type) {
+		if(shouldReload()) {
+			loader = new ClassLoader();
+		}
+		return cachedLoad(type);
+	}
+	
+	private ClassLoader createClassLoader() {
+		return new ClassLoader();
+	}
+	
+	public <T> T cachedLoad(Class<T> type) {
+		return load.get(type);
+	}
+	
+	private boolean shouldReload() {
+		return !env.has(PANETTONE_DYNAMIC_LOADING) || Boolean.valueOf(env.get(PANETTONE_DYNAMIC_LOADING));
+	}
+}

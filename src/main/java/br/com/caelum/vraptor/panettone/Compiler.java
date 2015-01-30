@@ -3,7 +3,9 @@ package br.com.caelum.vraptor.panettone;
 import static br.com.caelum.vraptor.panettone.VRaptorCompiler.VIEW_INPUT;
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
+import static java.nio.file.Files.copy;
 import static java.nio.file.Files.walk;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.Arrays.stream;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -12,6 +14,7 @@ import static java.util.stream.Collectors.toList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
@@ -43,8 +46,19 @@ public class Compiler {
 		Config config = new Config(from);
 		this.imports.addAll(config.getImports());
 		this.listeners = config.getListenersOr(listeners);
-		from.mkdirs();
-		to.mkdirs();
+		setup();
+	}
+
+	private void setup() {
+		this.from.mkdirs();
+		this.to.mkdirs();
+		File loader = new File(to, "br/com/caelum/vraptor/panettone/PanettoneLoader.java");
+		InputStream input = Compiler.class.getResourceAsStream("/PanettoneLoader.java.template");
+		try {
+			copy(input, loader.toPath(), REPLACE_EXISTING);
+		} catch (IOException e) {
+			e.printStackTrace(err);
+		}
 	}
 
 	public List<Exception> compileAll() {
