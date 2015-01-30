@@ -29,8 +29,7 @@ import java.util.function.Consumer;
 
 public class Compiler {
 
-	private final File from;
-	private final File to;
+	private final File templates, classes, interfaces;
 	private Watcher watcher;
 	private final List<String> imports;
 	private final CompilationListener[] listeners;
@@ -38,23 +37,24 @@ public class Compiler {
 	private final PrintStream err = System.err;
 
 	public Compiler(File from, File to) {
-		this(from, to, new ArrayList<String>());
+		this(from, to, to, new ArrayList<String>());
 	}
 	
-	public Compiler(File from, File to, List<String> imports, CompilationListener... listeners) {
-		this.from = from;
-		this.to = to;
+	public Compiler(File templates, File classes, File interfaces, List<String> imports, CompilationListener... listeners) {
+		this.templates = templates;
+		this.classes = classes;
+		this.interfaces = interfaces;
 		this.imports = new ArrayList<>(imports);
-		Config config = new Config(from);
+		Config config = new Config(templates);
 		this.imports.addAll(config.getImports());
 		this.listeners = config.getListenersOr(listeners);
 		setup();
 	}
 
 	private void setup() {
-		from.mkdirs();
-		to.mkdirs();
-		File loader = new File(to, "br/com/caelum/vraptor/panettone/PanettoneLoader.java");
+		templates.mkdirs();
+		classes.mkdirs();
+		File loader = new File(classes, "br/com/caelum/vraptor/panettone/PanettoneLoader.java");
 		InputStream input = Compiler.class.getResourceAsStream("/PanettoneLoader.java.template");
 		try {
 			copy(input, loader.toPath(), REPLACE_EXISTING);
@@ -64,7 +64,7 @@ public class Compiler {
 	}
 
 	public List<Exception> compileAll() {
-		List<File> files = tonesAt(from);
+		List<File> files = tonesAt(templates);
 		long start = currentTimeMillis();
 		out.println("Compiling " + files.size() + " files...");
 		List<Exception> exceptions = files.stream()
@@ -87,11 +87,11 @@ public class Compiler {
 			String name = noExtension(nameFor(f));
 			String typeName = name.replaceAll(".+/", "");
 			String content = template.renderType(typeName);
-			CompiledTemplate compiled = new CompiledTemplate(to, name, imports, content, listeners);
+			CompiledTemplate compiled = new CompiledTemplate(classes, name, imports, content, listeners);
 			invokeOn(listeners, l-> l.finished(f, compiled));
 			
 			String method = template.renderInterface(typeName);
-			new CompiledInterface(to, name, imports, method, listeners);
+			new CompiledInterface(interfaces, name, imports, method, listeners);
 			
 			return empty();
 		} catch (Exception e) {
@@ -109,7 +109,7 @@ public class Compiler {
 	}
 
 	private String nameFor(File f) {
-		String replaced = f.getAbsolutePath().replace(from.getAbsolutePath(), "");
+		String replaced = f.getAbsolutePath().replace(templates.getAbsolutePath(), "");
 		if(replaced.startsWith("/")) return replaced.substring(1);
 		return replaced;
 	}
@@ -138,7 +138,7 @@ public class Compiler {
 	 * Watches the base directory for any file changes.
 	 */
 	public void startWatch() {
-		this.watcher = new Watcher(from.toPath(), this);
+		this.watcher = new Watcher(templates.toPath(), this);
 		Thread t = new Thread(watcher);
 		t.setDaemon(true);
 		t.start();
@@ -165,7 +165,7 @@ public class Compiler {
 	public void clear() {
 		out.println("Clearing compilation path...");
 		invokeOn(listeners, l -> l.clear());
-		clearChildren(to);
+		clearChildren(classes);
 	}
 
 	private void clearChildren(File current) {
@@ -184,7 +184,7 @@ public class Compiler {
 		int position = path.indexOf(VIEW_INPUT);
 		path = path.substring(position + VIEW_INPUT.length() + 1);
 		String java = "templates/" + path.replaceAll("\\.tone.*", "\\.java");
-		new File(to, java).delete();
+		new File(classes, java).delete();
 	}
 
 }

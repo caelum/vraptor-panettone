@@ -19,17 +19,17 @@ public class CompilerTest {
 	private static final String TARGET = "target/tmp/results";
 	
 	private File sources = new File(SRC);
-	private File targets = new File(TARGET);
-	private FileIO io = new FileIO(sources, targets);
+	private File classes = new File(TARGET);
+	private FileIO io = new FileIO(sources, classes);
 	private Compiler compiler;
 	private BytecodeCompiler bytecodes;
 
 	@Before
 	public void before() {
 		io.mkclear();
-		SimpleJavaCompiler javaCompiler = new SimpleJavaCompiler(targets);
+		SimpleJavaCompiler javaCompiler = new SimpleJavaCompiler(classes);
 		this.bytecodes = new BytecodeCompiler(javaCompiler);
-		this.compiler = new Compiler(sources, targets, new ArrayList<>(), bytecodes);
+		this.compiler = new Compiler(sources, classes, classes, new ArrayList<>(), bytecodes);
 	}
 
 	@After
@@ -87,13 +87,13 @@ public class CompilerTest {
 
 	@Test
 	public void shouldRemoveFile() {
-		File targetAHtml = new File(targets, "templates/A.java");
+		File targetAHtml = new File(classes, "templates/A.java");
 		io.copy("<html>Tone</html>", targetAHtml);
 		assertTrue(targetAHtml.exists());
 		compiler.removeJavaVersionOf(SRC + "/A.tone.html");
 		assertFalse(targetAHtml.exists());
 		
-		File targetB = new File(targets, "templates/B.java");
+		File targetB = new File(classes, "templates/B.java");
 		io.copy("<html>Tone</html>", targetB);
 		assertTrue(targetB.exists());
 		compiler.removeJavaVersionOf(SRC + "/B.tone");

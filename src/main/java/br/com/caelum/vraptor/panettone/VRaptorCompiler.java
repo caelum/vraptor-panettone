@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public class VRaptorCompiler {
 
+	public static final String VIEW_INTERFACES_OUTPUT = "target/view-interfaces";
 	public static final String VIEW_OUTPUT = "target/view-classes";
 	public static final String VIEW_INPUT = "src/main/views";
 	
@@ -19,10 +20,11 @@ public class VRaptorCompiler {
 	}
 	
 	public VRaptorCompiler(File baseDir, List<String> imports) {
-		File from = new File(baseDir, VIEW_INPUT);
-		File to = new File(baseDir, VIEW_OUTPUT);
+		File templates = new File(baseDir, VIEW_INPUT);
+		File classes = new File(baseDir, VIEW_OUTPUT);
+		File interfaces = new File(baseDir, VIEW_INTERFACES_OUTPUT);
 		VRaptorCompilationListener listener = new VRaptorCompilationListener();
-		this.compiler = new Compiler(from, to, imports, listener);
+		this.compiler = new Compiler(templates, classes, interfaces, imports, listener);
 	}
 	
 	public VRaptorCompiler(File baseDir) {
