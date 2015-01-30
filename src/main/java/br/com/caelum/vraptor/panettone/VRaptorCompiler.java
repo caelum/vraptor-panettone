@@ -19,7 +19,10 @@ public class VRaptorCompiler {
 	}
 	
 	public VRaptorCompiler(File baseDir, List<String> imports) {
-		this.compiler = new Compiler(new File(baseDir, VIEW_INPUT), new File(baseDir, VIEW_OUTPUT), imports, new VRaptorCompilationListener());
+		File from = new File(baseDir, VIEW_INPUT);
+		File to = new File(baseDir, VIEW_OUTPUT);
+		VRaptorCompilationListener listener = new VRaptorCompilationListener();
+		this.compiler = new Compiler(from, to, imports, listener);
 	}
 	
 	public VRaptorCompiler(File baseDir) {

@@ -52,8 +52,8 @@ public class Compiler {
 	}
 
 	private void setup() {
-		this.from.mkdirs();
-		this.to.mkdirs();
+		from.mkdirs();
+		to.mkdirs();
 		File loader = new File(to, "br/com/caelum/vraptor/panettone/PanettoneLoader.java");
 		InputStream input = Compiler.class.getResourceAsStream("/PanettoneLoader.java.template");
 		try {
