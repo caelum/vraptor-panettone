@@ -13,11 +13,13 @@ import static java.util.stream.Collectors.toList;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -70,7 +72,7 @@ public class Compiler {
 			.filter(Optional::isPresent)
 			.map(Optional::get)
 			.collect(toList());
-		long finish = System.currentTimeMillis();
+		long finish = currentTimeMillis();
 		double delta = (finish - start) / 1000.0;
 		if(!exceptions.isEmpty()) {
 			err.println("Precompilation failed");
@@ -80,7 +82,7 @@ public class Compiler {
 	}
 
 	public Optional<Exception> compile(File f) {
-		try (Reader reader = new InputStreamReader(new FileInputStream(f), "UTF-8")){
+		try (Reader reader = openAsUtf8(f)){
 			Template template = new Template(reader, this.listeners);
 			String name = noExtension(nameFor(f));
 			String typeName = name.replaceAll(".+/", "");
@@ -96,6 +98,10 @@ public class Compiler {
 			invokeOn(listeners, l -> l.finished(f, e));
 			return of(e);
 		}
+	}
+
+	private InputStreamReader openAsUtf8(File f) throws UnsupportedEncodingException, FileNotFoundException {
+		return new InputStreamReader(new FileInputStream(f), "UTF-8");
 	}
 
 	private void invokeOn(CompilationListener[] listeners, Consumer<CompilationListener> listener) {
