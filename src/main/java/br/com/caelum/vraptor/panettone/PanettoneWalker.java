@@ -4,7 +4,6 @@ import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import br.com.caelum.vraptor.panettone.parser.PanettoneParser;
@@ -23,8 +22,7 @@ import br.com.caelum.vraptor.panettone.parser.ast.VariableDeclarationNode;
 public class PanettoneWalker implements ASTWalker {
 	
 	private final ELEvaluator el = new ELEvaluator();
-	private final List<String> variables = new ArrayList<>();
-	private final List<String> variableNames = new ArrayList<>();
+	private final Variables variables = new Variables();
 	private final StringBuilder injects = new StringBuilder();
 	private final CodeBuilder code;
 	private final CompilationListener[] listeners;
@@ -49,9 +47,7 @@ public class PanettoneWalker implements ASTWalker {
 
 	@Override
 	public void visitVariableDeclaration(VariableDeclarationNode node) {
-		String variableFull = node.getType() + " " + node.getName();
-		variables.add(variableFull);
-		variableNames.add(node.getName());
+		variables.add(node.getType(), node.getName());
 		
 		if(node.getDefaultValue()!=null) {
 			code.append(String.format("if(%s == null) %s = %s;\n", node.getName(), node.getName(), node.getDefaultValue()));
@@ -104,6 +100,7 @@ public class PanettoneWalker implements ASTWalker {
 		String prefix = getMethodSignature() + " {\n";
 		String sufix = "}\n";
 		
+		List<String> variables = this.variables.asMethodDefinition();
 		String extraMembers = stream(listeners)
 			.map(cl -> cl.useParameters(variables, typeName))
 			.collect(joining());
@@ -113,11 +110,7 @@ public class PanettoneWalker implements ASTWalker {
 	}
 	
 	String getMethodSignature() {
-		return "public void render(" + getParameters() + ")";
-	}
-	
-	private String getParameters() {
-		return variables.stream().collect(joining(","));
+		return "public void render(" + variables.asFullMethodDefinition() + ")";
 	}
 
 	@Override
@@ -143,8 +136,9 @@ public class PanettoneWalker implements ASTWalker {
 	public void visitAfter(Node node) {
 		
 	}
-	public String getParameterInvocation() {
-		return variableNames.stream().collect(joining(","));
+	
+	public Variables getVariables() {
+		return variables;
 	}
 	
 }

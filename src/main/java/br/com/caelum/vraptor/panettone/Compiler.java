@@ -29,12 +29,14 @@ import java.util.function.Consumer;
 
 public class Compiler {
 
-	private final File templates, classes, interfaces;
+	private final File templates, classes;
 	private Watcher watcher;
 	private final List<String> imports;
 	private final CompilationListener[] listeners;
 	private final PrintStream out = System.out;
 	private final PrintStream err = System.err;
+	
+	private final CompiledInterfaces interfaces;
 
 	public Compiler(File from, File to) {
 		this(from, to, to, new ArrayList<String>());
@@ -43,7 +45,7 @@ public class Compiler {
 	public Compiler(File templates, File classes, File interfaces, List<String> imports, CompilationListener... listeners) {
 		this.templates = templates;
 		this.classes = classes;
-		this.interfaces = interfaces;
+		this.interfaces = new CompiledInterfaces(interfaces);
 		this.imports = new ArrayList<>(imports);
 		Config config = new Config(templates);
 		this.imports.addAll(config.getImports());
@@ -91,7 +93,7 @@ public class Compiler {
 			invokeOn(listeners, l-> l.finished(f, compiled));
 			
 			String method = template.renderInterface(typeName);
-			new CompiledInterface(interfaces, name, imports, method, listeners);
+			interfaces.generate(name, imports, method, listeners);
 			
 			return empty();
 		} catch (Exception e) {

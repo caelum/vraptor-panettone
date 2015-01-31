@@ -529,4 +529,23 @@ public class TemplateTest {
 		String result = new Template("(@String message)\n(@String title)\n(@Runnable body)\n<html><%= message %><% body.run(); %></html>", new VRaptorCompilationListener()).renderType("header");
 		assertEquals(expected, result);
 	}
+	
+	@Test
+	public void shouldIncludeBuilderForInterface() {
+		String expected = "@Inject private PanettoneLazyLoader _lazyLoader;\n"
+				+ "Implementation implementation;\n"
+				+ "@PostConstruct\n"
+				+ "public void init() {\n"
+				+ "\tthis.implementation = _lazyLoader.load(this.getClass());"
+				+ "}\n"
+				+ "public void render(String message,String title,Runnable body){\n"
+				+ "\timplementation.render({String.class,String.class,Runnable.class}, {message,title,body});\n"
+				+ "}\n"
+				+ "public i_header message(String message) {\n\timplementation.with(\"message\", String.class, message);\n\treturn this;\n};\n"
+				+ "public i_header title(String title) {\n\timplementation.with(\"title\", String.class, title);\n\treturn this;\n};\n"
+				+ "public i_header body(Runnable body) {\n\timplementation.with(\"body\", Runnable.class, body);\n\treturn this;\n};\n"
+				+ "public void done() { implementation.done(); };\n";
+		String result = new Template("(@String message)\n(@String title)\n(@Runnable body)\n<html><%= message %><% body.run(); %></html>", new VRaptorCompilationListener()).renderInterface("header");
+		assertEquals(expected, result);
+	}
 }
