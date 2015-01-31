@@ -14,6 +14,9 @@ public class CompiledInterface {
 
 	public CompiledInterface(File classpath, String name, List<String> imports, String content, CompilationListener ... listeners) {
 		CompiledType type = new CompiledType(classpath, toInterfaceName(name), imports, content, listeners);
+        String hash = hash(content);
+		if(type.getHash().equals(hash))
+			return;
 		try {
 			String sourceCode = "package templates" + type.getPackages() + ";\n\n" + 
 							type.getImportString() +
@@ -24,6 +27,10 @@ public class CompiledInterface {
 		} catch (IOException e) {
 			throw new CompilationIOException("Unable to compile", e);
 		}
+	}
+
+	private String hash(String content) {
+		return content.hashCode() + "";
 	}
 
 	private String toInterfaceName(String name) {

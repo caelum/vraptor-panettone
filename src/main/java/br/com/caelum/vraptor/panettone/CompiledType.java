@@ -4,6 +4,7 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.nio.file.Path;
@@ -102,5 +103,15 @@ public class CompiledType {
 	
 	public String getInterfaces() {
 		return interfaces;
+	}
+
+	public String getHash() {
+		if (!file.exists())
+			return "";
+		try(Scanner sc = new Scanner(file)) {
+			return sc.nextLine();
+		} catch (FileNotFoundException e) {
+			return "";
+		}
 	}
 }
