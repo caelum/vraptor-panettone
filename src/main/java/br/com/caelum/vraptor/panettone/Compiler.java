@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import br.com.caelum.vraptor.panettone.api.RealInterfaceCompiler;
+
 public class Compiler {
 
 	private final File templates, classes;
@@ -45,7 +47,7 @@ public class Compiler {
 	public Compiler(File templates, File classes, File interfaces, List<String> imports, CompilationListener... listeners) {
 		this.templates = templates;
 		this.classes = classes;
-		this.interfaces = new CompiledInterfaces(interfaces);
+		this.interfaces = new CompiledInterfaces(interfaces, new RealInterfaceCompiler());
 		this.imports = new ArrayList<>(imports);
 		Config config = new Config(templates);
 		this.imports.addAll(config.getImports());

@@ -17,7 +17,8 @@ public class CompiledInterface {
 	}
 	public void write() {
 		try {
-			String sourceCode = "package templates" + type.getPackages() + ";\n\n" + 
+			String sourceCode = "//HASH:" + content.hashCode() + "\n" + 
+							"package templates" + type.getPackages() + ";\n\n" + 
 							type.getImportString() +
 							"public class " + type.getTypeName() + " {\n" +
 							content +

@@ -12,15 +12,12 @@ import org.junit.Test;
 
 import templates.AutoImported;
 
-public class CompiledTemplateTest {
+public class CompiledTemplateTest extends FolderBasedTest {
 	
-	private File dir;
 	private SimpleJavaCompiler typeCompiler;
 
 	@Before
 	public void before() {
-		dir = new File("target/tmp");
-		dir.mkdirs();
 		this.typeCompiler = new SimpleJavaCompiler(dir);
 	}
 	

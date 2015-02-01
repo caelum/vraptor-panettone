@@ -1,17 +1,11 @@
 package br.com.caelum.vraptor.panettone;
 
 import static com.google.common.io.Files.write;
-import static java.nio.file.Files.list;
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.stream.Collectors;
 
 class FileIO {
 
@@ -55,22 +49,7 @@ class FileIO {
 	}
 
 	private void clear(File dir) {
-		try {
-			List<String> internalDirs = list(dir.toPath())
-					.map(Path::toFile).filter(File::isDirectory)
-					.map(File::getName).collect(toList());
-			internalDirs.remove("templates");
-			internalDirs.remove("tone");
-			if (!internalDirs.isEmpty()) {
-				throw new RuntimeException(
-						"I will not delete if there is recurssion, is there a problem here? @"
-								+ internalDirs);
-			}
-			stream(dir.listFiles()).filter(File::isDirectory).forEach(
-					this::clear);
-			stream(dir.listFiles()).forEach(File::delete);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		stream(dir.listFiles()).filter(File::isDirectory).forEach(this::clear);
+		stream(dir.listFiles()).forEach(File::delete);
 	}
 }
