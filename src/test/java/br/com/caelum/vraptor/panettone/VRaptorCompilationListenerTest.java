@@ -23,6 +23,13 @@ public class VRaptorCompilationListenerTest {
 	}
 	
 	@Test
+	public void shouldSupportXMLSyntaxWithSimpleQuotedParam() {
+		String expected = "<html><%use(header.class).title(\"MyTitle\").done();%></html>";
+		String result = new VRaptorCompilationListener().preprocess("<html><tone:header title='MyTitle' /></html>");
+		assertEquals(expected, result);
+	}
+	
+	@Test
 	public void shouldSupportXMLSyntaxWithCodeParam() {
 		String expected = "<html><%use(header.class).title(title).done();%></html>";
 		String result = new VRaptorCompilationListener().preprocess("<html><tone:header title=\"@title\" /></html>");
@@ -33,6 +40,20 @@ public class VRaptorCompilationListenerTest {
 	public void shouldSupportXMLSyntaxWithComplexCodeParam() {
 		String expected = "<html><%use(header.class).title(obj.getTitle()).done();%></html>";
 		String result = new VRaptorCompilationListener().preprocess("<html><tone:header title=\"@obj.getTitle()\" /></html>");
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void shouldSupportXMLSyntaxWithComplexCodeAndSingleQuotedParam() {
+		String expected = "<html><%use(header.class).title(obj.getTitle()).done();%></html>";
+		String result = new VRaptorCompilationListener().preprocess("<html><tone:header title='@obj.getTitle()' /></html>");
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void shouldSupportXMLSyntaxWithComplexCodeAndStringInASingleQuotedParam() {
+		String expected = "<html><%use(header.class).title(\"Title: \" + obj.getTitle()).done();%></html>";
+		String result = new VRaptorCompilationListener().preprocess("<html><tone:header title='@\"Title: \" + obj.getTitle()' /></html>");
 		assertEquals(expected, result);
 	}
 	
@@ -50,6 +71,12 @@ public class VRaptorCompilationListenerTest {
 		assertEquals(expected, result);
 	}
 
+	@Test
+	public void shouldSupportXMLSyntaxWithMultipleSingleQuotedParams() {
+		String expected = "<html><%use(header.class).title(\"MyTitle\").description(\"Desc\").done();%></html>";
+		String result = new VRaptorCompilationListener().preprocess("<html><tone:header title='MyTitle' description='Desc'/></html>");
+		assertEquals(expected, result);
+	}
 
 	@Test
 	public void shouldSupportXMLSyntaxWithEmptyBody() {
