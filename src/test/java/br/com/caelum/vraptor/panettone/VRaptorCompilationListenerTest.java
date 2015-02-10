@@ -16,9 +16,43 @@ public class VRaptorCompilationListenerTest {
 	}
 	
 	@Test
+	public void shouldSupportXMLSyntaxWithSimpleRendered() {
+		String expected = "<%if(true)%><%use(header.class).done();%>";
+		String result = new VRaptorCompilationListener().preprocess("<tone:header tone:rendered=\"@true\" />");
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void shouldSupportXMLSyntaxWithSingleQuotedRendered() {
+		String expected = "<%if(\"string\".isEmpty())%><%use(header.class).done();%>";
+		String result = new VRaptorCompilationListener().preprocess("<tone:header tone:rendered='@\"string\".isEmpty()' />");
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void shouldNotSupportXMLSyntaxWithSimpleRenderedWithoutAtSign() {
+		String result = new VRaptorCompilationListener().preprocess("<tone:header tone:rendered=\"true\" />");
+		assertFalse(result.contains("<%if"));
+	}
+	
+	@Test
+	public void shouldSupportXMLSyntaxWithComplexRendered() {
+		String expected = "<%if(list.isEmpty())%><%use(header.class).done();%>";
+		String result = new VRaptorCompilationListener().preprocess("<tone:header tone:rendered=\"@list.isEmpty()\" />");
+		assertEquals(expected, result);
+	}
+	
+	@Test
 	public void shouldSupportXMLSyntaxWithParam() {
 		String expected = "<html><%use(header.class).title(\"MyTitle\").done();%></html>";
 		String result = new VRaptorCompilationListener().preprocess("<html><tone:header title=\"MyTitle\" /></html>");
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void shouldSupportXMLSyntaxWithCodeParamAndRendered() {
+		String expected = "<html><%if(list.isEmpty())%><%use(header.class).title(title).done();%></html>";
+		String result = new VRaptorCompilationListener().preprocess("<html><tone:header title=\"@title\" tone:rendered=\"@list.isEmpty()\" /></html>");
 		assertEquals(expected, result);
 	}
 	
