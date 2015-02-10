@@ -61,6 +61,8 @@ public class VRaptorCompilationListener implements CompilationListener {
 	private static final String OPEN_BODY_PART = ".body(()->{%>\n";
 	private static final String CLOSE_BODY_PART = "\n<%}).done();%>";
 	
+	private static final String RENDERED_PARAM_WITH_CODE_REGEX = "\\s*tone:rendered\\s*=\\s*(\"@[^\"]*\"|'@[^']*')\\s*";
+	
 	@Override
 	public String preprocess(String content) {
 		
@@ -70,6 +72,14 @@ public class VRaptorCompilationListener implements CompilationListener {
 		 
 		while (m.find()) {
 			String tag = m.group();
+			
+			String rendered = "";
+			Matcher renderedMatcher = Pattern.compile(RENDERED_PARAM_WITH_CODE_REGEX).matcher(tag);
+			if (renderedMatcher.find()) {
+				String renderedParam = renderedMatcher.group(1);
+				rendered = "<%if("+renderedParam.substring(2,renderedParam.length()-1)+")%>";
+				tag = tag.replaceFirst(RENDERED_PARAM_WITH_CODE_REGEX, " ");
+			}
 			
 			tag = tag.replaceFirst(OPEN_TAG_REGEX, OPEN_INVOCATION_PART);
 
@@ -82,7 +92,7 @@ public class VRaptorCompilationListener implements CompilationListener {
 			tag = tag.replaceAll(TAG_PARAM_WITH_CODE_REGEX, INVOKE_BUILDER_METHOD_WITH_CODE_PART);
 			tag = tag.replaceAll(TAG_PARAM_REGEX, INVOKE_BUILDER_METHOD_WITH_STRING_PART);
 			
-		    m.appendReplacement(sb, tag);
+		    m.appendReplacement(sb, rendered + tag);
 		}
 		m.appendTail(sb);
 		content = sb.toString();
