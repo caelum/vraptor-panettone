@@ -102,12 +102,21 @@ public class PanettoneWalker implements ASTWalker {
 		String prefix = "public void render(" + parameters + ") {\n";
 		String sufix = "}\n";
 		
+		String renderIf = 
+				"public void renderIf(boolean rendered"
+			   + (parameters.isEmpty() ? "" : ",")
+			   + parameters
+			   + ") {\n"
+			   + "if (rendered)\n"
+			   + "	render(" + variables.stream().map((var)->var.split("\\s+")[1]).collect(joining(",")) + ");\n"
+			   + "}\n";
+		
 		StringBuilder toAppend = new StringBuilder();
 		Arrays.stream(listeners).forEach((cl) -> {
 			toAppend.append(cl.useParameters(variables, typeName));
 		});
 		
-		return injects + prefix + code.toString() + sufix + toAppend;
+		return injects + prefix + code.toString() + sufix + renderIf + toAppend;
 	}
 
 	@Override
