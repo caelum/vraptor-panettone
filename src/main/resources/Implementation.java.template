@@ -1,0 +1,51 @@
+package br.com.caelum.vraptor.panettone;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.CDI;
+import javax.enterprise.inject.spi.InjectionTarget;
+
+public class Implementation {
+
+	private final Class<?> type;
+	private final Object instance;
+
+	public Implementation(Class<?> type) {
+		this.type = type;
+		BeanManager manager = CDI.current().getBeanManager();
+		AnnotatedType<Object> at = (AnnotatedType<Object>) manager.createAnnotatedType(type);
+		InjectionTarget<Object> it = manager.createInjectionTarget(at);
+		CreationalContext<Object> context = manager.createCreationalContext(null);
+		this.instance = it.produce(context);
+		it.inject(instance, context);
+		it.postConstruct(instance);
+	}
+
+	public <T> void with(String name, Class<T> type, T value) {
+		invoke(name, new Class[]{type}, value);
+	}
+	
+	private Object invoke(String name, Class<?>[] types, Object... values) {
+		try {
+			Method method = type.getMethod(name, types);
+			return method.invoke(instance, values);
+		} catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException e) {
+			throw new RuntimeException(e);
+		} catch (InvocationTargetException e) {
+			throw new RuntimeException(e.getCause());
+		}
+	}
+
+	public void render(Class<?>[] types, Object... args) {
+		invoke("render", types, args);
+	}
+	
+	public void done() {
+		invoke("done", new Class[]{});
+	}
+
+}

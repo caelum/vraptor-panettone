@@ -1,6 +1,5 @@
 package br.com.caelum.vraptor.panettone.api;
 
-import br.com.caelum.vraptor.panettone.CompiledInterface;
 import br.com.caelum.vraptor.panettone.CompiledType;
 
 public interface InterfaceCompiler {

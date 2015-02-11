@@ -2,7 +2,7 @@ package br.com.caelum.vraptor.panettone;
 
 public class CodeBuilder {
 
-	private StringBuilder code;
+	private final StringBuilder code;
 	
 	public CodeBuilder() {
 		code = new StringBuilder();

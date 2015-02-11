@@ -22,9 +22,17 @@ public class Variable {
 		return type + ".class";
 	}
 
+	public String getNonGenericTypeClass() {
+		if(type.contains("<")) {
+			return type.substring(0, type.indexOf("<")) + ".class"; 
+		}
+		return type + ".class";
+	}
+
 	public String getName() {
 		return name;
 	}
+
 
 
 }

@@ -20,7 +20,7 @@ public class CompiledInterface {
 			String sourceCode = "//HASH:" + content.hashCode() + "\n" + 
 							"package templates" + type.getPackages() + ";\n\n" + 
 							type.getImportString() +
-							"public class " + type.getTypeName() + " {\n" +
+							"public class " + type.getTypeName() + " implements br.com.caelum.vraptor.View {\n" +
 							content +
 							"}\n";
 			Files.write(type.getFilePath(), asList(sourceCode), forName("UTF-8"));

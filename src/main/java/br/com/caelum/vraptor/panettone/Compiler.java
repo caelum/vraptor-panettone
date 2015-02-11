@@ -58,8 +58,15 @@ public class Compiler {
 	private void setup() {
 		templates.mkdirs();
 		classes.mkdirs();
-		File loader = new File(classes, "br/com/caelum/vraptor/panettone/PanettoneLoader.java");
-		InputStream input = Compiler.class.getResourceAsStream("/PanettoneLoader.java.template");
+		TODO so se nao mudou.... e plugin funcionar
+		copyFile("/PanettoneLoader.java.template", "br/com/caelum/vraptor/panettone/PanettoneLoader.java");
+		copyFile("/Implementation.java.template", "br/com/caelum/vraptor/panettone/Implementation.java");
+	}
+	
+	private void copyFile(String from, String target) {
+		File loader = new File(interfaces.getFolder(), target);
+		loader.getParentFile().mkdirs();
+		InputStream input = Compiler.class.getResourceAsStream(from);
 		try {
 			copy(input, loader.toPath(), REPLACE_EXISTING);
 		} catch (IOException e) {

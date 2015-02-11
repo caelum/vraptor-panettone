@@ -45,20 +45,28 @@ public class Template {
 		PanettoneWalker walker = bake("i_" + typeName);
 		String instance = getInstance();
 
-		
 		String signature = walker.getMethodSignature();
 		String packagedName = typeName.replaceAll("/", ".").replaceAll(".java", ".class");
 		Variables variables = walker.getVariables();
-		String delegate = format("\timplementation.render({%s}, {%s});",variables.getTypeList(), variables.asParametersCall());
+		String delegate = invokeRender(variables);
 		String method = signature + "{\n" + delegate + "\n}\n";
 		String builders = getBuilders(packagedName, walker);
 		String done = "public void done() { implementation.done(); };\n"; 
 		return instance + method + builders + done;
 	}
+	private String invokeRender(Variables variables) {
+		return format("\timplementation.render(new Class[]{%s} %s);",variables.getNonGenericTypeList(), parameterInArray(variables));
+	}
+	private String parameterInArray(Variables variables) {
+		if(variables.isEmpty()) {
+			return "";
+		}
+		return ", " + variables.asParametersCall();
+	}
 	private String getInstance() {
-		String loader = "@Inject private PanettoneLazyLoader _lazyLoader;\n";
-		String implementation = "Implementation implementation;\n";
-		String construct = "@PostConstruct\n" 
+		String loader = "@javax.inject.Inject private br.com.caelum.vraptor.panettone.PanettoneLoader _lazyLoader;\n";
+		String implementation = "private br.com.caelum.vraptor.panettone.Implementation implementation;\n";
+		String construct = "@javax.annotation.PostConstruct\n" 
 				+ "public void init() {\n"
 			+"\tthis.implementation = _lazyLoader.load(this.getClass());}\n";
 		return loader + implementation + construct;
@@ -67,13 +75,14 @@ public class Template {
 	private String getBuilders(String packagedName, PanettoneWalker walker) {
 		String builders = "";
 		for (Variable variable : walker.getVariables().getContent()) {
-			String builder = format("public i_%4$s %1$s(%2$s) {\n"
-					+ "\timplementation.with(\"%1$s\", %3$s.class, %1$s);\n"
+			String builder = format("public %5$s %1$s(%2$s) {\n"
+					+ "\timplementation.with(\"%1$s\", %4$s, %1$s);\n"
 					+ "\treturn this;\n"
 					+ "};\n", 
 					variable.getName(), 
 					variable.toDefinition(), 
 					variable.getType(),
+					variable.getNonGenericTypeClass(),
 					packagedName);
 			builders += builder;
 		}

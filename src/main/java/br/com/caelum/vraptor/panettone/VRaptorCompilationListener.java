@@ -1,5 +1,6 @@
 package br.com.caelum.vraptor.panettone;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
 import java.io.File;
@@ -102,11 +103,14 @@ public class VRaptorCompilationListener implements CompilationListener {
 		return content;
 	}
 	
+	static final List<String> WRAPPERS = asList(new String[]{"Integer", "Boolean", "Double", "Long", "Byte", "Short", "Float"});
+
 	@Override
 	public String useParameters(List<String> variables, String typeName) {
 		StringBuilder code = new StringBuilder();
 		
 		List<String> doneParams = new LinkedList<>();
+		String implementationName = typeName + "Implementation";
 		
 		variables.forEach((variable) -> {
 			String[] typeAndName = variable.split("\\s");
@@ -114,13 +118,10 @@ public class VRaptorCompilationListener implements CompilationListener {
 			String name = typeAndName[1];
 			
 			code.append("private " + type + " " + name + ";\n");
-			code.append("public " + typeName + " " + name + "("+ type + " " + name +") { this."+name+" = " + name + "; return this; }\n");
-			
-			
-			final List<String> WRAPPERS = Arrays.asList(new String[]{"Integer", "Boolean", "Double", "Long", "Byte", "Short", "Float"});
+			code.append("public " + implementationName + " " + name + "("+ type + " " + name +") { this."+name+" = " + name + "; return this; }\n");
 			
 			if (!type.equals("String") && WRAPPERS.contains(type)) {
-				code.append("public " + typeName + " " + name + "(String " + name +") { this."+name+" = " + type + ".valueOf(" + name + "); return this; }\n");
+				code.append("public " + implementationName + " " + name + "(String " + name +") { this."+name+" = " + type + ".valueOf(" + name + "); return this; }\n");
 			}
 			
 			doneParams.add(name);

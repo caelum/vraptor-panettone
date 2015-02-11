@@ -34,8 +34,12 @@ public class Variables {
 		return asMethodDefinition().stream().collect(joining(","));
 	}
 
-	public String getTypeList() {
-		return variables.stream().map(Variable::getTypeClass).collect(joining(","));
+	public String getNonGenericTypeList() {
+		return variables.stream().map(Variable::getNonGenericTypeClass).collect(joining(","));
+	}
+	
+	public boolean isEmpty() {
+		return variables.isEmpty();
 	}
 
 }
