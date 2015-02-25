@@ -58,7 +58,7 @@ public class Compiler {
 	private void setup() {
 		templates.mkdirs();
 		classes.mkdirs();
-		TODO so se nao mudou.... e plugin funcionar
+//		TODO so se nao mudou.... e plugin funcionar
 		copyFile("/PanettoneLoader.java.template", "br/com/caelum/vraptor/panettone/PanettoneLoader.java");
 		copyFile("/Implementation.java.template", "br/com/caelum/vraptor/panettone/Implementation.java");
 	}
