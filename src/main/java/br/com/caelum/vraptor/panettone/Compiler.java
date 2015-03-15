@@ -97,7 +97,9 @@ public class Compiler {
 			Template template = new Template(reader, this.listeners);
 			String name = noExtension(nameFor(f));
 			String typeName = name.replaceAll(".+/", "");
+			
 			String content = template.renderType(typeName);
+			
 			CompiledTemplate compiled = new CompiledTemplate(classes, name, imports, content, listeners);
 			invokeOn(listeners, l-> l.finished(f, compiled));
 			

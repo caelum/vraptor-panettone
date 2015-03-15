@@ -1,7 +1,6 @@
 package br.com.caelum.vraptor.panettone;
 
 import java.io.File;
-import java.util.List;
 
 public interface CompilationListener {
 	
@@ -38,11 +37,8 @@ public interface CompilationListener {
 	String preprocess(String content);
 	
 	/**
-	 * @param variables Parameters List with types
-	 * @param typeName 
-	 * @return Code to be added
+	 * Returns a list of extra required injections.
 	 */
-	String useParameters(List<String> variables, String typeName);
+	public Variable[] getExtraInjections();
 	
-
 }

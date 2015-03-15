@@ -2,7 +2,6 @@ package br.com.caelum.vraptor.panettone;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class BytecodeCompiler implements CompilationListener {
@@ -54,8 +53,8 @@ public class BytecodeCompiler implements CompilationListener {
 	}
 
 	@Override
-	public String useParameters(List<String> variables, String typeName) {
-		return "";
+	public Variable[] getExtraInjections() {
+		return new Variable[]{};
 	}
-	
+
 }

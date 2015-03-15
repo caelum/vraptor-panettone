@@ -116,11 +116,11 @@ public class Watcher implements Runnable {
 	void stop() {
 		try {
 			this.running = false;
-			out.println("Stopping compilation service");
 			service.close();
-			out.println("Stopped compilation service");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
+		} finally {
+			out.println("Stopped compilation service");
 		}
 	}
 

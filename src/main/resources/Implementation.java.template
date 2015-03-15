@@ -3,26 +3,14 @@ package br.com.caelum.vraptor.panettone;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.CDI;
-import javax.enterprise.inject.spi.InjectionTarget;
-
 public class Implementation {
 
 	private final Class<?> type;
 	private final Object instance;
 
-	public Implementation(Class<?> type) {
+	public Implementation(Class<?> type, Object[] injects) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SecurityException {
 		this.type = type;
-		BeanManager manager = CDI.current().getBeanManager();
-		AnnotatedType<Object> at = (AnnotatedType<Object>) manager.createAnnotatedType(type);
-		InjectionTarget<Object> it = manager.createInjectionTarget(at);
-		CreationalContext<Object> context = manager.createCreationalContext(null);
-		this.instance = it.produce(context);
-		it.inject(instance, context);
-		it.postConstruct(instance);
+		this.instance = type.getConstructors()[0].newInstance(injects);
 	}
 
 	public <T> void with(String name, Class<T> type, T value) {

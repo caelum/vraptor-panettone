@@ -2,10 +2,6 @@ package br.com.caelum.vraptor.panettone;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.joining;
-
-import java.util.List;
-
 import br.com.caelum.vraptor.panettone.parser.PanettoneParser;
 import br.com.caelum.vraptor.panettone.parser.ast.ASTWalker;
 import br.com.caelum.vraptor.panettone.parser.ast.CommentNode;
@@ -23,16 +19,19 @@ public class PanettoneWalker implements ASTWalker {
 	
 	private final ELEvaluator el = new ELEvaluator();
 	private final Variables variables = new Variables();
-	private final StringBuilder injects = new StringBuilder();
+	private final Variables injectVariables = new Variables();
 	private final CodeBuilder code;
-	private final CompilationListener[] listeners;
-	private final String typeName;
 
-	public PanettoneWalker(CodeBuilder code, String typeName, CompilationListener... listeners) {
+	public PanettoneWalker(CodeBuilder code, CompilationListener... listeners) {
 		this.code = code;
-		this.listeners = listeners;
-		this.typeName = typeName;
+		addExtraVariables(listeners);
 	}
+	
+	private void addExtraVariables(CompilationListener... listeners) {
+		injectVariables.add(new Variable("java.io.PrintWriter", "out"));
+		stream(listeners).map(CompilationListener::getExtraInjections).forEach(injectVariables::add);
+	}
+	
 	@Override
 	public void visitPrintVariable(PrintVariableNode node) {
 		String value = node.getExpr();
@@ -92,21 +91,14 @@ public class PanettoneWalker implements ASTWalker {
 
 	@Override
 	public void visitInjectDeclaration(InjectDeclarationNode node) {
-		injects.append("@javax.inject.Inject private " + node.getType() + " " + node.getName() + ";");
-		injects.append("\n");
+		injectVariables.add(node.getType(), node.getName());
 	}
-
+	
 	public String getJavaCode() {
 		String prefix = getMethodSignature() + " {\n";
-		String sufix = "}\n";
-		
-		List<String> variables = this.variables.asMethodDefinition();
-		String extraMembers = stream(listeners)
-			.map(cl -> cl.useParameters(variables, typeName))
-			.collect(joining());
-		
 		String body = code.toString();
-		return injects + prefix + body + sufix + extraMembers;
+		String sufix = "}\n";
+		return prefix + body + sufix;
 	}
 	
 	String getMethodSignature() {
@@ -139,6 +131,10 @@ public class PanettoneWalker implements ASTWalker {
 	
 	public Variables getVariables() {
 		return variables;
+	}
+	
+	public Variables getInjectVariables() {
+		return injectVariables;
 	}
 	
 }

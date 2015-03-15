@@ -5,6 +5,7 @@ import java.util.List;
 
 import br.com.caelum.vraptor.panettone.CompilationListener;
 import br.com.caelum.vraptor.panettone.CompiledTemplate;
+import br.com.caelum.vraptor.panettone.Variable;
 
 public class MiniListener implements CompilationListener{
 
@@ -36,8 +37,8 @@ public class MiniListener implements CompilationListener{
 	}
 
 	@Override
-	public String useParameters(List<String> variables, String typeName) {
-		return "";
+	public Variable[] getExtraInjections() {
+		return new Variable[]{};
 	}
 
 }

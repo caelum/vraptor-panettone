@@ -1,16 +1,12 @@
 package br.com.caelum.vraptor.panettone;
 
-import static java.nio.charset.Charset.forName;
-import static java.nio.file.Files.write;
-import static java.util.Arrays.asList;
-import static java.util.Arrays.copyOf;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,15 +23,16 @@ public class CompiledTemplate {
 			String extension = baseClassFor(imports);
 			String sourceCode = "package templates" + type.getPackages() + ";\n\n" + 
 							type.getImportString() +
+							"@SuppressWarnings(\"unused\")" +
 							"public class " + type.getTypeName() + " " + extension + " " + type.getInterfaces() + " {\n" +
-							"private java.io.PrintWriter out;\n" +
-							getConstructor(type.getTypeName(), listeners) +
 							content +
 							"\n\n\n" +
 							"private void write(Object o) { if(o!=null) out.write(o.toString()); }\n" +
 							"private void write(String o) { if(o!=null) out.write(o); }\n" +
 							"}\n";
-			write(type.getFilePath(), asList(sourceCode), forName("UTF-8"));
+			try(PrintStream ps = new PrintStream(type.getFile(), "UTF-8")) {
+				ps.print(sourceCode);
+			}
 		} catch (IOException e) {
 			throw new CompilationIOException("Unable to compile", e);
 		}
@@ -47,21 +44,12 @@ public class CompiledTemplate {
 		parts[parts.length-1] = typeName + "Implementation";
 		return stream(parts).collect(joining("/"));
 	}
-	private String getConstructor(String typeName,
-			CompilationListener[] listeners) {
-		for (CompilationListener cl : listeners) {
-			if (cl.overrideConstructor(typeName) != null)
-				return cl.overrideConstructor(typeName);
-		}
-		String standard = "public " + typeName + "(java.io.PrintWriter out) {\n" +
-				" this.out = out; "+
-				"}\n";
-		return standard;
-	}
+	
 	private String baseClassFor(List<String> imports) {
 		Optional<String> existing = imports.stream().filter(p -> p.endsWith(".DefaultTemplate")).findFirst();
 		return "extends " + existing.orElse("Object");
 	}
+	
 	public CompiledType getType() {
 		return type;
 	}

@@ -21,9 +21,8 @@ public class Main {
 			System.out.println("Compiler up and running, hit ENTER to stop...");
 			System.in.read();
 			compiler.stop();
-			System.out.println("Finishing the auto compiler");
+			System.out.println("Quitting panettone baker");
 		}
-		System.out.println("Quitting panettone baker");
 	}
 
 	private static void validate(String[] args) {

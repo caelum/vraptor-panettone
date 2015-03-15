@@ -1,5 +1,6 @@
 package br.com.caelum.vraptor.panettone;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -31,11 +32,11 @@ public class PanettoneLoader {
 
 	private URL basePath;
 
-	public <T> Implementation load(Class<T> type) {
+	public <T> Implementation load(Class<T> type, Object... injects) {
 		if(shouldReload()) {
 			createClassLoader();
 		}
-		return cachedLoad(type.getName());
+		return cachedLoad(type.getName(), injects);
 	}
 	
 	@PostConstruct
@@ -51,11 +52,12 @@ public class PanettoneLoader {
 		}
 	}
 
-	public Implementation cachedLoad(String type) {
+	public Implementation cachedLoad(String type, Object[] injects) {
 		String name = type + "Implementation";
 		try {
-			return new Implementation((Class<?>) loader.loadClass(name));
-		} catch (ClassNotFoundException e) {
+			Class<?> loadedType = (Class<?>) loader.loadClass(name);
+			return new Implementation(loadedType, injects);
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
 			throw new RuntimeException("Unable to load template " + name + " at " + basePath, e);
 		}
 	}

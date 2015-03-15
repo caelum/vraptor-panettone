@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.joining;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -63,11 +62,6 @@ public class CompiledType {
 		}
 	}
 
-	static String toString(InputStream stream) {
-		try(Scanner scanner = new Scanner(stream, "UTF-8")) {
-			return readAll(scanner);
-		}
-	}
 	private static String readAll(Scanner scanner) {
 		scanner.useDelimiter("\\A");
 		String input = scanner.hasNext() ? scanner.next() : "";
@@ -114,4 +108,5 @@ public class CompiledType {
 			return "";
 		}
 	}
+
 }

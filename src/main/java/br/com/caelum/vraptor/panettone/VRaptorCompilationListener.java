@@ -4,7 +4,6 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -16,23 +15,16 @@ public class VRaptorCompilationListener implements CompilationListener {
 	public String[] getInterfaces() {
 		return new String[] { "br.com.caelum.vraptor.View" };
 	}
+	
+	public Variable[] getExtraInjections() {
+		return new Variable[] {
+				new Variable("javax.servlet.http.HttpServletResponse", "res"),
+				new Variable("br.com.caelum.vraptor.Result", "result")};
+	}
 
 	@Override
 	public String overrideConstructor(String typeName) {
-		return "@javax.inject.Inject\n"
-				+ "private javax.servlet.http.HttpServletResponse res;\n"
-				+ "@javax.inject.Inject\n"
-				+ "private br.com.caelum.vraptor.Result result;\n"
-				+ "@javax.annotation.PostConstruct\n"
-				+ "public void fillout() {\n"
-				+ "try {\n"
-				+ "	res.setContentType(\"text/html; charset=UTF-8\");\n"
-				+ "	this.out = res.getWriter();\n"
-				+ "} catch (java.io.IOException e) {\n"
-				+ "	throw new RuntimeException(e);\n"
-				+ "}\n"
-				+ "}\n"
-				+ "private <T extends br.com.caelum.vraptor.View> T use(Class<T> type) { return result.use(type); }\n";
+		return null;
 	}
 
 	@Override
@@ -103,33 +95,4 @@ public class VRaptorCompilationListener implements CompilationListener {
 		return content;
 	}
 	
-	static final List<String> WRAPPERS = asList(new String[]{"Integer", "Boolean", "Double", "Long", "Byte", "Short", "Float"});
-
-	@Override
-	public String useParameters(List<String> variables, String typeName) {
-		StringBuilder code = new StringBuilder();
-		
-		List<String> doneParams = new LinkedList<>();
-		String implementationName = typeName + "Implementation";
-		
-		variables.forEach((variable) -> {
-			String[] typeAndName = variable.split("\\s");
-			String type = typeAndName[0];
-			String name = typeAndName[1];
-			
-			code.append("private " + type + " " + name + ";\n");
-			code.append("public " + implementationName + " " + name + "("+ type + " " + name +") { this."+name+" = " + name + "; return this; }\n");
-			
-			if (!type.equals("String") && WRAPPERS.contains(type)) {
-				code.append("public " + implementationName + " " + name + "(String " + name +") { this."+name+" = " + type + ".valueOf(" + name + "); return this; }\n");
-			}
-			
-			doneParams.add(name);
-		});
-		
-		code.append("public void done() { render(" + doneParams.stream().collect(joining(",")) + "); }\n");
-		
-		return code.toString();
-	}
-
 }
