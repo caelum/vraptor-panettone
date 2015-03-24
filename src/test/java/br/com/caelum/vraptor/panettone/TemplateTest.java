@@ -135,13 +135,15 @@ public class TemplateTest {
 	private String emptyRun(String msg) {
 		return "public void render() {\n"
 				+ "// line 1\n"
-				+ msg+"}\n";
+				+ msg+"}\n"
+				+ "public void renderIf(boolean rendered) {\nif (rendered)\n	render();\n}\n";
 	}
 
 	private String emptyRun(String prefix, String msg) {
 		return prefix + "public void render() {\n"
 				+ "// line 1\n"
-				+ msg+"}\n";
+				+ msg+"}\n"
+				+ "public void renderIf(boolean rendered) {\nif (rendered)\n	render();\n}\n";
 	}
 
 	@Test
@@ -156,7 +158,8 @@ public class TemplateTest {
 		String expected = "public void render(String mensagem) {\n"
 				+ "// line 1\n"
 				+ "// line 2\n"
-				+ "write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
+				+ "write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n"
+				+ "public void renderIf(boolean rendered,String mensagem) {\nif (rendered)\n	render(mensagem);\n}\n";
 		String result = new Template("(@ String mensagem )\n<html><%= mensagem %></html>").renderType("oi");
 		assertEquals(expected, result);
 	}
@@ -165,7 +168,8 @@ public class TemplateTest {
 		String expected = "public void render(String mensagem) {\n"
 				+ "// line 1\n"
 				+ "// line 2\n"
-				+ "write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
+				+ "write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n"
+				+ "public void renderIf(boolean rendered,String mensagem) {\nif (rendered)\n	render(mensagem);\n}\n";
 		String result = new Template("(@ String mensagem )\n<html>@mensagem</html>").renderType("oi");
 		assertEquals(expected, result);
 	}
@@ -175,7 +179,8 @@ public class TemplateTest {
 		String expected = "public void render(String mensagem) {\n"
 				+ "// line 1\n"
 				+ "// line 2\n"
-				+ "write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
+				+ "write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n"
+				+ "public void renderIf(boolean rendered,String mensagem) {\nif (rendered)\n	render(mensagem);\n}\n";
 		String result = new Template("(@String mensagem)\n<html><%= mensagem %></html>").renderType("oi");
 		assertEquals(expected, result);
 	}
@@ -186,7 +191,8 @@ public class TemplateTest {
 				+ "// line 1\n"
 				+ "if(mensagem == null) mensagem = \"hello\" ;\n"
 				+ "// line 2\n"
-				+ "write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n";
+				+ "write(\"<html>\");\nwrite(mensagem);\nwrite(\"</html>\");\n}\n"
+				+ "public void renderIf(boolean rendered,String mensagem) {\nif (rendered)\n	render(mensagem);\n}\n";
 		String result = new Template("(@ String mensagem = \"hello\" )\n<html><%=mensagem%></html>").renderType("oi");
 		assertEquals(expected, result);
 	}
@@ -252,7 +258,8 @@ public class TemplateTest {
 				+ "write(\"<html>\");\n"
 				+ "write(mensagem);\n"
 				+ "write(\"</html>\");\n"
-				+ "}\n";
+				+ "}\n"
+				+ "public void renderIf(boolean rendered) {\nif (rendered)\n	render();\n}\n";
 		String result = new Template("(@inject String mensagem)\n<html><%= mensagem %></html>").renderType("oi");
 		assertEquals(expected, result);
 	}
@@ -266,7 +273,8 @@ public class TemplateTest {
 				+ "write(\"<html>\");\n"
 				+ "write(mensagem);\n"
 				+ "write(\"</html>\");\n"
-				+ "}\n";
+				+ "}\n"
+				+ "public void renderIf(boolean rendered) {\nif (rendered)\n	render();\n}\n";
 		String result = new Template("(@inject String mensagem )\n<html><%= mensagem %></html>").renderType("oi");
 		assertEquals(expected, result);
 	}
@@ -280,7 +288,8 @@ public class TemplateTest {
 				+ "// line 3\n"
 				+ "// line 4\n"
 				+ " use(header.class).render(\"Welcome\"); \n"
-				+ "}\n";
+				+ "}\n"
+				+ "public void renderIf(boolean rendered,User user,List<News> newses) {\nif (rendered)\n	render(user,newses);\n}\n";
 		String result = new Template("(@ User user)\n" +
 		"(@ List<News> newses)\n" +
 		"(@inject i18n.Messages m )\n" +
@@ -299,7 +308,8 @@ public class TemplateTest {
 				+ "write(\"<html>\");\n"
 				+ "write(mensagem);\n"
 				+ "write(\"</html>\");\n"
-				+ "}\n";
+				+ "}\n"
+				+ "public void renderIf(boolean rendered,String mensagem) {\nif (rendered)\n	render(mensagem);\n}\n";
 		String expected = variable + render;
 		String result = new Template("(@inject User user)\n(@ String mensagem)\n<html><%= mensagem %></html>").renderType("oi");
 		assertEquals(expected, result);
@@ -316,7 +326,8 @@ public class TemplateTest {
 				+ "// line 4\n"
 				+ "write(\"<html>\");\n"
 				+ "body.run();\n"
-				+ "write(\"</html>\");\n}\n";
+				+ "write(\"</html>\");\n}\n"
+				+ "public void renderIf(boolean rendered) {\nif (rendered)\n	render();\n}\n";
 		String result = new Template("@{{body\n"
 				+ "Guilherme @mensagem\n"
 				+ "@}}\n"
@@ -330,7 +341,8 @@ public class TemplateTest {
 				+ "// line 1\n"
 				+ "write(\"<html>\");\n"
 				+ "write(reason.equals(\"CAELUM_OFFLINE\") ? \"selected='selected'\":\"\");\n"
-				+ "write(\"</html>\");\n}\n";
+				+ "write(\"</html>\");\n}\n"
+				+ "public void renderIf(boolean rendered) {\nif (rendered)\n	render();\n}\n";
 		String result = new Template("<html><%=reason.equals(\"CAELUM_OFFLINE\") ? \"selected='selected'\":\"\"%></html>").renderType("oi");
 		assertEquals(expected, result);
 	}
@@ -341,6 +353,7 @@ public class TemplateTest {
 				+ "// line 1\n"
 				+ "use(header.class).done();\n"
 				+ "}\n"
+				+ "public void renderIf(boolean rendered) {\nif (rendered)\n	render();\n}\n"
 				+ "public void done() { render(); }\n";
 		String result = new Template("<tone:header />",new VRaptorCompilationListener()).renderType("header");
 		assertEquals(expected, result);
@@ -354,6 +367,7 @@ public class TemplateTest {
 				+ "use(header.class).title(\"MyTitle\").done();\n"
 				+ "write(\"</html>\");\n"
 				+ "}\n"
+				+ "public void renderIf(boolean rendered) {\nif (rendered)\n	render();\n}\n"
 				+ "public void done() { render(); }\n";
 		String result = new Template("<html><tone:header title=\"MyTitle\" /></html>",new VRaptorCompilationListener()).renderType("header");
 		assertEquals(expected, result);
@@ -367,6 +381,7 @@ public class TemplateTest {
 				+ "use(header.class).title(\"MyTitle\").description(\"Desc\").done();\n"
 				+ "write(\"</html>\");\n"
 				+ "}\n"
+				+ "public void renderIf(boolean rendered) {\nif (rendered)\n	render();\n}\n"
 				+ "public void done() { render(); }\n";
 		String result = new Template("<html><tone:header title=\"MyTitle\" description=\"Desc\"/></html>",new VRaptorCompilationListener()).renderType("header");
 		assertEquals(expected, result);
@@ -381,6 +396,7 @@ public class TemplateTest {
 				+ "// line 3\n"
 				+ "}).done();\n"
 				+ "}\n"
+				+ "public void renderIf(boolean rendered) {\nif (rendered)\n	render();\n}\n"
 				+ "public void done() { render(); }\n";
 		String result = new Template("<tone:header></tone:header>",new VRaptorCompilationListener()).renderType("header");
 		assertEquals(expected, result);
@@ -396,6 +412,7 @@ public class TemplateTest {
 				+ "// line 3\n"
 				+ "}).done();\n"
 				+ "}\n"
+				+ "public void renderIf(boolean rendered) {\nif (rendered)\n	render();\n}\n"
 				+ "public void done() { render(); }\n";
 		String result = new Template("<tone:header>Body</tone:header>",new VRaptorCompilationListener()).renderType("header");
 		assertEquals(expected, result);
@@ -411,6 +428,7 @@ public class TemplateTest {
 				+ "// line 3\n"
 				+ "}).done();\n"
 				+ "}\n"
+				+ "public void renderIf(boolean rendered) {\nif (rendered)\n	render();\n}\n"
 				+ "public void done() { render(); }\n";
 		String result = new Template("<tone:header title=\"MyTitle\">Body</tone:header>",new VRaptorCompilationListener()).renderType("header");
 		assertEquals(expected, result);
@@ -431,6 +449,7 @@ public class TemplateTest {
 				+ "// line 3\n"
 				+ "}).done();\n"
 				+ "}\n"
+				+ "public void renderIf(boolean rendered) {\nif (rendered)\n	render();\n}\n"
 				+ "public void done() { render(); }\n";
 		String result = new Template("<tone:header>Body</tone:header><tone:footer>more</tone:footer>",new VRaptorCompilationListener()).renderType("header");
 		assertEquals(expected, result);
@@ -450,6 +469,7 @@ public class TemplateTest {
 				+ "}).done();\n"
 				+ "}).done();\n"
 				+ "}\n"
+				+ "public void renderIf(boolean rendered) {\nif (rendered)\n	render();\n}\n"
 				+ "public void done() { render(); }\n";
 		String result = new Template("<tone:header>Body<tone:content>more</tone:content></tone:header>",new VRaptorCompilationListener()).renderType("header");
 		assertEquals(expected, result);
@@ -464,6 +484,7 @@ public class TemplateTest {
 				+ "write(message);\n"
 				+ "write(\"</html>\");\n"
 				+ "}\n"
+				+ "public void renderIf(boolean rendered,String message) {\nif (rendered)\n	render(message);\n}\n"
 				+ "private String message;\n"
 				+ "public header message(String message) { this.message = message; return this; }\n"
 				+ "public void done() { render(message); }\n";
@@ -480,6 +501,7 @@ public class TemplateTest {
 				+ "write(message);\n"
 				+ "write(\"</html>\");\n"
 				+ "}\n"
+				+ "public void renderIf(boolean rendered,Boolean message) {\nif (rendered)\n	render(message);\n}\n"
 				+ "private Boolean message;\n"
 				+ "public header message(Boolean message) { this.message = message; return this; }\n"
 				+ "public header message(String message) { this.message = Boolean.valueOf(message); return this; }\n"
@@ -498,6 +520,7 @@ public class TemplateTest {
 				+ "write(message);\n"
 				+ "write(\"</html>\");\n"
 				+ "}\n"
+				+ "public void renderIf(boolean rendered,String message,String title) {\nif (rendered)\n	render(message,title);\n}\n"
 				+ "private String message;\n"
 				+ "public header message(String message) { this.message = message; return this; }\n"
 				+ "private String title;\n"
@@ -519,6 +542,7 @@ public class TemplateTest {
 				+ " body.run(); \n"
 				+ "write(\"</html>\");\n"
 				+ "}\n"
+				+ "public void renderIf(boolean rendered,String message,String title,Runnable body) {\nif (rendered)\n	render(message,title,body);\n}\n"
 				+ "private String message;\n"
 				+ "public header message(String message) { this.message = message; return this; }\n"
 				+ "private String title;\n"

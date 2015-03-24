@@ -98,11 +98,22 @@ public class PanettoneWalker implements ASTWalker {
 		String prefix = getMethodSignature() + " {\n";
 		String body = code.toString();
 		String sufix = "}\n";
-		return prefix + body + sufix;
+		return prefix + body + sufix + renderIf();
 	}
 	
 	String getMethodSignature() {
 		return "public void render(" + variables.asFullMethodDefinition() + ")";
+	}
+	
+	String renderIf() {
+		return 
+				"public void renderIf(boolean rendered"
+			   + (variables.isEmpty() ? "" : ",")
+			   + variables.asFullMethodDefinition()
+			   + ") {\n"
+			   + "if (rendered)\n"
+			   + "	render(" + variables.asParametersCall() + ");\n"
+			   + "}\n";
 	}
 
 	@Override
