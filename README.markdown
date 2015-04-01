@@ -1,5 +1,7 @@
 ## panettone
 
+![Build status](https://secure.travis-ci.org/caelum/vraptor-panettone.png)
+
 Panettone is a type safe template language written in Java.
 
 # Why?
