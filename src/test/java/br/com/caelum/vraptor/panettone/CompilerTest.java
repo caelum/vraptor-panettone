@@ -1,6 +1,7 @@
 package br.com.caelum.vraptor.panettone;
 
 import static br.com.caelum.vraptor.panettone.ReflectionHelper.run;
+import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -68,6 +69,16 @@ public class CompilerTest {
 		assertEquals(1, exceptions.size());
 	}
 
+	@Test
+	public void testShouldContainTemplateFileInExceptions() {
+		io.copy("oi.tone", "<html>Oi<% for a %></html>");
+		List<Exception> exceptions = compiler.compileAll();
+		assertEquals(1, exceptions.size());
+		
+		File template = new File(sources, "oi.tone");
+		assertTrue(exceptions.get(0).getMessage().contains(format("in template[%s]", template.getAbsoluteFile())));
+	}
+	
 	@Test
 	public void testShouldKeepWatchingDirectory() {
 		compiler.startWatch();

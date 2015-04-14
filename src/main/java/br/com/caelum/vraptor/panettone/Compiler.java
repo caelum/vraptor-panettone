@@ -109,7 +109,7 @@ public class Compiler {
 			return empty();
 		} catch (Exception e) {
 			invokeOn(listeners, l -> l.finished(f, e));
-			return of(e);
+			return of(new CompilationException(format("%s in template[%s]", e.getMessage(), f.getAbsoluteFile()), e));
 		}
 	}
 
