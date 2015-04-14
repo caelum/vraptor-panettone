@@ -2,6 +2,7 @@ package br.com.caelum.vraptor.panettone;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 import java.io.*;
@@ -66,7 +67,7 @@ public class Compiler {
 			return Optional.empty();
 		} catch (Exception e) {
 			invokeOn(listeners, l -> l.finished(f, e));
-			return Optional.of(e);
+			return of(new CompilationException(format("%s in template[%s]", e.getMessage(), f.getAbsoluteFile()), e));
 		}
 	}
 
