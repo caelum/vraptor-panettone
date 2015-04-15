@@ -2,8 +2,10 @@ package br.com.caelum.vraptor.panettone;
 
 import static br.com.caelum.vraptor.panettone.ReflectionHelper.run;
 import static java.lang.String.format;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -76,7 +78,7 @@ public class CompilerTest {
 		assertEquals(1, exceptions.size());
 		
 		File template = new File(sources, "oi.tone");
-		assertTrue(exceptions.get(0).getMessage().contains(format("in template[%s]", template.getAbsoluteFile())));
+		assertThat(exceptions.get(0).getMessage(), containsString(format("in template[%s]", template.getAbsoluteFile())));
 	}
 	
 	@Test
