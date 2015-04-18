@@ -2,6 +2,8 @@ package br.com.caelum.vraptor.panettone;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import br.com.caelum.vraptor.panettone.api.DefaultPrintEscaper;
+import br.com.caelum.vraptor.panettone.api.PrintEscaper;
 import br.com.caelum.vraptor.panettone.parser.PanettoneParser;
 import br.com.caelum.vraptor.panettone.parser.ast.ASTWalker;
 import br.com.caelum.vraptor.panettone.parser.ast.CommentNode;
@@ -21,12 +23,18 @@ public class PanettoneWalker implements ASTWalker {
 	private final Variables variables = new Variables();
 	private final Variables injectVariables = new Variables();
 	private final CodeBuilder code;
+	private final PrintEscaper printEscaper;
 
 	public PanettoneWalker(CodeBuilder code, CompilationListener... listeners) {
-		this.code = code;
-		addExtraVariables(listeners);
+		this(code, new DefaultPrintEscaper(), listeners);
 	}
 	
+	public PanettoneWalker(CodeBuilder code, PrintEscaper printEscaper, CompilationListener... listeners) {
+		this.code = code;
+		this.printEscaper = printEscaper;
+		addExtraVariables(listeners);
+	}
+		
 	private void addExtraVariables(CompilationListener... listeners) {
 		injectVariables.add(new Variable("java.io.PrintWriter", "out"));
 		stream(listeners).map(CompilationListener::getExtraInjections).forEach(injectVariables::add);
@@ -80,7 +88,11 @@ public class PanettoneWalker implements ASTWalker {
 
 	@Override
 	public void visitScriptletPrint(ScriptletPrintNode node) {
-		code.append("write(" + node.getExpr() + ");\n");
+		if(node.isRawText()){
+			code.append("write(" + node.getExpr() + ");\n");
+		} else {
+			code.append("write(" + printEscaper.escape(node.getExpr()) + ");\n");
+		}
 	}
 
 	@Override
