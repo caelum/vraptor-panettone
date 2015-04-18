@@ -1,11 +1,6 @@
 package br.com.caelum.vraptor.panettone;
 
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.joining;
-
 import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,7 +14,8 @@ public class VRaptorCompilationListener implements CompilationListener {
 	public Variable[] getExtraInjections() {
 		return new Variable[] {
 				new Variable("javax.servlet.http.HttpServletResponse", "res"),
-				new Variable("br.com.caelum.vraptor.Result", "result")};
+				new Variable("br.com.caelum.vraptor.Result", "result"),
+				new Variable("br.com.caelum.vraptor.panettone.api.PrintEscaper", "printEscaper")};
 	}
 
 	@Override
