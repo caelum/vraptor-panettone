@@ -80,7 +80,7 @@ public class PanettoneWalker implements ASTWalker {
 
 	@Override
 	public void visitScriptletPrint(ScriptletPrintNode node) {
-		if(node.isRawText()){
+		if(node.shouldPrintAsRaw()){
 			code.append("write(" + node.getExpr() + ");\n");
 		} else {
 			code.append("write(printEscaper.escape(" + node.getExpr() + "));\n");

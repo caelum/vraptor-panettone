@@ -80,7 +80,7 @@ public class ScriptletPrintRuleTest {
 		ScriptletPrintNode node = (ScriptletPrintNode) rule.getNode(TextChunkBuilder.to("<%= v1.v2() %>"));
 		
 		Assert.assertEquals("v1.v2()", node.getExpr());
-		Assert.assertFalse(node.isRawText());
+		Assert.assertFalse(node.shouldPrintAsRaw());
 		
 	}
 	
@@ -90,7 +90,7 @@ public class ScriptletPrintRuleTest {
 		ScriptletPrintNode node = (ScriptletPrintNode) rule.getNode(TextChunkBuilder.to("<%== v1.v2() %>"));
 		
 		Assert.assertEquals("v1.v2()", node.getExpr());
-		Assert.assertTrue(node.isRawText());
+		Assert.assertTrue(node.shouldPrintAsRaw());
 		
 	}
 }

@@ -17,9 +17,9 @@ public class ScriptletPrintRule extends Rule {
 
 	@Override
 	public Node getNode(TextChunk chunk) {
-		boolean rawText = chunk.getText().startsWith(START_SCRIPTLET_PRINT_RAW);
-		String cleanChunk = chunk.getText().replace(rawText ? START_SCRIPTLET_PRINT_RAW : "<%=", "").replace("%>", "").trim();
-		return new ScriptletPrintNode(cleanChunk, chunk.getBeginLine(), rawText);
+		boolean printAsRaw = chunk.getText().startsWith(START_SCRIPTLET_PRINT_RAW);
+		String cleanChunk = chunk.getText().replace(printAsRaw ? START_SCRIPTLET_PRINT_RAW : "<%=", "").replace("%>", "").trim();
+		return new ScriptletPrintNode(cleanChunk, chunk.getBeginLine(), printAsRaw);
 	}
 
 }

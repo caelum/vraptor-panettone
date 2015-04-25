@@ -4,12 +4,12 @@ package br.com.caelum.vraptor.panettone.parser.ast;
 public class ScriptletPrintNode extends Node {
 
 	private final String expr;
-	private boolean rawText;
+	private boolean shouldPrintAsRaw;
 
-	public ScriptletPrintNode(String expr, int beginLine, boolean rawText) {
+	public ScriptletPrintNode(String expr, int beginLine, boolean shouldPrintAsRaw) {
 		super(beginLine);
 		this.expr = expr;
-		this.rawText = rawText;
+		this.shouldPrintAsRaw = shouldPrintAsRaw;
 	}
 	
 	public String getExpr() {
@@ -21,8 +21,8 @@ public class ScriptletPrintNode extends Node {
 		walker.visitScriptletPrint(this);
 	}
 
-	public boolean isRawText() {
-		return rawText;
+	public boolean shouldPrintAsRaw() {
+		return shouldPrintAsRaw;
 	}
 
 }
