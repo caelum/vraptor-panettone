@@ -21,12 +21,12 @@ public class PanettoneWalker implements ASTWalker {
 	private final Variables variables = new Variables();
 	private final Variables injectVariables = new Variables();
 	private final CodeBuilder code;
-
+	
 	public PanettoneWalker(CodeBuilder code, CompilationListener... listeners) {
 		this.code = code;
 		addExtraVariables(listeners);
 	}
-	
+		
 	private void addExtraVariables(CompilationListener... listeners) {
 		injectVariables.add(new Variable("java.io.PrintWriter", "out"));
 		stream(listeners).map(CompilationListener::getExtraInjections).forEach(injectVariables::add);
@@ -80,7 +80,11 @@ public class PanettoneWalker implements ASTWalker {
 
 	@Override
 	public void visitScriptletPrint(ScriptletPrintNode node) {
-		code.append("write(" + node.getExpr() + ");\n");
+		if(node.shouldPrintAsRaw()){
+			code.append("write(" + node.getExpr() + ");\n");
+		} else {
+			code.append("write(printEscaper.escape(" + node.getExpr() + "));\n");
+		}
 	}
 
 	@Override

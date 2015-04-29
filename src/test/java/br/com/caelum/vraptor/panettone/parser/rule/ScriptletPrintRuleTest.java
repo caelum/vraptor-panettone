@@ -73,4 +73,24 @@ public class ScriptletPrintRuleTest {
 		Assert.assertEquals("v1.v2()", node.getExpr());
 		
 	}
+	
+	@Test
+	public void shouldCreateNodeEscaped() {
+		
+		ScriptletPrintNode node = (ScriptletPrintNode) rule.getNode(TextChunkBuilder.to("<%= v1.v2() %>"));
+		
+		Assert.assertEquals("v1.v2()", node.getExpr());
+		Assert.assertFalse(node.shouldPrintAsRaw());
+		
+	}
+	
+	@Test
+	public void shouldCreateNodeWithoutEscape() {
+		
+		ScriptletPrintNode node = (ScriptletPrintNode) rule.getNode(TextChunkBuilder.to("<%== v1.v2() %>"));
+		
+		Assert.assertEquals("v1.v2()", node.getExpr());
+		Assert.assertTrue(node.shouldPrintAsRaw());
+		
+	}
 }
