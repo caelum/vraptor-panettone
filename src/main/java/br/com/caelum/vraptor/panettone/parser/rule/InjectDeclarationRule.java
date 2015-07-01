@@ -1,5 +1,6 @@
 package br.com.caelum.vraptor.panettone.parser.rule;
 
+import java.util.Stack;
 import java.util.regex.Pattern;
 
 import br.com.caelum.vraptor.panettone.parser.Regexes;
@@ -25,10 +26,40 @@ public class InjectDeclarationRule extends Rule {
 
 	@Override
 	public Node getNode(TextChunk chunk) {
-		String type = chunk.getText().split(" ")[1].trim();
-		String name = chunk.getText().split(" ")[2].replace(")", "").trim();
+		String text = chunk.getText()
+					.replace("@inject", "")
+					.replace("(", "")
+					.replace(")", "")
+					.trim();
+		
+		String type = "";
+		String name = "";
+		
+		boolean readingType = true;
+		StringBuilder word = new StringBuilder();
+		Stack<String> generics = new Stack<String>();
+		
+		for(int i = 0; i < text.length(); i++) {
+			
+			char current = text.charAt(i);
+			
+			boolean isPartOfTheWord = !(current == ' ' && generics.isEmpty());
+			if(isPartOfTheWord) {
+				if(current == '<') generics.push("<");
+				if(current == '>') generics.pop();
+				word.append(current);
+			}
+			else {
+				if(readingType) type = word.toString();
+				readingType = false;
+				word = new StringBuilder();
+			}
+		}
+		
+		name = word.toString();
 		
 		return new InjectDeclarationNode(type, name, chunk.getBeginLine());
 	}
+
 
 }

@@ -30,6 +30,18 @@ public class InjectDeclarationRuleTest {
 		List<TextChunk> chunks = rule.getChunks(sc);
 		Assert.assertEquals("(@inject pac1.pac2.Class end)", chunks.get(0).getText());
 	}
+
+	@Test
+	public void shouldAcceptMapOfLists() {
+		SourceCode sc = new SourceCode(
+				"bla bla"+
+						" (@inject HashMap<String, List<String>> var) "+
+						"ble ble"
+				);
+		
+		List<TextChunk> chunks = rule.getChunks(sc);
+		Assert.assertEquals("(@inject HashMap<String, List<String>> var)", chunks.get(0).getText());
+	}
 	
 	
 	@Test
@@ -76,6 +88,31 @@ public class InjectDeclarationRuleTest {
 		InjectDeclarationNode node = (InjectDeclarationNode) rule.getNode(TextChunkBuilder.to("(@inject a.b.C nome)"));
 		
 		Assert.assertEquals("a.b.C", node.getType());
+		Assert.assertEquals("nome", node.getName());
+
+		node = (InjectDeclarationNode) rule.getNode(TextChunkBuilder.to("(@inject   a.b.C   nome)"));
+		
+		Assert.assertEquals("a.b.C", node.getType());
+		Assert.assertEquals("nome", node.getName());
+
+		node = (InjectDeclarationNode) rule.getNode(TextChunkBuilder.to("(@inject   a.b.C   nome  )"));
+		
+		Assert.assertEquals("a.b.C", node.getType());
+		Assert.assertEquals("nome", node.getName());
+		
+	}
+
+	@Test
+	public void shouldCreateNodeWithGenericsWrittenWithSpaces() {
+		
+		InjectDeclarationNode node = (InjectDeclarationNode) rule.getNode(TextChunkBuilder.to("(@inject HashMap<String, List<String>> nome)"));
+		
+		Assert.assertEquals("HashMap<String, List<String>>", node.getType());
+		Assert.assertEquals("nome", node.getName());
+
+		node = (InjectDeclarationNode) rule.getNode(TextChunkBuilder.to("(@inject    HashMap<String, List<String>> nome   )"));
+		
+		Assert.assertEquals("HashMap<String, List<String>>", node.getType());
 		Assert.assertEquals("nome", node.getName());
 		
 	}
