@@ -30,7 +30,7 @@ So we will try avoiding quick awesome expressive compact fluid adjective sentenc
 Write your `hello.tone.html`:
 
 ```jsp
-@(List<User> users)
+(@List<User> users)
 <html>
 <% for(User user : users) { %>
 <h1>Hi @user</h1>
@@ -343,7 +343,7 @@ java -jar vraptor-panettone-*.jar --watch br.com.caelum.vraptor.mymodelpackage
 2. Create your source panettone file at `src/main/views`, such as `hello.tone.html`, yummy.
 
 ```jsp
-@(String message)
+(@String message)
 <html>
 <h1>@message</h1>
 </html>
